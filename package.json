@@ -1,0 +1,28 @@
+{
+  "name": "makemedev",
+  "version": "1.0.0",
+  "description": "projet web 2020",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gwenael95/MakeMeDev.git"
+  },
+  "keywords": [
+    "function",
+    "maker",
+    "function",
+    "browser"
+  ],
+  "author": "makeMeDevTeam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gwenael95/MakeMeDev/issues"
+  },
+  "homepage": "https://github.com/Gwenael95/MakeMeDev#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

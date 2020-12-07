@@ -6,7 +6,12 @@ bin-release/
 
 # Other files and folders
 .settings/
-
+.npm/
+npm/
+.idea/
+idea/
+node_modules/
+.node_modules/
 # Executables
 *.swf
 *.air
