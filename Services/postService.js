@@ -1,7 +1,8 @@
-const {addPost} = require("../DB/PostClass")
+const {addPost} = require("../DB/postRepository")
 
 exports.create = async (req, res) => {
     const {post} = req.body;
+
     if (
         post == null ||
         post == undefined

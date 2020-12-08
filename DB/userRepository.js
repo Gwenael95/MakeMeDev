@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+const {userSchema} = require("../Models/userModel");
 
 /*
 user model
@@ -26,14 +28,18 @@ user model
     }
 * */
 
-class UserClass {
 
-    //voir si on peut se passer de cette fonction sans empecher la requête, ce qui n'est pas si sûr
-
-    async getUserByName(userName) {
-
-    }
-
+async function signUp(data) {
+    const UserModel = mongoose.model('users', userSchema);
+    const doc = new UserModel(data);
+    await doc.save(
+        (err) => {
+            if (err) {
+                console.log(err)
+            }
+        });
+    return !doc.getChanges().$set;
 }
 
-module.exports = UserClass;
+
+module.exports = {signUp};
