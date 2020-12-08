@@ -1,4 +1,4 @@
-const UserClass = require("./User.Class");
+const UserClass = require("./UserClass");
 const PostClass = require("./PostClass");
 
 const db = {
