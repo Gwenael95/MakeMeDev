@@ -4,6 +4,7 @@
   "description": "projet web 2020",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,10 +24,14 @@
   },
   "homepage": "https://github.com/Gwenael95/MakeMeDev#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.4",
     "password-hash": "^1.2.2"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5"
   }
 }
