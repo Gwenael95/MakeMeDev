@@ -1,10 +1,12 @@
 exports.isUndefinedOrNull = (field) =>{
     return field === null || field === undefined;
 }
-exports.areAllUndefinedOrNull = (array) =>{
+exports.areAllUndefinedOrNull = (dataObject) =>{
     let boolArray = [];
-    for (let field in array){
+    for (let field in dataObject){
         boolArray.push(field === null || field === undefined)
     }
     return !boolArray.includes(false)
 }
+
+

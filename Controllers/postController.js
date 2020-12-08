@@ -1,5 +1,3 @@
-const db = require("../db/mongo");
-
 const { create, get } = require("../Services/postService");
 exports.sendPost = (req, res, next) => create(req, res, next);
 
