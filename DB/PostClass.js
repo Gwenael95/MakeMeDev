@@ -1,6 +1,6 @@
 const Connect = require("./ConnectClass");
 
-class FunctionClass {
+class PostClass {
     constructor() {
         this.db = new Connect().getDb();
     }
@@ -10,18 +10,18 @@ class FunctionClass {
     }
 
     //voir si on peut se passer de cette fonction sans empecher la requête, ce qui n'est pas si sûr
-    async getCollectionFunctions() {
+    async getCollectionPosts() {
         const db = await this.getDb();
-        return db.collection("functions");
+        return db.collection("posts");
     }
 
-    async getFunctionByName(functionName) {
-        const collection = await this.getCollectionFunctions();
+    async getPostByName(postName) {
+        const collection = await this.getCollectionPosts();
         const func = await collection
-            .findOne({ name: functionName });
+            .findOne({ name: postName });
         return func;
     }
 
 }
 
-module.exports = FunctionClass;
+module.exports = PostClass;
