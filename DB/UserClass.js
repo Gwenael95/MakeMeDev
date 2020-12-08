@@ -6,18 +6,18 @@ class UserClass {
         this.db = new Connect().getDb();
     }
 
-    getDb() {
+    #getDb() {
         return this.db;
     }
 
     //voir si on peut se passer de cette fonction sans empecher la requête, ce qui n'est pas si sûr
-    async getCollectionUsers() {
-        const db = await this.getDb();
+    async #getCollectionUsers() {
+        const db = await this.#getDb();
         return db.collection("users");
     }
 
     async getUserByName(userName) {
-        const collection = await this.getCollectionUsers();
+        const collection = await this.#getCollectionUsers();
         const user = await collection
             .findOne({ userName: userName });
         return user;

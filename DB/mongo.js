@@ -1,8 +1,8 @@
 const UserClass = require("./User.Class");
-const FunctionClass = require("./Function.Class");
+const PostClass = require("./PostClass");
 
 const db = {
     users: new UserClass(),
-    functions: new FunctionClass(),
+    posts: new PostClass(),
 };
 module.exports = db;
