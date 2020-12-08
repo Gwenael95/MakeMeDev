@@ -1,5 +1,57 @@
 const Connect = require("./ConnectClass");
 
+/*
+post model
+"post": {
+    "_id": "",
+    "bookMarked": 0,
+    "shared": 0,
+    "name": "",
+    "author": {
+        "pseudo": "",
+        "avatar": "",
+        "creationDate": ""
+    },
+    "params": [
+        {
+            "name": "",
+            "type": "",
+            "description": "",
+            "defaultValue": ""
+        }
+    ],
+    "return":
+        {
+            "name": "",
+            "type": "",
+            "description": "",
+            "defaultValue": ""
+        },
+    "tag": [""],
+    "post": [
+        {
+            "id": "",
+            "description": "",
+            "author": {
+                "pseudo": "",
+                "avatar": "",
+                "creationDate": ""
+            },
+            "function": "",
+            "like": 0,
+            "dislike": 0,
+            "commentary": [
+                {
+                    "pseudo": "",
+                    "commentary": "",
+                    "date": ""
+                }
+            ]
+        }
+    ]
+}
+* */
+
 class PostClass {
     constructor() {
         this.db = new Connect().getDb();
@@ -22,6 +74,26 @@ class PostClass {
         return func;
     }
 
+    async getPostById(postId) {
+        const collection = await this.#getCollectionPosts();
+        const func = await collection
+            .findOne({ _id: postId });
+        return func;
+    }
+
+    async getPostByAuthor(postAuthor) {
+        const collection = await this.#getCollectionPosts();
+        const func = await collection
+            .findOne({ author: postAuthor }); //faudra faire par authorPseudo, voir en mongo comment on faisait
+        return func;
+    }
+
+    async addPost(postName) {
+        const collection = await this.#getCollectionPosts();
+        const post = await collection
+            .insertOne({ name: postName });
+        return !(post == null || !post);
+    }
 }
 
 module.exports = PostClass;

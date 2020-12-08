@@ -1,5 +1,31 @@
 const Connect = require("./ConnectClass");
 
+/*
+user model
+"users":
+    {
+        '_id': "",
+        "userName": "",
+        "mail": "",
+        "pseudo": "",
+        "password": "",
+        "avatar": "",
+        "creationDate": "",
+        "activties": {
+            "like": [],
+            "dislike": [],
+            "commentary": [
+                {
+                    "post_id": "",
+                    "commentary": "",
+                    "creationDate": ""
+                }
+            ],
+        },
+        "post": [],
+        "bookMark": []
+    }
+* */
 
 class UserClass {
     constructor() {
