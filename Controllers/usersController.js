@@ -2,10 +2,7 @@ const {addUser, getUser} = require("../Services/usersService");
 
 exports.signUp = async (req, res, next) => {
     const {user} = req.body;
-    if (
-        user == null ||
-        user == undefined
-    ) {
+    if (Object.keys(user).length === 0 && user.constructor === Object) {
         return res.status(404).send({error: "Requete vide"});
     }
     const response = await addUser(user)
@@ -14,13 +11,9 @@ exports.signUp = async (req, res, next) => {
 
 exports.signIn = async (req, res, next)  => {
     const user = req.query;
-    if (
-        user == null ||
-        user == undefined
-    ) {
+    if (Object.keys(user).length === 0 && user.constructor === Object) {
         return res.status(404).send({error: "Requete vide"});
     }
-
     const response = await getUser(user)
     return res.status(response.code).send(response.body)
 };
