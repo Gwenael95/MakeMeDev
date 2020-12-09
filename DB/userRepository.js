@@ -9,4 +9,18 @@ async function signUp(data) {
     return await doc.save().then(result => {return {success: result}}).catch(err => {return {error: err.errors}})
 }
 
-module.exports = {signUp};
+async function signIn(userData) {
+    const UserModel = mongoose.model('users', userSchema);
+// select only the adventures name and length
+
+    //await doc.save().then(result => {return {success: result}}).catch(err => {return {error: err.errors}})
+    return await UserModel.findOne({  $or: [
+            { pseudo: userData.login  },
+            { mail: userData.login },
+        ],  password: userData.password }, 'pseudo avatar activities bookmark')
+        .exec()
+        .then(result => {return {success: result}})
+        .catch(err => {return {error: err.errors}});
+}
+
+module.exports = {signUp, signIn};
