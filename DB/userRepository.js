@@ -17,7 +17,7 @@ async function signIn(userData) {
     return await UserModel.findOne({  $or: [
             { pseudo: userData.login  },
             { mail: userData.login },
-        ],  password: userData.password }, 'pseudo avatar activities bookmark')
+        ],  password: userData.password }, { '_id': 0, "password":0} )
         .exec()
         .then(result => {return {success: result}})
         .catch(err => {return {error: err.errors}});
