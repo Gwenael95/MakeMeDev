@@ -1,9 +1,8 @@
-const uniqueValidator = require('mongoose-unique-validator')
+const mongoose = require('mongoose');
 const {postSchema} = require("../Models/postModel");
-const {PostModel} = require("../Models/models");
+const PostModel = mongoose.model('posts', postSchema)
 
 async function addPost(data) {
-    postSchema.plugin(uniqueValidator)
     const doc = new PostModel(data);
     return await doc.save().then(result => {return {success: result}}).catch(err => {return {error: err.errors}})
 }
