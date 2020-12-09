@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const {postSchema} = require("./postModel");
 
 exports.userSchema = new mongoose.Schema({
-    userName: {type: String, required: true},
-    mail: {type: String, required: true},
-    pseudo: {type: String, required: true},
+    userName: {type: String, required: true, unique: true},
+    mail: {type: String, required: true, unique: true},
+    pseudo: {type: String, required: true, unique: true},
     password: {type: String, required: true},
     avatar: {type: String, required: true},
     creationDate: {type: String, required: true},

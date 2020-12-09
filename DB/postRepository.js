@@ -24,6 +24,7 @@ async function addPost(data) {
         }
     });
     return !doc.getChanges().$set;
+    return {code: 400, bodyReturn: {success: "user ajouté avec succès"}}
 }
 
 

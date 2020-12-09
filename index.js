@@ -11,7 +11,7 @@ require('dotenv').config();
 const urlMongo = process.env.URL_MONGO;
 /* End setup webserver */
 
-mongoose.connect(urlMongo, {useUnifiedTopology: true, useNewUrlParser: true});
+mongoose.connect(urlMongo, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
 db.once('open', function (){
