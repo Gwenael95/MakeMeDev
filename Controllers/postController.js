@@ -1,17 +1,23 @@
 const { create, get } = require("../Services/postService");
-exports.sendPost = (req, res, next) => create(req, res, next);
 
-exports.getPost = (req, res, next)  => get(req, res);
+exports.sendPost = async (req, res, next) => {
+    const {post} = req.body;
+    if (Object.keys(post).length === 0 && post.constructor === Object) {
+        return res.status(404).send({error: "Requete vide"});
+    }
+    const response = await create(post)
+    return res.status(response.code).send(response.body)
+};
 
+exports.getPost = async (req, res, next)  => {
+    const post = req.query;
+    if (Object.keys(post).length === 0 && post.constructor === Object) {
+        return res.status(404).send({error: "Requete vide"});
+    }
+    const response = await get(post)
+    return res.status(response.code).send(response.body)
+};
 
-/*
-exports.getPost = async function (req, res, next)  {
-    //const post = await db.posts.getPostByName("test");
-    console.log(req.body)
-    await get(req, res);
-    return res.status(200).json("test get some post")
-}
- */
 
 
 
