@@ -24,56 +24,75 @@ async function getPost(data) {
 }
 
 function getPipeline(data) {
-    return getMainQuery(data).concat(getParamTypeQuery(data), getReturnTypeQuery(data));
+    console.log(JSON.stringify(getNameQuery(data)
+        .concat(getParamTypeQuery(data), getReturnTypeQuery(data), getDescriptionQuery(data), getTagQuery(data))))
+    return getNameQuery(data)
+        .concat(getParamTypeQuery(data), getReturnTypeQuery(data), getDescriptionQuery(data), getTagQuery(data));
 }
 
 
 function getTagQuery(data) {
-    if (data.tag.length === 0) {
-        return {$exists: true, $not: {$size: 0}};
-    } else {
-        return {$all: data.tag}
+    if (data.tag !== null) {
+        let dataTag = (data.tag.replace(/\s/g, '').split(","))
+        if (dataTag.length === 0) {
+            return [{$match: {$exists: true, $not: {$size: 0}}}];
+        } else {
+            return [{$match: {tag: {$all: dataTag}}}]
+        }
     }
+    return []
 }
 
+
 function getParamTypeQuery(data) {
+    let unknownParams = 0
+    let params = 0
+
     let paramTypeQuery = []
-    if (data.params.length > 0) {
-        paramTypeQuery = data.params.map(param => {
-            return {$match: {params: {$elemMatch: {type: param.type}}}}
-        })
+    if (data.paramsTypes !== null) {
+        let dataParams = (data.paramsTypes.replace(/\s/g, '').split(","))
+        if (dataParams.length > 0) {
+            return dataParams.map(param => {
+                if (param === "?") {
+                    unknownParams++
+                    return {$match: {params: {$elemMatch: {type: {$regex: ""}}}}}
+                } else {
+                    params++
+                    return {$match: {params: {$elemMatch: {type: param}}}}
+                }
+            })
+        } else if (dataParams.length === 0) {
+            return [{$match: {params: {$size: dataParams.length}}}]
+        }
     }
     return paramTypeQuery;
 }
 
 function getReturnTypeQuery(data) {
     let returnTypeQuery = []
-    if (Object.keys(data.return).length > 0) {
-        returnTypeQuery.push({$match: {"return.type": data["return"].type}})
+    if (data.returnType !== null) {
+        if (Object.keys(data.returnType).length > 0) {
+            returnTypeQuery.push({$match: {"return.type": data.returnType}})
+        } else if (Object.keys(data.returnType).length === 0) {
+            returnTypeQuery.push({$match: {"return.type": {$size: Object.keys(data.returnType).length}}})
+        }
     }
     return returnTypeQuery;
 }
 
 function getDescriptionQuery(data) {
-    return data.return.description ? data.return.description : "";
+    if (data.description !== null) {
+        return [{$match: {"post.function": {$regex: data.description}}}]
+    }
+    return []
 }
 
-function getMainQuery(data) {
-    return [
-        {
-            $match:
-                {
-                    name: {$regex: data.name},
-                    tag: getTagQuery(data),
-                    params: {$size: data.params.length},
-                    "post.description": {
-                        $regex: getDescriptionQuery(data)
-                    }
-                }
-        },
-    ];
+function getNameQuery(data) {
+    if (data.functionName !== null) {
+        return [{$match: {name: {$regex: data.functionName}}}];
+    }
+    return []
 }
-
 
 
 module.exports = {addPost, getPost};

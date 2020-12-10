@@ -7,16 +7,14 @@ exports.sendPost = async (req, res, next) => {
     return res.status(response.code).send(response.body)
 };
 
+
 exports.getPost = async (req, res, next)  => {
-    const post = {
-        name: req.query.name ? req.query.name : "",
-        tag: req.query.tag ? JSON.parse(req.query.tag) : [],
-        params: req.query["params"] ? JSON.parse(req.query["params"]) : [],
-        return: req.query["return"] ? JSON.parse(req.query["return"]) : {}
-    }
-    const response = emptyRequest(post) ? emptyRequest(post) : await get(post)
+    const {search} =  req.query
+
+    const response = emptyRequest(search) ? emptyRequest(search) : await get(search)
     return res.status(response.code).send(response.body)
 };
+
 
 
 

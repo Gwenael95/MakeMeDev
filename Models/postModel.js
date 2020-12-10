@@ -27,7 +27,6 @@ exports.postSchema = new mongoose.Schema({
         tag: [{type: String, required: true}],
         post: [
             {
-                description: {type: String, required: true},
                 author: {
                     pseudo: {type: String, required: true},
                     avatar: {type: String, required: true},
