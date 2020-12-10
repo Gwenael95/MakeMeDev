@@ -1,1 +1,1 @@
-exports.url = "/api/"
+exports.url = process.env.URL

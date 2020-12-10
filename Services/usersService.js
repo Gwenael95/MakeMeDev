@@ -1,8 +1,6 @@
 const {getHandler, addHandler} = require("./responseHandler")
 const {signUp, signIn} = require("../DB/userRepository");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
-const Cookies = require("cookies");
 
 async function addUser(user) {
     const result = await signUp(user);

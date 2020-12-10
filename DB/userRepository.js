@@ -17,7 +17,7 @@ async function signIn(userData) {
     return await UserModel.findOne({  $or: [
             { pseudo: userData.login  },
             { mail: userData.login },
-        ]}, { '_id': 0, "__v": 0} )
+        ]}, { '_id': 0, "__v": 0} ).lean()
         .exec()
         .then(result => {
             return result===null ? {error: "login incorrect"}
@@ -28,7 +28,8 @@ async function signIn(userData) {
 }
 
 function filterPassword(user) {
-    user["password"] = ":)"
+    //user["password"] = ":)"
+    delete user.password
     return user
 }
 
