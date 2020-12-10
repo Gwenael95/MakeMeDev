@@ -7,7 +7,7 @@ exports.postSchema = new mongoose.Schema({
         author: {
             pseudo: {type: String, required: true},
             avatar: {type: String, required: true},
-            creationDate: {type: String, required: true}
+            creationDate: {type: String, default:  new Date().getTime() / 1000}
         },
         params: [
             {
@@ -31,7 +31,7 @@ exports.postSchema = new mongoose.Schema({
                 author: {
                     pseudo: {type: String, required: true},
                     avatar: {type: String, required: true},
-                    creationDate: {type: String, required: true}
+                    creationDate: {type: String, default:  new Date().getTime() / 1000}
                 },
                 function: {type: String, required: true},
                 like: {type: Number, default: 0},
@@ -40,7 +40,7 @@ exports.postSchema = new mongoose.Schema({
                     {
                         pseudo: {type: String, required: true},
                         commentary: {type: String, required: true},
-                        date: {type: String, required: true}
+                        date: {type: String, default:  new Date().getTime() / 1000}
                     }
                 ]
             }

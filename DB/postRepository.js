@@ -12,50 +12,8 @@ async function addPost(data) {
 }
 
 async function getPost(data) {
-    let tagQuery
-    if ( data.tag.length===0){
-        tagQuery = { $exists: true, $not: {$size: 0} }
-    }
-    else{
-        tagQuery = {$all: data.tag}
-    }
-
-    //pour params, voir comment faire car on recevra un tableau de string(1 pour chaque champs) OU un tableau d'objet
-    //
-    // - regexp sur l'array en bdd (antony semblait en avoir trouver un)
-    // - comparé les objets en bdd et ceux envoyé {type:"", description:""}
-    console.log(await PostModel.aggregate([
-        {
-            $match: {
-                name: {
-                    $regex: ""
-                },
-                tag: tagQuery,
-            }
-        },
-        {
-            $unwind: "$params"
-        },
-        {
-            $match: {
-                "params.description": {
-                    $regex: "int"
-                },
-            }
-        },
-        {
-            $project: { name:1, tag:1, 'params.description':1}
-        }
-    ]).exec());
-
-    return await PostModel.aggregate([{
-            $match: {
-                name: {
-                    $regex: ""
-                },
-                tag: tagQuery
-            }
-        }])
+    return await PostModel
+        .aggregate(getPipeline(data))
         .exec()
         .then(result => {
             return {success: result}
@@ -64,5 +22,58 @@ async function getPost(data) {
             return {error: err.errors}
         });
 }
+
+function getPipeline(data) {
+    return getMainQuery(data).concat(getParamTypeQuery(data), getReturnTypeQuery(data));
+}
+
+
+function getTagQuery(data) {
+    if (data.tag.length === 0) {
+        return {$exists: true, $not: {$size: 0}};
+    } else {
+        return {$all: data.tag}
+    }
+}
+
+function getParamTypeQuery(data) {
+    let paramTypeQuery = []
+    if (data.params.length > 0) {
+        paramTypeQuery = data.params.map(param => {
+            return {$match: {params: {$elemMatch: {type: param.type}}}}
+        })
+    }
+    return paramTypeQuery;
+}
+
+function getReturnTypeQuery(data) {
+    let returnTypeQuery = []
+    if (Object.keys(data.return).length > 0) {
+        returnTypeQuery.push({$match: {"return.type": data["return"].type}})
+    }
+    return returnTypeQuery;
+}
+
+function getDescriptionQuery(data) {
+    return data.return.description ? data.return.description : "";
+}
+
+function getMainQuery(data) {
+    return [
+        {
+            $match:
+                {
+                    name: {$regex: data.name},
+                    tag: getTagQuery(data),
+                    params: {$size: data.params.length},
+                    "post.description": {
+                        $regex: getDescriptionQuery(data)
+                    }
+                }
+        },
+    ];
+}
+
+
 
 module.exports = {addPost, getPost};
