@@ -1,8 +1,15 @@
-const {addUser, getUser} = require("../Services/usersService");
+const {addUser, getUser, updateUser} = require("../Services/usersService");
 const {emptyRequest} = require("./helper");
+
 exports.signUp = async (req, res, next) => {
     const {user} = req.body;
     const response = emptyRequest(user) ? emptyRequest(user) : await addUser(user)
+    return res.status(response.code).send(response.body)
+};
+
+exports.updateUser = async (req, res, next) => {
+    const {user} = req.body;
+    const response = emptyRequest(user) ? emptyRequest(user) : await updateUser(user)
     return res.status(response.code).send(response.body)
 };
 
