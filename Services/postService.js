@@ -12,6 +12,9 @@ const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
  * @returns {Promise<{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
 async function create(post) {
+    if (post.params===undefined || post.params===null){
+        post.params=[]
+    }
     let arr = []
     for(let param of post.params){
         arr.push(param.type)
@@ -63,6 +66,7 @@ function getStringDelimitedArea( firstDelimiter, lastDelimiter) {
  * @returns {string|null}
  */
 function getSearchValue( delimiter){
+    console.log(test)
     let value = []
     let countCharacter = 0;
     test.split("").map((searchCharacter, index) => {

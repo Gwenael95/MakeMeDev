@@ -28,9 +28,9 @@ exports.postSchema = new mongoose.Schema({
         },
         return:
             {
-                name: {type: String, required: true},
-                type: {type: String, required: true},
-                description: {type: String, required: true},
+                name: {type: String},
+                type: {type: String},
+                description: {type: String},
                 defaultValue: {type: String}
             },
         tag: [{type: String, required: true}],

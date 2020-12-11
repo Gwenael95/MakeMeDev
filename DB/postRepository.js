@@ -76,8 +76,11 @@ function getTagQuery(data) {
 function getMatchFromStringArray(data, dbField) {
     if (data !== null) {
         let array = (filterDelSpaces(data).split(","))
-        if (array.length > 0) {
+        if (array.length > 0 && data!=="") {
             return [{$match: {[dbField]: {$all: array}}}]
+        }
+        else if (data==="") {
+            return [{$match: {[dbField]:{$size: 0}}}]
         }
     }
     return []
@@ -135,10 +138,10 @@ function getParamTypeQuery(data) {
 function getReturnTypeQuery(data) {
     let returnTypeQuery = []
     if (data.returnType !== null) {
-        if (Object.keys(data.returnType).length > 0) {
+        if (Object.keys(data.returnType).length > 0 ) {
             returnTypeQuery.push({$match: {"return.type": data.returnType}})
-        } else if (Object.keys(data.returnType).length === 0) {
-            returnTypeQuery.push({$match: {"return.type": {$size: Object.keys(data.returnType).length}}})
+        } else if (Object.keys(data.returnType).length === 0 ) {
+            returnTypeQuery.push({$match: {}})
         }
     }
     return returnTypeQuery;
