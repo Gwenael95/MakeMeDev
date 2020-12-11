@@ -29,33 +29,42 @@ async function signIn(userData) {
 }
 
 function filterPassword(user) {
-    //user["password"] = ":)"
+    user["password"] = ":)"
     delete user.password
     return user
 }
 
-async function updateUserById(data) {
-    await UserModel.updateOne({ _id: ObjectId(data.id) }, setUpdateValue(data))
 
-    // return await doc.save()
-    //     .then(result => {return {success: filterPassword(result)}})
-    //     .catch(err => {return {error: err.errors}})
+
+async function updateUserById(data) {
+    userSchema.plugin(uniqueValidator)
+    return await UserModel
+        .findOneAndUpdate(
+            { _id: ObjectId(data.id)},
+            setUpdateValue(data),
+            {new: true, runValidators: true, context: "query"} )
+        .lean()
+        .exec()
+        .then((result) => {
+            return {success: filterPassword(result)}
+        })
+        .catch(err => {
+            return {error: err.errors}
+        })
 }
 
 function setUpdateValue(data) {
-    let pseudo = {}
-    let mail = {}
-    let avatar = {}
+    let updateValue = {}
     if (data.pseudo) {
-        pseudo = {pseudo: data.pseudo}
+        updateValue["pseudo"] = data.pseudo
     }
     if (data.mail) {
-        mail = {mail: data.mail}
+        updateValue["mail"] = data.mail
     }
     if (data.avatar) {
-        avatar = {avatar: data.avatar}
+        updateValue["avatar"] = data.avatar
     }
-    console.log({ $set: pseudo, mail, avatar })
-    return { $set: pseudo, mail, avatar }
+    return {$set: updateValue}
 }
+
 module.exports = {signUp, signIn, updateUserById};

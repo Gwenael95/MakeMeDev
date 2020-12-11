@@ -1,10 +1,10 @@
-const {getHandler, addHandler} = require("./responseHandler");
+const {getHandler} = require("./responseHandler");
 const {addPost, getPost} = require("../DB/postRepository")
 
 
 async function create(post) {
     const result = await addPost(post);
-    return addHandler(result);
+    return getHandler(result);
 }
 
 async function get(post) {

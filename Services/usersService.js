@@ -1,11 +1,11 @@
-const {getHandler, addHandler} = require("./responseHandler")
+const {getHandler} = require("./responseHandler")
 const {signUp, signIn, updateUserById} = require("../DB/userRepository");
 const jwt = require("jsonwebtoken");
 
 async function addUser(user) {
     const result = await signUp(user);
     generateAccessToken(result)
-    return addHandler(result);
+    return getHandler(result);
 }
 
 async function getUser(user) {
@@ -16,7 +16,7 @@ async function getUser(user) {
 
 async function updateUser(user) {
     const userData = await updateUserById(user);
-    generateAccessToken(userData)
+    generateAccessToken(userData);
     return getHandler(userData , "ce compte n'existe pas")
 }
 
