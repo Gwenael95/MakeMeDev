@@ -1,4 +1,4 @@
-const {getHandler} = require("./responseHandler")
+const {getHandler} = require("../Tools/Services/responseHandler");
 const {signUp, signIn, updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
 
