@@ -1,5 +1,5 @@
-const {getHandler, addHandler} = require("../Tools/Services/responseHandler")
-const {signUp, signIn} = require("../DB/userRepository");
+const {getHandler, addHandler} = require("./responseHandler")
+const {signUp, signIn, updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
 
 /** @function
@@ -26,6 +26,12 @@ async function getUser(user) {
     return getHandler(userData , "ce compte n'existe pas")
 }
 
+async function updateUser(user) {
+    const userData = await updateUserById(user);
+    generateAccessToken(userData)
+    return getHandler(userData , "ce compte n'existe pas")
+}
 
 
-module.exports = {addUser, getUser};
+
+module.exports = {addUser, getUser, updateUser};
