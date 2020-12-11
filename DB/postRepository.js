@@ -161,7 +161,7 @@ function getReturnTypeQuery(data) {
  * @returns {*[]|{$match: {field: {$regex: data}}}[]}
  */
 function getDescriptionQuery(data) {
-    return getMatchStringRegex (data.description, "post.function")
+    return getMatchStringRegex (data.description, "post.description")
 }
 
 /** @function

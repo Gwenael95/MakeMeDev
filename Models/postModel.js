@@ -8,8 +8,6 @@ exports.postSchema = new mongoose.Schema({
         bookMarked: {type: Number, default: 0},
         shared: {type: Number, default: 0},
         name: {type: String, required: true},
-        description: {type: String, required: true},
-
         author: {
             pseudo: {type: String, required: true},
             avatar: {type: String, required: true},
@@ -23,9 +21,7 @@ exports.postSchema = new mongoose.Schema({
                 defaultValue: {type: String}
             }
         ],
-        paramsTypes:{
-
-        },
+        paramsTypes:{},
         return:
             {
                 name: {type: String},
@@ -42,6 +38,7 @@ exports.postSchema = new mongoose.Schema({
                     creationDate: {type: String, default:  new Date().getTime() / 1000}
                 },
                 function: {type: String, required: true},
+                description: {type: String, required: true},
                 like: {type: Number, default: 0},
                 dislike: {type: Number, default: 0},
                 totalLike: {type: Number, default: 0},
