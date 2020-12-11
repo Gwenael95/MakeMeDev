@@ -29,14 +29,29 @@ async function addPost(postData) {
  */
 async function getPost(searchedData) {
     return await PostModel
-        .aggregate(getPipeline(searchedData))
+        .aggregate(getPipeline(searchedData))//.sort({"post.totalLike":1})
         .exec()
         .then(result => {
-            return {success: result}
+            /*result[0].post.sort(function (a, b) {
+                return (b.like-b.dislike)-(a.like-a.dislike)  ;
+            })*/
+            return {success: sortAllPostByLike(result)}
         })
         .catch(err => {
             return {error: err.errors}
         });
+}
+function sortAllPostByLike(data){
+    for(let func of data){
+        func = sortPostByLikes(func)
+    }
+    return data
+}
+function sortPostByLikes(data){
+    data.post.sort(function (a, b) {
+        return (b.like-b.dislike)-(a.like-a.dislike)  ;
+    })
+    return data
 }
 
 

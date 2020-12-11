@@ -44,6 +44,7 @@ exports.postSchema = new mongoose.Schema({
                 function: {type: String, required: true},
                 like: {type: Number, default: 0},
                 dislike: {type: Number, default: 0},
+                totalLike: {type: Number, default: 0},
                 commentary: [
                     {
                         pseudo: {type: String, required: true},
