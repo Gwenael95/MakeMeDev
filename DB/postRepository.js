@@ -138,11 +138,16 @@ function getParamTypeQuery(data) {
 function getReturnTypeQuery(data) {
     let returnTypeQuery = []
     if (data.returnType !== null) {
-        if (Object.keys(data.returnType).length > 0 ) {
+        if (Object.keys(data.returnType).length > 0 && data.returnType !== "?") {
             returnTypeQuery.push({$match: {"return.type": data.returnType}})
-        } else if (Object.keys(data.returnType).length === 0 ) {
-            returnTypeQuery.push({$match: {}})
         }
+        else if (data.returnType === "?") {
+            returnTypeQuery.push({$match: {"return": { $exists:true}}})
+        }
+        else if (Object.keys(data.returnType).length === 0 && data.returnType==="") {
+            returnTypeQuery.push({$match: {"return": { $exists:false}}})
+        }
+
     }
     return returnTypeQuery;
 }
