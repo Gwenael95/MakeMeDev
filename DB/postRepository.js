@@ -112,10 +112,14 @@ function getParamTypeQuery(data) {
                 } //else search all param by params type and numbers of these types
                 else if(dataParams.length >=1 ){
                     return {
-                        $match: {params: {$elemMatch: {type: param}},
-                            ["paramsTypes."+param]:{
-                            $lte:(occurrences["?"] ? occurrences["?"] : 0)+occurrences[param], $gte:occurrences[param]}
-                        }}
+                        $match: {
+                            params: {$elemMatch: {type: param},  $size:dataParams.length},
+                            ["paramsTypes." + param]: {
+                                $lte: (occurrences["?"] ? occurrences["?"] : 0) + occurrences[param],
+                                $gte: occurrences[param]
+                            }
+                        }
+                    }
                 }
                 // else, there isn't any params in request, we search by other criteria
                 else{
