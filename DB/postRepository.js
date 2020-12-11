@@ -31,28 +31,12 @@ async function getPost(searchedData) {
     return await PostModel
         .aggregate(getPipeline(searchedData))//.sort({"post.totalLike":1})
         .exec()
-        .then(result => {
-            /*result[0].post.sort(function (a, b) {
-                return (b.like-b.dislike)-(a.like-a.dislike)  ;
-            })*/
-            return {success: sortAllPostByLike(result)}
-        })
+        .then(result => {return {success: result}})
         .catch(err => {
             return {error: err.errors}
         });
 }
-function sortAllPostByLike(data){
-    for(let func of data){
-        func = sortPostByLikes(func)
-    }
-    return data
-}
-function sortPostByLikes(data){
-    data.post.sort(function (a, b) {
-        return (b.like-b.dislike)-(a.like-a.dislike)  ;
-    })
-    return data
-}
+
 
 
 //region not exported function
@@ -60,7 +44,7 @@ function sortPostByLikes(data){
  * @name getPipeline
  * Get a complex Pipeline to search all function depending on data search field
  * @param {object} data - post's data
- * @returns {T[]}
+ * @returns {[]}
  */
 function getPipeline(data) {
     //console.log(getParamTypeQuery(data))
@@ -119,14 +103,18 @@ function getParamTypeQuery(data) {
                 if (param === "?") {
                     return {$match: {params: {$elemMatch: {type: {$regex: ""}}, $size:dataParams.length}
                     }}
+                }
+                else if (dataParams.length === 1 && param==="") {
+                    return {$match: {params: {$size: 0}}}
                 } //else search all param by params type and numbers of these types
-                else if(dataParams.length >1 ){
+                else if(dataParams.length >=1 ){
                     return {
                         $match: {params: {$elemMatch: {type: param}},
                             ["paramsTypes."+param]:{
                             $lte:(occurrences["?"] ? occurrences["?"] : 0)+occurrences[param], $gte:occurrences[param]}
                         }}
-                } // else, there isn't any params in request, we search by other criteria
+                }
+                // else, there isn't any params in request, we search by other criteria
                 else{
                     return {$match: {params: {$elemMatch: {type: {$regex: ""}}}}}
                 }
@@ -135,7 +123,6 @@ function getParamTypeQuery(data) {
             return [{$match: {params: {$size: dataParams.length}}}]
         }
     }
-
     return paramTypeQuery;
 }
 

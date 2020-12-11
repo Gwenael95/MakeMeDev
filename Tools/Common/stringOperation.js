@@ -8,7 +8,8 @@
  * @returns {string|null}
  */
 function getStringDelimitedArea(str, firstDelimiter, lastDelimiter) {
-    return (str.includes(firstDelimiter) && str.includes(lastDelimiter)) ? str.substring(str.lastIndexOf(firstDelimiter) + 1, str.lastIndexOf(lastDelimiter)) : null;
+    return (str.includes(firstDelimiter) && str.includes(lastDelimiter)) ?
+        str.substring(str.lastIndexOf(firstDelimiter) + 1, str.lastIndexOf(lastDelimiter)) : null;
 }
 
 /** @function
