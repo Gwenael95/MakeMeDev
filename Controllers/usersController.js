@@ -1,5 +1,5 @@
 const {addUser, getUser, updateUser} = require("../Services/usersService");
-const {emptyRequest} = require("./helper");
+const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 /** @function
  * @name signUp
@@ -28,6 +28,7 @@ exports.updateUser = async (req, res, next) => {
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
+
 exports.signIn = async (req, res, next)  => {
     const user = req.query;
     const response = emptyRequest(user) ? emptyRequest(user) : await getUser(user)

@@ -33,5 +33,4 @@ async function updateUser(user) {
 }
 
 
-
 module.exports = {addUser, getUser, updateUser};

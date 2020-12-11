@@ -1,7 +1,6 @@
 const {getHandler} = require("./responseHandler");
 const {addPost, getPost} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
-//const {} = require("../Tools/Common/stringOperation")
 
 /** @function
  * @name create

@@ -40,6 +40,7 @@ async function signIn(userData) {
         .catch(err => {return {error: err.errors}});
 }
 
+
 /** @function
  * @name filterPassword
  * Delete user password, to avoid security issues
@@ -47,7 +48,7 @@ async function signIn(userData) {
  * @returns {object}
  */
 function filterPassword(data) {
-    user["password"] = ":)"
+    data["password"] = ":)"
     delete data.password
     return data
 }
@@ -82,4 +83,5 @@ function setUpdateValue(data) {
     }
     return {$set: updateValue}
 }
+
 module.exports = {signUp, signIn, updateUserById};
