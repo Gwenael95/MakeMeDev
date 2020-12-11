@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 
+/**
+ * Our Post Model used for mongoDB {@link '../DB/postRepository.js'}.
+ * @type {module:mongoose.Schema<any>}
+ */
 exports.postSchema = new mongoose.Schema({
         bookMarked: {type: Number, default: 0},
         shared: {type: Number, default: 0},
         name: {type: String, required: true},
+        description: {type: String, required: true},
+
         author: {
             pseudo: {type: String, required: true},
             avatar: {type: String, required: true},
@@ -17,6 +23,9 @@ exports.postSchema = new mongoose.Schema({
                 defaultValue: {type: String}
             }
         ],
+        paramsTypes:{
+
+        },
         return:
             {
                 name: {type: String, required: true},
