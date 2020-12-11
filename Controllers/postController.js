@@ -1,5 +1,5 @@
 const { create, get } = require("../Services/postService");
-const {emptyRequest} = require("../Tools/Controller/controllerHelper");
+const {emptyRequest} = require("./helper");
 
 /** @function
  * @name sendPost

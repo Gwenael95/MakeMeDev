@@ -1,4 +1,4 @@
-const {getHandler, addHandler} = require("../Tools/Services/responseHandler");
+const {getHandler} = require("./responseHandler");
 const {addPost, getPost} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
 //const {} = require("../Tools/Common/stringOperation")
@@ -21,7 +21,7 @@ async function create(post) {
     }
     post["paramsTypes"]= countOccurrencesFromArray(arr)
     const result = await addPost(post);
-    return addHandler(result);
+    return getHandler(result);
 }
 
 let test = ""
