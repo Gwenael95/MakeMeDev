@@ -4,15 +4,27 @@ const mongoose = require('mongoose');
 const {generate, verify} = require("password-hash");
 const UserModel = mongoose.model('users', userSchema)
 
-async function signUp(data) {
+/** @function
+ * @name signUp
+ * Add a new user in database, and return the result of this try
+ * @param {object} userData - user to add, should correspond to userModel {@link '../Models/userModels'}.
+ * @returns {Promise<{success: *}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ */
+async function signUp(userData) {
     userSchema.plugin(uniqueValidator)
-    const doc = new UserModel(data);
-    doc.password = generate(data.password)
+    const doc = new UserModel(userData);
+    doc.password = generate(userData.password)
     return await doc.save()
         .then(result => {return {success: filterPassword(result)}})
         .catch(err => {return {error: err.errors}})
 }
 
+/** @function
+ * @name signIn
+ * Check if user's data are in database and right, depending on a many fields, and return the result of this try
+ * @param {object} userData - data to search in database
+ * @returns {Promise<{success: *}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ */
 async function signIn(userData) {
     return await UserModel.findOne({  $or: [
             { pseudo: userData.login  },
@@ -27,10 +39,15 @@ async function signIn(userData) {
         .catch(err => {return {error: err.errors}});
 }
 
-function filterPassword(user) {
-    //user["password"] = ":)"
-    delete user.password
-    return user
+/** @function
+ * @name filterPassword
+ * Delete user password, to avoid security issues
+ * @param {object} data - an object from where to delete one field : password
+ * @returns {object}
+ */
+function filterPassword(data) {
+    delete data.password
+    return data
 }
 
 module.exports = {signUp, signIn};
