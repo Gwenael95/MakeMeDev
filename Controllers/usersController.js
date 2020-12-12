@@ -1,4 +1,4 @@
-const {addUser, getUser} = require("../Services/usersService");
+const {addUser, getUser, updateUser} = require("../Services/usersService");
 const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 /** @function
@@ -8,9 +8,16 @@ const {emptyRequest} = require("../Tools/Controller/controllerHelper");
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
+
 exports.signUp = async (req, res, next) => {
     const {user} = req.body;
     const response = emptyRequest(user) ? emptyRequest(user) : await addUser(user)
+    return res.status(response.code).send(response.body)
+};
+
+exports.updateUser = async (req, res, next) => {
+    const {user} = req.body;
+    const response = emptyRequest(user) ? emptyRequest(user) : await updateUser(user)
     return res.status(response.code).send(response.body)
 };
 
@@ -21,6 +28,7 @@ exports.signUp = async (req, res, next) => {
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
+
 exports.signIn = async (req, res, next)  => {
     const user = req.query;
     const response = emptyRequest(user) ? emptyRequest(user) : await getUser(user)
