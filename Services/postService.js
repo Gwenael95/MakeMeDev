@@ -1,5 +1,5 @@
 const {getHandler} = require("../Tools/Services/responseHandler");
-const {addPost, getPost} = require("../DB/postRepository")
+const {addPost, getPost, updateLikeOrDislike} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
 
 function setTypes(post, paramsOrResults) {
@@ -117,4 +117,9 @@ function sortPostByLikes(data){
     return data
 }
 
-module.exports = {create, get};
+async function updateVote(vote, idPost, user) {
+    const likeOrDislike = vote === 1 ? "like" : "dislike"
+    return getHandler(await updateLikeOrDislike(likeOrDislike, idPost, user), "ce post n'existe pas");
+}
+
+module.exports = {create, get, updateVote};

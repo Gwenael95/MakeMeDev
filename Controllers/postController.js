@@ -1,4 +1,4 @@
-const { create, get } = require("../Services/postService");
+const { create, get, updateVote } = require("../Services/postService");
 const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 /** @function
@@ -26,6 +26,12 @@ exports.sendPost = async (req, res, next) => {
 exports.getPost = async (req, res, next)  => {
     const {search} =  req.query
     const response = emptyRequest(search) ? emptyRequest(search) : await get(search)
+    return res.status(response.code).send(response.body)
+};
+
+exports.sendVote = async (req, res, next)  => {
+    const {vote, idPost} =  req.body
+    const response = emptyRequest(vote) ? emptyRequest(vote) : await updateVote(vote, idPost, req.user)
     return res.status(response.code).send(response.body)
 };
 
