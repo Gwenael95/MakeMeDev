@@ -5,19 +5,13 @@ const cors = require("cors");
 const app = express();
 const server = http.createServer(app);
 const bodyParser = require("body-parser");
-const mongoose = require('mongoose');
 require('dotenv').config();
-const urlMongo = process.env.URL_MONGO;
+const database = require("./Tools/DB/database")
 
 // endregion
 
 //region mongodb connection
-mongoose.connect(urlMongo, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true});
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
-db.once('open', function (){
-    console.log("Connexion à la base OK");
-});
+database.connect()
 //endregion
 
 app.use(bodyParser.json());
