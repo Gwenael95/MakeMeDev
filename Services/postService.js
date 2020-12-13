@@ -2,6 +2,17 @@ const {getHandler} = require("../Tools/Services/responseHandler");
 const {addPost, getPost} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
 
+function setTypes(post, paramsOrResults) {
+    if (post[paramsOrResults] === undefined || post[paramsOrResults] === null) {
+        post[paramsOrResults] = []
+    }
+    let arr = []
+    for (let element of post[paramsOrResults]) {
+        arr.push(element.type)
+    }
+    post[paramsOrResults + "Types"] = countOccurrencesFromArray(arr)
+}
+
 /** @function
  * @name create
  * Create a new post, that will be add in database.
@@ -11,14 +22,8 @@ const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
  * @returns {Promise<{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
 async function create(post) {
-    if (post.params===undefined || post.params===null){
-        post.params=[]
-    }
-    let arr = []
-    for(let param of post.params){
-        arr.push(param.type)
-    }
-    post["paramsTypes"]= countOccurrencesFromArray(arr)
+    setTypes(post, "params");
+    setTypes(post, "returns");
     const result = await addPost(post);
     return getHandler(result);
 }
@@ -30,7 +35,7 @@ function getSearchPost(post) {
     return {
         functionName: getStringDelimitedArea( "[", "]"),
         paramsTypes: getStringDelimitedArea( "(", ")"),
-        returnType: getStringDelimitedArea( "{", "}"),
+        returnsTypes: getStringDelimitedArea( "{", "}"),
         description: getSearchValue( '"'),
         tag: getSearchValue( '#')
     };

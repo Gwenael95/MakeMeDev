@@ -84,6 +84,47 @@ function getMatchFromStringArray(data, dbField) {
 }
 //endregion
 
+function getTabParamOrReturn(data, types, paramsOrResults) {
+    let paramOrResultTypeQuery = []
+    if (data[types] !== null) {
+        console.log(data);
+        let dataSearch = (filterDelSpaces(data[types]).split(","))
+        let occurrences = countOccurrencesFromArray(dataSearch)
+        if (dataSearch.length > 0) {
+            return dataSearch.map(result => {
+                //search the number of ? indicated in request
+                if (result === "?") {
+                    return {
+                        $match: {
+                            [paramsOrResults]: {$elemMatch: {type: {$regex: ""}}, $size: dataSearch.length}
+                        }
+                    }
+                } else if (dataSearch.length === 1 && result === "") {
+                    return {$match: {[paramsOrResults]: {$size: 0}}}
+                } //else search all param by params type and numbers of these types
+                else if (dataSearch.length >= 1) {
+                    return {
+                        $match: {
+                            [paramsOrResults]: {$elemMatch: {type: result}, $size: dataSearch.length},
+                            [types + "." + result]: {
+                                $lte: (occurrences["?"] ? occurrences["?"] : 0) + occurrences[result],
+                                $gte: occurrences[result]
+                            }
+                        }
+                    }
+                }
+                // else, there isn't any params in request, we search by other criteria
+                else {
+                    return {$match: {[paramsOrResults]: {$elemMatch: {type: {$regex: ""}}}}}
+                }
+            })
+        } else if (dataSearch.length === 0) {
+            return [{$match: {[paramsOrResults]: {$size: dataSearch.length}}}]
+        }
+    }
+    return paramOrResultTypeQuery;
+}
+
 //region query for params
 /** @function
  * @name getParamTypeQuery
@@ -93,41 +134,7 @@ function getMatchFromStringArray(data, dbField) {
  * @returns {{$match: {params: {$size: number}}}[]|unknown[]|[]}
  */
 function getParamTypeQuery(data) {
-    let paramTypeQuery = []
-    if (data.paramsTypes !== null) {
-        let dataParams = (filterDelSpaces(data.paramsTypes).split(","))
-        let occurrences = countOccurrencesFromArray(dataParams)
-        if (dataParams.length > 0) {
-            return dataParams.map(param => {
-                //search the number of ? indicated in request
-                if (param === "?") {
-                    return {$match: {params: {$elemMatch: {type: {$regex: ""}}, $size:dataParams.length}
-                    }}
-                }
-                else if (dataParams.length === 1 && param==="") {
-                    return {$match: {params: {$size: 0}}}
-                } //else search all param by params type and numbers of these types
-                else if(dataParams.length >=1 ){
-                    return {
-                        $match: {
-                            params: {$elemMatch: {type: param},  $size:dataParams.length},
-                            ["paramsTypes." + param]: {
-                                $lte: (occurrences["?"] ? occurrences["?"] : 0) + occurrences[param],
-                                $gte: occurrences[param]
-                            }
-                        }
-                    }
-                }
-                // else, there isn't any params in request, we search by other criteria
-                else{
-                    return {$match: {params: {$elemMatch: {type: {$regex: ""}}}}}
-                }
-            })
-        } else if (dataParams.length === 0) {
-            return [{$match: {params: {$size: dataParams.length}}}]
-        }
-    }
-    return paramTypeQuery;
+    return getTabParamOrReturn(data, "paramsTypes", "params");
 }
 
 /** @function
@@ -137,20 +144,7 @@ function getParamTypeQuery(data) {
  * @returns {*[]|{$match: {field: {$regex: data}}}[]}
  */
 function getReturnTypeQuery(data) {
-    let returnTypeQuery = []
-    if (data.returnType !== null) {
-        if (Object.keys(data.returnType).length > 0 && data.returnType !== "?") {
-            returnTypeQuery.push({$match: {"return.type": data.returnType}})
-        }
-        else if (data.returnType === "?") {
-            returnTypeQuery.push({$match: {"return": { $exists:true}}})
-        }
-        else if (Object.keys(data.returnType).length === 0 && data.returnType==="") {
-            returnTypeQuery.push({$match: {"return": { $exists:false}}})
-        }
-
-    }
-    return returnTypeQuery;
+    return getTabParamOrReturn(data, "returnsTypes", "returns");
 }
 //endregion
 

@@ -22,13 +22,14 @@ exports.postSchema = new mongoose.Schema({
             }
         ],
         paramsTypes:{},
-        return:
+        returnsTypes:{},
+        returns:[
             {
                 name: {type: String},
                 type: {type: String},
                 description: {type: String},
                 defaultValue: {type: String}
-            },
+            }],
         tag: [{type: String, required: true}],
         post: [
             {
