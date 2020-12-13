@@ -41,6 +41,44 @@ async function signIn(userData) {
 }
 
 
+async function updateUser(filter, update) {
+    return await UserModel
+        .findOneAndUpdate(
+            filter,
+            update,
+            {new: true, runValidators: true, context: "query"})
+        .lean()
+        .exec()
+        .then((result) => {
+            return {success: filterPassword(result)}
+        })
+        .catch(err => {
+            return {error: err.errors}
+        });
+}
+
+/** @function
+ * @name updateUserVotesById
+ * Update user's data depending on his ID and wanted fields to set
+ * @param {object} data - user's data
+ * @param {array} fieldArray - array of fields to set
+ * @returns {Promise<{success: Object}|{error}>}
+ */
+async function updateUserById(data, fieldArray) {
+    userSchema.plugin(uniqueValidator)
+    return await updateUser({_id: ObjectId(data.id)}, setUpdateValue(data, fieldArray))
+}
+
+
+/** @function
+ * @name updateUserVotesById
+ */
+async function updateUserVotesById(data, fieldToSet) {
+    userSchema.plugin(uniqueValidator)
+    return await updateUser({_id: ObjectId(data.id)}, createSetUpdateVotes(fieldToSet))
+}
+
+//region helpers
 /** @function
  * @name filterPassword
  * Delete user password, to avoid security issues
@@ -53,22 +91,6 @@ function filterPassword(data) {
     return data
 }
 
-async function updateUserById(data) {
-    userSchema.plugin(uniqueValidator)
-    return await UserModel
-        .findOneAndUpdate(
-            { _id: ObjectId(data.id)},
-            setUpdateValue(data, ["pseudo", "mail", "avatar"]),
-            {new: true, runValidators: true, context: "query"} )
-        .lean()
-        .exec()
-        .then((result) => {
-            return {success: filterPassword(result)}
-        })
-        .catch(err => {
-            return {error: err.errors}
-        })
-}
 
 /** @function
  * @name setUpdateValue
@@ -88,4 +110,21 @@ function setUpdateValue(data, keysArray) {
     return {$set: updateValue}
 }
 
-module.exports = {signUp, signIn, updateUserById};
+function createSetUpdateVotes( fieldToSet) {
+    let updateValuePull = {}
+    for (let key of Object.keys(fieldToSet.pull)){
+        updateValuePull[key] = fieldToSet.pull[key]
+        console.log(key)
+        console.log(fieldToSet.pull[key])
+    }
+    let updateValuePush = {}
+    for (let key of Object.keys(fieldToSet.push)){
+        updateValuePush[key] = fieldToSet.push[key]
+        console.log(key)
+        console.log(fieldToSet.push[key])
+    }
+    return {$push:updateValuePush, $pull:updateValuePull}
+}
+//endregion
+
+module.exports = {signUp, signIn, updateUserById,  updateUserVotesById};

@@ -19,4 +19,22 @@ function getHandler(data, notFoundMsg="error"){
     }
 }
 
-module.exports = {getHandler}
+
+/** @function
+ * @name getHandlerForUserPost
+ */
+function getHandlerForUserPost(user, post, notFoundMsg="error"){
+    if (user["success"] && post["success"]){
+        return {code: 200, body: {success:{token:user.token, user:user.success, post:post.success}}}
+    }
+    else if (user["success"]===null || user["success"]===null) {
+        return {code: 404, body: {error: notFoundMsg}}
+    }
+    else if (user["error"] || post["error"]) {
+        return {code: 404, body: user["error"] ? user : post }
+    } else {
+        return {code: 404, body: {error: "erreur en base de donnée"}}
+    }
+}
+
+module.exports = {getHandler, getHandlerForUserPost}
