@@ -47,9 +47,6 @@ async function getPost(searchedData) {
  * @returns {[]}
  */
 function getPipeline(data) {
-    //console.log(getParamTypeQuery(data))
-    console.log(JSON.stringify(getNameQuery(data)
-        .concat(getParamTypeQuery(data), getReturnTypeQuery(data), getDescriptionQuery(data), getTagQuery(data))))
     return getNameQuery(data)
         .concat(getParamTypeQuery(data), getReturnTypeQuery(data), getDescriptionQuery(data), getTagQuery(data));
 }

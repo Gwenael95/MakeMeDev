@@ -65,7 +65,6 @@ function getStringDelimitedArea( firstDelimiter, lastDelimiter) {
  * @returns {string|null}
  */
 function getSearchValue( delimiter){
-    console.log(test)
     let value = []
     let countCharacter = 0;
     test.split("").map((searchCharacter, index) => {
@@ -95,7 +94,6 @@ function getSearchValue( delimiter){
  */
 async function get(post) {
     const objectSearchPost = getSearchPost(post)
-    console.log(objectSearchPost)
     return getHandler(sortAllPostByLike(await getPost(objectSearchPost)), "ce post n'existe pas");
 }
 
