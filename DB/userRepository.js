@@ -58,7 +58,7 @@ async function updateUserById(data) {
     return await UserModel
         .findOneAndUpdate(
             { _id: ObjectId(data.id)},
-            setUpdateValue(data),
+            setUpdateValue(data, ["pseudo", "mail", "avatar"]),
             {new: true, runValidators: true, context: "query"} )
         .lean()
         .exec()
@@ -70,16 +70,20 @@ async function updateUserById(data) {
         })
 }
 
-function setUpdateValue(data) {
+/** @function
+ * @name setUpdateValue
+ * Define all keys to set
+ * @param {object} data - data that will be set
+ * @param {array} keysArray - all keys to update
+ * @returns {{$set: {}}}
+ */
+function setUpdateValue(data, keysArray) {
     let updateValue = {}
-    if (data.pseudo) {
-        updateValue["pseudo"] = data.pseudo
-    }
-    if (data.mail) {
-        updateValue["mail"] = data.mail
-    }
-    if (data.avatar) {
-        updateValue["avatar"] = data.avatar
+    /*for (let key of Object.keys(data)){
+        updateValue[key] = data[key]
+    }*/
+    for (let key of keysArray){
+        updateValue[key] = data[key]
     }
     return {$set: updateValue}
 }

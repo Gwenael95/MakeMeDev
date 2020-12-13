@@ -187,6 +187,11 @@ function getMatchStringRegex(data, dbField){
 //endregion
 
 async function updateLikeOrDislike(likeOrDislike, idPost, user) {
+    //check if user already vote for this post;
+    // if no : increment like or dislike field
+    // if yes : if it have added a like, and now send a like : do nothing  (same for dislike)
+    //          if it ha ve added a like and change is mind : $inc : -1 for like and $inc +1 for dislike (& vice versa)
+    //
     return await PostModel
         .findOneAndUpdate(
             { "post._id": ObjectId(idPost)},
