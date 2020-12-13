@@ -186,4 +186,20 @@ function getMatchStringRegex(data, dbField){
 
 //endregion
 
+async function updateLikeOrDislike(likeOrDislike, idPost, user) {
+    return await PostModel
+        .findOneAndUpdate(
+            { "post._id": ObjectId(idPost)},
+            {$set: {[likeOrDislike]: {$inc: +1}}},
+            {new: true, runValidators: true, context: "query"} )
+        .lean()
+        .exec()
+        .then((result) => {
+            return {success: filterPassword(result)}
+        })
+        .catch(err => {
+            return {error: err.errors}
+        })
+}
+
 module.exports = {addPost, getPost};
