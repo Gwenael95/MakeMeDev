@@ -65,10 +65,13 @@ async function updateLikeOrDislike(likeOrDislike, idPost, user) {
     let setPost
 
     if (!(user.activities[likeOrDislike].includes(idPost) || user.activities[opposite].includes( idPost))) {
-        setPost = {$inc: {["post.$.like"]:1}}
+        setPost = {$inc: {["post.$." + likeOrDislike]:1}}
+        console.log("test opo" + opposite)
     }
     else if(user.activities[opposite].includes( idPost)) {
         setPost = {$inc: {["post.$." + likeOrDislike]:1, ["post.$." + opposite]:-1}}
+        console.log("test si déja ajouté : opo" + opposite)
+
     }
     else{
         return {error:"cet utilisateur à déjà voté"}
