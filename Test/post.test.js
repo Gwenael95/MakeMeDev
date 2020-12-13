@@ -48,7 +48,6 @@ describe('Post', () => {
     });
 
     it('should be able to update a vote into post if NEVER vote', async () => {
-        //console.log(newPost.body.success.post)
         const response = await request.post(url + 'post-vote')
             .set('Authorization', 'Bearer ' + newUser.body.token)
             .send({vote:1, idPost:newPost.body.success.post[0]._id})
@@ -60,13 +59,11 @@ describe('Post', () => {
 
 
     it('should be able to update a vote into post if ALREADY vote same vote', async () => {
-        //console.log(newPost.body.success.post)
         const response1 = await request.post(url + 'post-vote')
             .set('Authorization', 'Bearer ' + newUser.body.token)
             .send({vote:1, idPost:newPost.body.success.post[0]._id})
         const postCheck1 = await request.get(url + 'post?search=[]')
 
-        //console.log(response1.body.success)
         const response2 = await request.post(url + 'post-vote')
             .set('Authorization', 'Bearer ' + response1.body.success.token)
             .send({vote:1, idPost:newPost.body.success.post[0]._id})
@@ -81,14 +78,11 @@ describe('Post', () => {
     });
 
 
-    it('should be able to update a vote into post if ALREADY vote same vote', async () => {
-        //console.log(newPost.body.success.post)
+    it('should be able to dislike a post', async () => {
         const response1 = await request.post(url + 'post-vote')
             .set('Authorization', 'Bearer ' + newUser.body.token)
             .send({vote:1, idPost:newPost.body.success.post[0]._id})
         const postCheck1 = await request.get(url + 'post?search=[]')
-
-        //console.log(response1.body.success)
         const response2 = await request.post(url + 'post-vote')
             .set('Authorization', 'Bearer ' + response1.body.success.token)
             .send({vote:-1, idPost:newPost.body.success.post[0]._id})
@@ -99,6 +93,8 @@ describe('Post', () => {
         expect(postCheck1.body.success[0].post[2].like).toBe(3)
         expect(postCheck2.body.success[0].post[2].like).toBe(2)
         expect(response1.body.success.user.activities.like).toContain(newPost.body.success.post[0]._id)
-        expect(response2.body.success.user.activities.dislike).toBe(newPost.body.success.post[0]._id)
+        expect(response1.body.success.user.activities.dislike.length).toBe(0)
+        expect(response2.body.success.user.activities.dislike).toContain(newPost.body.success.post[0]._id)
+        expect(response2.body.success.user.activities.like.length).toBe(0)
     });
 });

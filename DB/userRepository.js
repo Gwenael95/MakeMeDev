@@ -114,14 +114,10 @@ function createSetUpdateVotes( fieldToSet) {
     let updateValuePull = {}
     for (let key of Object.keys(fieldToSet.pull)){
         updateValuePull[key] = fieldToSet.pull[key]
-        console.log(key)
-        console.log(fieldToSet.pull[key])
     }
     let updateValuePush = {}
     for (let key of Object.keys(fieldToSet.push)){
         updateValuePush[key] = fieldToSet.push[key]
-        console.log(key)
-        console.log(fieldToSet.push[key])
     }
     return {$push:updateValuePush, $pull:updateValuePull}
 }

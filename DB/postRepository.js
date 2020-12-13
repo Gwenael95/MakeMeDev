@@ -39,6 +39,22 @@ async function getPost(searchedData) {
 }
 
 
+async function updatePost(filter, update, id) {
+    return await PostModel
+        .findOneAndUpdate(
+            filter,
+            update,
+            {new: true, context: "query"})
+        .lean()
+        .exec()
+        .then((result) => {
+            return {success: result, postId: id}
+        })
+        .catch(err => {
+            return {error: err.errors}
+        });
+}
+
 async function updateLikeOrDislike(likeOrDislike, idPost, user) {
     let opposite = {like:"dislike", dislike:"like"}[likeOrDislike]
     //check if user already vote for this post;
@@ -58,19 +74,7 @@ async function updateLikeOrDislike(likeOrDislike, idPost, user) {
         return {error:"cet utilisateur à déjà voté"}
     }
     //need to update user ACTIVITIES
-    return await PostModel
-        .findOneAndUpdate(
-            { "post._id": ObjectId(idPost)},
-            setPost,
-            {new: true, context: "query"} )
-        .lean()
-        .exec()
-        .then((result) => {
-            return {success: result, postId:idPost}
-        })
-        .catch(err => {
-            return {error: err.errors}
-        })
+    return await updatePost({"post._id": ObjectId(idPost)}, setPost, idPost)
 }
 
 //region not exported function
@@ -121,7 +125,6 @@ function getMatchFromStringArray(data, dbField) {
 function getTabParamOrReturn(data, types, paramsOrResults) {
     let paramOrResultTypeQuery = []
     if (data[types] !== null) {
-        console.log(data);
         let dataSearch = (filterDelSpaces(data[types]).split(","))
         let occurrences = countOccurrencesFromArray(dataSearch)
         if (dataSearch.length > 0) {

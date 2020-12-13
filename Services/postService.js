@@ -38,14 +38,12 @@ async function get(post) {
 async function updateVote(vote, idPost, user) {
     const likeOrDislike = vote === 1 ? "like" : "dislike"
     const opposite = vote === 1 ? "dislike" : "like"
-
     //check if updated , then update user
     let result = await updateLikeOrDislike(likeOrDislike, idPost, user)
     if (result.success!== null && result.success!== undefined){
-        const userRes = await updateUserVotesById({id:user._id}, {pull:{["activities." + likeOrDislike]:result.postId}, push:{["activities." + opposite]:result.postId}})
+        const userRes = await updateUserVotesById({id:user._id}, {push:{["activities." + likeOrDislike]:result.postId}, pull:{["activities." + opposite]:result.postId}})
         generateAccessToken(userRes)
         const getUser = getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
-        //console.log(getUser);
         return getUser;
     }
     return getHandler({error:"update vote failed"}, "mise à jour des votes du post impossible");
