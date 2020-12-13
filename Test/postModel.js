@@ -14,11 +14,16 @@ exports.post = {
                 "defaultValue" : "10"
             }
         ],
-        "return" : {
+        "returns" : [{
             "name" : "result",
             "type" : "int",
             "description" : "result value"
         },
+            {
+                "name" : "result",
+                "type" : "array",
+                "description" : "result value"
+            }],
         "post" : [
             {
                 "author" : {
@@ -77,9 +82,6 @@ exports.post = {
                     }
                 ]
             }
-        ],
-        "paramsTypes" : {
-            "int" : 1
-        }
+        ]
     }
 }
