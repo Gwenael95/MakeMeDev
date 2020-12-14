@@ -3,6 +3,7 @@ const {postSchema} = require("../Models/postModel");
 const PostModel = mongoose.model('posts', postSchema)
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
 const {filterDelSpaces} = require("../Tools/Common/stringOperation")
+const ObjectId = mongoose.Types.ObjectId;
 
 /** @function
  * @name addPost
@@ -38,6 +39,46 @@ async function getPost(searchedData) {
 }
 
 
+async function updatePost(filter, update, id) {
+    return await PostModel
+        .findOneAndUpdate(
+            filter,
+            update,
+            {new: true, context: "query"})
+        .lean()
+        .exec()
+        .then((result) => {
+            return {success: result, postId: id}
+        })
+        .catch(err => {
+            return {error: err.errors}
+        });
+}
+
+async function updateLikeOrDislike(likeOrDislike, idPost, user) {
+    let opposite = {like:"dislike", dislike:"like"}[likeOrDislike]
+    //check if user already vote for this post;
+    // if no : increment like or dislike field
+    // if yes : if it have added a like, and now send a like : DO NOTHING  (same for dislike)
+    //          if it have added a like and change is mind : $inc : -1 for like and $inc +1 for dislike (& vice versa)
+    //update user activities
+    let setPost
+
+    if (!(user.activities[likeOrDislike].includes(idPost) || user.activities[opposite].includes( idPost))) {
+        setPost = {$inc: {["post.$." + likeOrDislike]:1}}
+        console.log("test opo" + opposite)
+    }
+    else if(user.activities[opposite].includes( idPost)) {
+        setPost = {$inc: {["post.$." + likeOrDislike]:1, ["post.$." + opposite]:-1}}
+        console.log("test si déja ajouté : opo" + opposite)
+
+    }
+    else{
+        return {error:"cet utilisateur à déjà voté"}
+    }
+    //need to update user ACTIVITIES
+    return await updatePost({"post._id": ObjectId(idPost)}, setPost, idPost)
+}
 
 //region not exported function
 /** @function
@@ -87,7 +128,6 @@ function getMatchFromStringArray(data, dbField) {
 function getTabParamOrReturn(data, types, paramsOrResults) {
     let paramOrResultTypeQuery = []
     if (data[types] !== null) {
-        console.log(data);
         let dataSearch = (filterDelSpaces(data[types]).split(","))
         let occurrences = countOccurrencesFromArray(dataSearch)
         if (dataSearch.length > 0) {
@@ -186,25 +226,5 @@ function getMatchStringRegex(data, dbField){
 
 //endregion
 
-async function updateLikeOrDislike(likeOrDislike, idPost, user) {
-    //check if user already vote for this post;
-    // if no : increment like or dislike field
-    // if yes : if it have added a like, and now send a like : do nothing  (same for dislike)
-    //          if it ha ve added a like and change is mind : $inc : -1 for like and $inc +1 for dislike (& vice versa)
-    //
-    return await PostModel
-        .findOneAndUpdate(
-            { "post._id": ObjectId(idPost)},
-            {$set: {[likeOrDislike]: {$inc: +1}}},
-            {new: true, runValidators: true, context: "query"} )
-        .lean()
-        .exec()
-        .then((result) => {
-            return {success: filterPassword(result)}
-        })
-        .catch(err => {
-            return {error: err.errors}
-        })
-}
 
-module.exports = {addPost, getPost};
+module.exports = {addPost, getPost, updateLikeOrDislike};

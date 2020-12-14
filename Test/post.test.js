@@ -37,7 +37,6 @@ describe('Post', () => {
 
     it('should be able to create a post', async () => {
         const response = newPost;
-        console.log(JSON.stringify(response.body))
         expect(response.status).toBe(200);
         expect(Object.values(response.body).length).toEqual(1)
     });
@@ -48,4 +47,67 @@ describe('Post', () => {
         expect(response.body.success[0].name).toBe("test")
     });
 
+    it('should be able to like a post if NEVER vote', async () => {
+        const response = await request.post(url + 'post-vote')
+            .set('Authorization', 'Bearer ' + newUser.body.token)
+            .send({vote:1, idPost:newPost.body.success.post[0]._id})
+        const postCheck = await request.get(url + 'post?search=[]')
+        expect(response.status).toBe(200);
+        expect(postCheck.body.success[0].post[2].like).toBe(3)
+        expect(response.body.success.user.activities.like).toContain(newPost.body.success.post[0]._id)
+    });
+
+    it('should be able to dislike a post if NEVER vote', async () => {
+        const response = await request.post(url + 'post-vote')
+            .set('Authorization', 'Bearer ' + newUser.body.token)
+            .send({vote: -1, idPost:newPost.body.success.post[0]._id})
+        const postCheck = await request.get(url + 'post?search=[]')
+        console.log(newPost.body.success.post);
+        expect(response.status).toBe(200);
+        expect(postCheck.body.success[0].post[2].dislike).toBe(3)
+        expect(response.body.success.user.activities.dislike).toContain(newPost.body.success.post[0]._id)
+    });
+
+
+    it('should be able to update a vote into post if ALREADY vote same vote', async () => {
+        const response1 = await request.post(url + 'post-vote')
+            .set('Authorization', 'Bearer ' + newUser.body.token)
+            .send({vote:1, idPost:newPost.body.success.post[0]._id})
+        const postCheck1 = await request.get(url + 'post?search=[]')
+
+        const response2 = await request.post(url + 'post-vote')
+            .set('Authorization', 'Bearer ' + response1.body.success.token)
+            .send({vote:1, idPost:newPost.body.success.post[0]._id})
+        const postCheck2 = await request.get(url + 'post?search=[]')
+
+        expect(response1.status).toBe(200);
+        expect(response2.status).toBe(404);
+        expect(postCheck1.body.success[0].post[2].like).toBe(3)
+        expect(postCheck2.body.success[0].post[2].like).toBe(3)
+        expect(response1.body.success.user.activities.like).toContain(newPost.body.success.post[0]._id)
+        expect(response2.body.error).toBe("update vote failed")
+    });
+
+
+    it('should be able to dislike a post', async () => {
+        const response1 = await request.post(url + 'post-vote')
+            .set('Authorization', 'Bearer ' + newUser.body.token)
+            .send({vote:1, idPost:newPost.body.success.post[0]._id})
+        const postCheck1 = await request.get(url + 'post?search=[]')
+        const response2 = await request.post(url + 'post-vote')
+            .set('Authorization', 'Bearer ' + response1.body.success.token)
+            .send({vote:-1, idPost:newPost.body.success.post[0]._id})
+        const postCheck2 = await request.get(url + 'post?search=[]')
+
+        expect(response1.status).toBe(200);
+        expect(response2.status).toBe(200);
+        expect(postCheck1.body.success[0].post[2].like).toBe(3)
+        expect(postCheck1.body.success[0].post[2].dislike).toBe(2)
+        expect(postCheck2.body.success[0].post[2].like).toBe(2)
+        expect(postCheck2.body.success[0].post[2].dislike).toBe(3)
+        expect(response1.body.success.user.activities.like).toContain(newPost.body.success.post[0]._id)
+        expect(response1.body.success.user.activities.dislike.length).toBe(0)
+        expect(response2.body.success.user.activities.dislike).toContain(newPost.body.success.post[0]._id)
+        expect(response2.body.success.user.activities.like.length).toBe(0)
+    });
 });

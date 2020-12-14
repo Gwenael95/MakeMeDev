@@ -27,7 +27,7 @@ async function getUser(user) {
 }
 
 async function updateUser(user) {
-    const userData = await updateUserById(user);
+    const userData = await updateUserById(user, ["pseudo", "mail", "avatar"]);
     generateAccessToken(userData);
     return getHandler(userData , "ce compte n'existe pas")
 }
