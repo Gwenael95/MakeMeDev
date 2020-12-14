@@ -48,7 +48,7 @@ async function updatePost(filter, update, id) {
         .lean()
         .exec()
         .then((result) => {
-            return {success: result, postId: id}
+            return {success: result, postId: id , responseId: result.post[result.post.length-1]._id}
         })
         .catch(err => {
             return {error: err.errors}
@@ -57,6 +57,10 @@ async function updatePost(filter, update, id) {
 
 async function updatePostResponse(responsePost, idPost) {
     return await updatePost({"_id": ObjectId(idPost)}, {$push : {post: responsePost}}, idPost)
+}
+
+async function updatePostResponseCommentary(commentaryResponse, idPost) {
+    return await updatePost({"post._id": ObjectId(idPost)}, {$push : {"post.$.commentary": commentaryResponse}}, idPost)
 }
 
 async function updateLikeOrDislike(likeOrDislike, idPost, user) {
@@ -228,4 +232,4 @@ function getMatchStringRegex(data, dbField){
 //endregion
 
 
-module.exports = {addPost, getPost, updateLikeOrDislike, updatePostResponse};
+module.exports = {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary};

@@ -90,3 +90,7 @@ exports.responsePost = {
     "description": "better solution",
     "function": "multiply2x2x2x2x2(num){return num*2}"
 }
+
+exports.commentaryPost = {
+    "commentary" : "first"
+}
