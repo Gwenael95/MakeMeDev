@@ -1,6 +1,7 @@
 const {getHandler} = require("../Tools/Services/responseHandler");
 const {signUp, signIn, updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
+const {setUpdateValue} = require('../Tools/DB/requestOperator')
 
 /** @function
  * @name addUser
@@ -33,23 +34,6 @@ async function updateUser(user) {
 }
 
 
-/** @function
- * @name setUpdateValue
- * Define all keys to set
- * @param {object} data - data that will be set
- * @param {array} keysArray - all keys to update
- * @returns {{$set: {}}}
- */
-function setUpdateValue(data, keysArray) {
-    let updateValue = {}
-    /*for (let key of Object.keys(data)){
-        updateValue[key] = data[key]
-    }*/
-    for (let key of keysArray){
-        updateValue[key] = data[key]
-    }
-    return {$set: updateValue}
-}
 
 
 module.exports = {addUser, getUser, updateUser};

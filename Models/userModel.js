@@ -23,6 +23,6 @@ exports.userSchema = new mongoose.Schema({
             }
         ],
     },
-    post: [{type: postSchema}],
-    bookMark: [{type: postSchema}]
+    post: [{type: mongoose.Types.ObjectId}],
+    bookMark: [{type: mongoose.Types.ObjectId}]
 });

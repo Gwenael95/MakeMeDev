@@ -12,7 +12,7 @@ const ObjectId = mongoose.Types.ObjectId;
  * @param {object} postData - post to add, should correspond to postModels {@link '../Models/postModels'}.
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
  */
-async function addPost(postData) {
+async function addPost(postData, user) {
     const doc = new PostModel(postData);
     return await doc.save().then(result => {
         return {success: result}
@@ -73,10 +73,9 @@ async function updateLikeOrDislike(likeOrDislike, idPost, user) {
     }
     else if(user.activities[opposite].includes( idPost)) {
         setPost = {$inc: {["post.$." + likeOrDislike]:1, ["post.$." + opposite]:-1}}
-
     }
     else{
-        return {error:"cet utilisateur à déjà voté"}
+        return {error:"cet utilisateur à déjà mis un " + likeOrDislike}
     }
     //need to update user ACTIVITIES
     return await updatePost({"post._id": ObjectId(idPost)}, setPost, idPost)
