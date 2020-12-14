@@ -1,6 +1,6 @@
 const { request, url} = require("./config/launcher")
 const { post, responsePost, commentaryPost, user} = require("./models");
-const { expectedResponse, expectExcept, getBodyRes, expectedStatus,
+const { expectedResponseOnUserUpsert, expectExcept, getBodyRes, expectedStatus,
         getPostAt, getUserActivities, getAllPostReq, requestPostVote} = require("./config/expectedFunctions")
 const post0 = post.post.post[0]
 
@@ -18,8 +18,8 @@ describe('Post', () => {
 
     it('should be able to create a post', async () => {
         const response = newPost;
-        expect(Object.values(response.body).length).toEqual(1)
-        expectedResponse(response)
+        expect(Object.values(response.body).length).toEqual(2) //token & success
+        expectedResponseOnUserUpsert(response)
         expectExcept(Object.keys(getBodyRes(response).user), Object.keys(user.user), ["password"])
         expectExcept(Object.keys(getBodyRes(response).post), Object.keys(post.post), [])
     });
@@ -51,18 +51,9 @@ describe('Post', () => {
 
 
     it('should be able to update a vote into post if ALREADY vote same vote', async () => {
-        /*const response1 = await request.post(url + 'post-vote')
-            .set('Authorization', 'Bearer ' + newUser.body.token)
-            .send({vote:1, idPost:getBodyRes(newPost).post.post[0]._id})*/
         const response1 = await requestPostVote( newUser, newPost, 1)
-
         const postCheck1 = await getAllPostReq()
-
-        /*const response2 = await request.post(url + 'post-vote')
-            .set('Authorization', 'Bearer ' + getBodyRes(response1).token)
-            .send({vote:1, idPost:getBodyRes(newPost).post.post[0]._id})*/
         const response2 = await requestPostVote( response1, newPost, 1)
-
         const postCheck2 = await getAllPostReq()
 
         expect(response1.status).toBe(200);
@@ -76,13 +67,9 @@ describe('Post', () => {
 
 
     it('should be able to dislike a post', async () => {
-        const response1 = await request.post(url + 'post-vote')
-            .set('Authorization', 'Bearer ' + newUser.body.token)
-            .send({vote:1, idPost:getBodyRes(newPost).post.post[0]._id})
+        const response1 = await requestPostVote( newUser, newPost, 1)
         const postCheck1 = await getAllPostReq()
-        const response2 = await request.post(url + 'post-vote')
-            .set('Authorization', 'Bearer ' + getBodyRes(response1).token)
-            .send({vote:-1, idPost:getBodyRes(newPost).post.post[0]._id})
+        const response2 = await requestPostVote( response1, newPost, -1)
         const postCheck2 = await getAllPostReq()
 
 

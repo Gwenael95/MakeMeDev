@@ -11,10 +11,10 @@ function expectExcept(expectedKeys, keys, exceptKeys){
     }
 }
 
-function expectedResponse(response){
+function expectedResponseOnUserUpsert(response){
     expectedStatus(response)
-    //expect().toStrictEqual(["token", "user", "post"])
-    expectExcept(  Object.keys(getBodyRes(response)), ["token", "user", "post"] , [])
+    //expect().toStrictEqual(["user", "post"])
+    expectExcept(  Object.keys(getBodyRes(response)), [ "user", "post"] , [])
 }
 
 function expectedStatus(response){
@@ -48,12 +48,12 @@ async function getAllPostReq(){
 }
 
 async function requestPostVote(user, post, voteValue ){
-    console.log(user.body)
+    //console.log(user.body)
     return await request.post(url + 'post-vote')
-        .set('Authorization', 'Bearer ' + ( /*user.body.token */getBodyRes(user).token ))
+        .set('Authorization', 'Bearer ' + ( user.body.token /*getBodyRes(user).token */))
         .send({vote:voteValue, idPost:getBodyRes(post).post.post[0]._id})
 }
 
 module.exports =
-    {expectExcept, expectedResponse, getBodyRes, expectedStatus, getPostAt, getUserActivities,
+    {expectExcept, expectedResponseOnUserUpsert, getBodyRes, expectedStatus, getPostAt, getUserActivities,
      getAllPostReq, requestPostVote }
