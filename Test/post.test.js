@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ origin: true, credentials: true }));
 
 const router = require("../router");
-const {post, responsePost} = require("./postModel");
+const {post, responsePost, commentaryPost} = require("./postModel");
 router(app);
 
 const request = supertest(app);
@@ -116,8 +116,20 @@ describe('Post', () => {
             .set('Authorization', 'Bearer ' + newUser.body.token)
             .send({responsePost: responsePost, idPost:newPost.body.success.post._id })
         const postCheck = await request.get(url + 'post?search=[]')
+        console.log(response.body.success.post.post)
         expect(postCheck.body.success[0].post[3].description).toBe("better solution");
         expect(response.status).toBe(200);
-        expect(response.body.success.user.activities.response).toContain(newPost.body.success.post._id)
+        expect(response.body.success.user.activities.response).toContain(postCheck.body.success[0].post[3]._id)
+    });
+
+
+    it('should be able to send a commentary to a post', async () => {
+        const response = await request.post(url + 'post-add-commentary')
+            .set('Authorization', 'Bearer ' + newUser.body.token)
+            .send({commentaryPost: commentaryPost, idPost:newPost.body.success.post.post[0]._id })
+        const postCheck = await request.get(url + 'post?search=[]')
+        expect(response.status).toBe(200);
+        expect(postCheck.body.success[0].post[2].commentary[1].commentary).toBe("first");
+        expect(response.body.success.user.activities.commentary).toContain(newPost.body.success.post.post[2]._id)
     });
 });

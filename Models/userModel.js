@@ -15,13 +15,7 @@ exports.userSchema = new mongoose.Schema({
         like: [{type: mongoose.Types.ObjectId}],
         dislike: [{type: mongoose.Types.ObjectId}],
         response: [{type: mongoose.Types.ObjectId}],
-        commentary: [
-            {
-                post_id: {type: mongoose.Types.ObjectId},
-                commentary: {type: String},
-                creationDate: {type: String}
-            }
-        ],
+        commentary: [{type: mongoose.Types.ObjectId}],
     },
     post: [{type: mongoose.Types.ObjectId}],
     bookMark: [{type: mongoose.Types.ObjectId}]

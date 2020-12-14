@@ -1,7 +1,7 @@
 const {getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
-const {addPost, getPost, updateLikeOrDislike, updatePostResponse} = require("../DB/postRepository")
+const {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
-const { updateUserById} = require("../DB/userRepository");
+const {updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
 const {isDefinedAndNotNull, isUndefinedOrNull} = require("../Tools/Common/undefinedControl")
 const {setUpdateValue} = require('../Tools/DB/requestOperator')
@@ -21,18 +21,19 @@ let test = ""
 async function create(post, user) {
     setTypes(post, "params");
     setTypes(post, "returns");
-    post.author = post.post[0].author ={
-            "pseudo" : user.pseudo,
-            "avatar" : user.avatar
+    post.author = post.post[0].author = {
+        "pseudo": user.pseudo,
+        "avatar": user.avatar
     }
     const result = await addPost(post, user);
-    if (result.success){
-        const userRes = await updateUserById({id:user._id}, {$push:{post:result.success._id}} );
+    if (result.success) {
+        const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
         generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
+        return getHandlerForUserPost(userRes, result, "mise à jour des votes utilisateur impossible");
     }
     return getHandler(result);
 }
+
 /*
 async function updateUserIfSuccess(isSuccess, function) {
     if (isSuccess){
@@ -61,12 +62,15 @@ async function updateVote(vote, idPost, user) {
     const opposite = vote === 1 ? "dislike" : "like"
     let result = await updateLikeOrDislike(likeOrDislike, idPost, user)
     //check if updated , then update user
-    if (isDefinedAndNotNull(result.success)){
-        const userRes = await updateUserById({id:user._id}, {$push:{["activities." + likeOrDislike]:result.postId}, $pull:{["activities." + opposite]:result.postId}})
+    if (isDefinedAndNotNull(result.success)) {
+        const userRes = await updateUserById({id: user._id}, {
+            $push: {["activities." + likeOrDislike]: result.postId},
+            $pull: {["activities." + opposite]: result.postId}
+        })
         generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
+        return getHandlerForUserPost(userRes, result, "mise à jour des votes utilisateur impossible");
     }
-    return getHandler({error:"update vote failed"}, "mise à jour des votes du post impossible");
+    return getHandler({error: "update vote failed"}, "mise à jour des votes du post impossible");
 }
 
 async function updatePost(responsePost, idPost, user) {
@@ -74,16 +78,33 @@ async function updatePost(responsePost, idPost, user) {
         pseudo: user.pseudo,
         avatar: user.avatar
     }
-    if (responsePost['function'] && responsePost['description'] ) {
+    if (responsePost['function'] && responsePost['description']) {
         const result = await updatePostResponse(responsePost, idPost, user)
-        if (result.success!== null && result.success!== undefined){
-            const userRes = await updateUserById({id:user._id}, {$push: {["activities.response"]: result.postId}})
+        if (result.success !== null && result.success !== undefined) {
+            const userRes = await updateUserById({id: user._id}, {$push: {["activities.response"]: result.responseId}})
             generateAccessToken(userRes)
-            return getHandlerForUserPost(userRes,result, "mise à jour du post impossible");
+            return getHandlerForUserPost(userRes, result, "mise à jour du post impossible");
         }
     }
-    return getHandler({error:"update response failed"}, "mise à jou du post impossible");
+    return getHandler({error: "update response failed"}, "mise à jou du post impossible");
 }
+
+async function updateCommentary(commentaryPost, idPost, user) {
+    commentaryPost['author'] = {
+        pseudo: user.pseudo,
+        avatar: user.avatar
+    }
+    if (commentaryPost['commentary']) {
+        const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
+        if (result.success !== null && result.success !== undefined) {
+            const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.responseId}})
+            generateAccessToken(userRes)
+            return getHandlerForUserPost(userRes, result, "ajout du commentaires impossible");
+        }
+    }
+    return getHandler({error: "update response failed"}, "ajout du commentaires impossible");
+}
+
 //endregion
 
 
@@ -103,11 +124,11 @@ function setTypes(post, paramsOrResults) {
 function getSearchPost(post) {
     test = post
     return {
-        functionName: getStringDelimitedArea( "[", "]"),
-        paramsTypes: getStringDelimitedArea( "(", ")"),
-        returnsTypes: getStringDelimitedArea( "{", "}"),
-        description: getSearchValue( '"'),
-        tag: getSearchValue( '#')
+        functionName: getStringDelimitedArea("[", "]"),
+        paramsTypes: getStringDelimitedArea("(", ")"),
+        returnsTypes: getStringDelimitedArea("{", "}"),
+        description: getSearchValue('"'),
+        tag: getSearchValue('#')
     };
 }
 
@@ -120,13 +141,12 @@ function getSearchPost(post) {
  * @param {string} lastDelimiter - last delimiter used to get the result
  * @returns {string|null}
  */
-function getStringDelimitedArea( firstDelimiter, lastDelimiter) {
-    if(test.includes(firstDelimiter) && test.includes(lastDelimiter)){
+function getStringDelimitedArea(firstDelimiter, lastDelimiter) {
+    if (test.includes(firstDelimiter) && test.includes(lastDelimiter)) {
         let str = test.substring(test.lastIndexOf(firstDelimiter) + 1, test.lastIndexOf(lastDelimiter))
-        test = test.substring( test.lastIndexOf(lastDelimiter)+1, test.length)
+        test = test.substring(test.lastIndexOf(lastDelimiter) + 1, test.length)
         return str
-    }
-    else {
+    } else {
         return null;
     }
 }
@@ -139,27 +159,26 @@ function getStringDelimitedArea( firstDelimiter, lastDelimiter) {
  * @param {string} delimiter - delimiter used to get the result
  * @returns {string|null}
  */
-function getSearchValue( delimiter){
+function getSearchValue(delimiter) {
     let value = []
     let countCharacter = 0;
     test.split("").map((searchCharacter, index) => {
         if (searchCharacter === delimiter) {
-            countCharacter ++
+            countCharacter++
             value.push(index)
         }
     })
 
-    if(countCharacter >= 2 ){
+    if (countCharacter >= 2) {
         let str = test.substring(value[0] + 1, value[1])
-        test = test.substring( value[1] +1, test.length)
+        test = test.substring(value[1] + 1, test.length)
         return str
-    }
-    else {
+    } else {
         return null;
     }
 }
 
-function sortAllPostByLike(data){
+function sortAllPostByLike(data) {
     if (isDefinedAndNotNull(data.success)) {
         for (let func of data.success) {
             func = sortPostByLikes(func)
@@ -168,13 +187,13 @@ function sortAllPostByLike(data){
     return data
 }
 
-function sortPostByLikes(data){
+function sortPostByLikes(data) {
     data.post.sort(function (a, b) {
-        return (b.like-b.dislike)-(a.like-a.dislike)  ;
+        return (b.like - b.dislike) - (a.like - a.dislike);
     })
     return data
 }
 
 //endregion
 
-module.exports = {create, get, updateVote, updatePost};
+module.exports = {create, get, updateVote, updatePost, updateCommentary};
