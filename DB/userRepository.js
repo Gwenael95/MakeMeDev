@@ -61,12 +61,12 @@ async function updateUser(filter, update) {
  * @name updateUserVotesById
  * Update user's data depending on his ID and wanted fields to set
  * @param {object} data - user's data
- * @param {array} fieldArray - array of fields to set
+ * @param update
  * @returns {Promise<{success: Object}|{error}>}
  */
-async function updateUserById(data, fieldArray) {
+async function updateUserById(data, update) {
     userSchema.plugin(uniqueValidator)
-    return await updateUser({_id: ObjectId(data.id)}, setUpdateValue(data, fieldArray))
+    return await updateUser({_id: ObjectId(data.id)}, update)
 }
 
 
@@ -92,23 +92,6 @@ function filterPassword(data) {
 }
 
 
-/** @function
- * @name setUpdateValue
- * Define all keys to set
- * @param {object} data - data that will be set
- * @param {array} keysArray - all keys to update
- * @returns {{$set: {}}}
- */
-function setUpdateValue(data, keysArray) {
-    let updateValue = {}
-    /*for (let key of Object.keys(data)){
-        updateValue[key] = data[key]
-    }*/
-    for (let key of keysArray){
-        updateValue[key] = data[key]
-    }
-    return {$set: updateValue}
-}
 
 function createSetUpdateVotes( fieldToSet) {
     let updateValuePull = {}
