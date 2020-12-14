@@ -67,11 +67,9 @@ async function updatePost(filter, update, id) {
         .lean()
         .exec()
         .then((result ) => {
-            console.log(result)
             return {success: result, postId: id , responseId: getResponseId(result), commentaryId: getCommentaryId(result, id)}
         })
         .catch(err => {
-            console.log(err)
             return {error: err.errors}
         });
 }

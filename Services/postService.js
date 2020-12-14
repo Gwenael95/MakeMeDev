@@ -42,14 +42,13 @@ async function updateFunction(functionPost, idPost, user) {
 async function create(post, user) {
     setTypes(post, "params");
     setTypes(post, "returns");
-    addAuthor(post)
-    addAuthor(post.post[0])
+    addAuthor(user ,post)
+    addAuthor(user ,post.post[0])
     const result = await addPost(post, user);
     if (result.success) {
         const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
-        generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes, result, );
-        closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
+
+        return closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
     }
     return getHandler(result);
 }
@@ -75,30 +74,30 @@ async function updateVote(vote, idPost, user) {
             $push: {["activities." + likeOrDislike]: result.postId},
             $pull: {["activities." + opposite]: result.postId}
         })
-        closeUserUpdateAction(userRes, result, "ajout du " + likeOrDislike + " sur le post " + idPost + " impossible")
+        return closeUserUpdateAction(userRes, result, "ajout du " + likeOrDislike + " sur le post " + idPost + " impossible")
     }
     return getHandler({error: "update vote failed"}, "mise à jour des votes du post impossible");
 }
 
 async function addPostResponse(responsePost, idPost, user) {
-    addAuthor(responsePost)
+    addAuthor(user, responsePost)
     if (responsePost['function'] && responsePost['description']) {
         const result = await updatePostResponse(responsePost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.response"]: result.responseId}})
-            closeUserUpdateAction(userRes, result, "ajout d'une nouvelle reponse , mais mis à jour de l'utilisateur impossible")
+            return closeUserUpdateAction(userRes, result, "ajout d'une nouvelle reponse , mais mis à jour de l'utilisateur impossible")
         }
     }
     return getHandler({error: "update response failed"}, "ajout de reponse au post impossible");
 }
 
 async function addCommentary(commentaryPost, idPost, user) {
-    addAuthor(commentaryPost)
+    addAuthor(user, commentaryPost)
     if (commentaryPost['commentary']) {
         const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
-            closeUserUpdateAction(userRes, result, "ajout du commentaires, mais mis à jour de l'utilisateur impossible")
+            return closeUserUpdateAction(userRes, result, "ajout du commentaires, mais mis à jour de l'utilisateur impossible")
         }
     }
     return getHandler({error: "update response failed"}, "ajout du commentaires impossible");
