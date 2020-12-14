@@ -47,9 +47,9 @@ async function updatePost(filter, update, id) {
             {new: true, context: "query"})
         .lean()
         .exec()
-        .then((result) => {
-            return {success: result, postId: id , responseId: result.post[result.post.length-1]._id}
-        })
+        .then((result, test ) => {
+            console.log(result)
+            return {success: result, postId: id , responseId: result.post[result.post.length-1]._id, commentaryId: result.post[result.post.length-1].commentary[result.post[result.post.length-1].commentary.length-1]._id}})
         .catch(err => {
             return {error: err.errors}
         });

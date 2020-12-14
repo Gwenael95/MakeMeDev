@@ -128,6 +128,7 @@ describe('Post', () => {
             .set('Authorization', 'Bearer ' + newUser.body.token)
             .send({commentaryPost: commentaryPost, idPost:newPost.body.success.post.post[0]._id })
         const postCheck = await request.get(url + 'post?search=[]')
+        console.log(postCheck.body.success[0].post[2].commentary);
         expect(response.status).toBe(200);
         expect(postCheck.body.success[0].post[2].commentary[1].commentary).toBe("first");
         expect(response.body.success.user.activities.commentary).toContain(newPost.body.success.post.post[2]._id)

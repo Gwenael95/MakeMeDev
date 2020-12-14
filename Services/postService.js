@@ -97,7 +97,7 @@ async function updateCommentary(commentaryPost, idPost, user) {
     if (commentaryPost['commentary']) {
         const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
-            const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.responseId}})
+            const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
             generateAccessToken(userRes)
             return getHandlerForUserPost(userRes, result, "ajout du commentaires impossible");
         }
