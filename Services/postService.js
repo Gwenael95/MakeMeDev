@@ -22,6 +22,7 @@ async function create(post, user) {
     setTypes(post, "params");
     setTypes(post, "returns");
     post.author = post.post[0].author = {
+        "userId": user._id,
         "pseudo": user.pseudo,
         "avatar": user.avatar
     }
@@ -75,6 +76,7 @@ async function updateVote(vote, idPost, user) {
 
 async function updatePost(responsePost, idPost, user) {
     responsePost['author'] = {
+        userId: user._id,
         pseudo: user.pseudo,
         avatar: user.avatar
     }
@@ -91,13 +93,14 @@ async function updatePost(responsePost, idPost, user) {
 
 async function updateCommentary(commentaryPost, idPost, user) {
     commentaryPost['author'] = {
+        userId: user._id,
         pseudo: user.pseudo,
         avatar: user.avatar
     }
     if (commentaryPost['commentary']) {
         const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
-            const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.responseId}})
+            const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
             generateAccessToken(userRes)
             return getHandlerForUserPost(userRes, result, "ajout du commentaires impossible");
         }

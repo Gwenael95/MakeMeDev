@@ -39,6 +39,21 @@ async function getPost(searchedData) {
 }
 
 
+function getCommentaryId(result, id) {
+    let commentaryId;
+    for (let el of result.post) {
+        if (JSON.stringify(el._id) === JSON.stringify(id)) {
+            commentaryId = el.commentary[el.commentary.length - 1]._id
+            break
+        }
+    }
+    return commentaryId;
+}
+
+function getResponseId(result) {
+    return result.post[result.post.length - 1]._id;
+}
+
 async function updatePost(filter, update, id) {
     return await PostModel
         .findOneAndUpdate(
@@ -47,8 +62,8 @@ async function updatePost(filter, update, id) {
             {new: true, context: "query"})
         .lean()
         .exec()
-        .then((result) => {
-            return {success: result, postId: id , responseId: result.post[result.post.length-1]._id}
+        .then((result ) => {
+            return {success: result, postId: id , responseId: getResponseId(result), commentaryId: getCommentaryId(result, id)}
         })
         .catch(err => {
             return {error: err.errors}
