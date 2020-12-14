@@ -1,7 +1,7 @@
 const {getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
 const {addPost, getPost, updateLikeOrDislike, updatePostResponse} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
-const { updateUserArrayById, updateUserById} = require("../DB/userRepository");
+const { updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
 const {isDefinedAndNotNull, isUndefinedOrNull} = require("../Tools/Common/undefinedControl")
 const {setUpdateValue} = require('../Tools/DB/requestOperator')
@@ -27,7 +27,7 @@ async function create(post, user) {
     }
     const result = await addPost(post, user);
     if (result.success){
-        const userRes = await updateUserArrayById({id:user._id}, {$push:{post:result.success._id}} );
+        const userRes = await updateUserById({id:user._id}, {$push:{post:result.success._id}} );
         generateAccessToken(userRes)
         return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
     }
@@ -62,7 +62,7 @@ async function updateVote(vote, idPost, user) {
     let result = await updateLikeOrDislike(likeOrDislike, idPost, user)
     //check if updated , then update user
     if (isDefinedAndNotNull(result.success)){
-        const userRes = await updateUserArrayById({id:user._id}, {$push:{["activities." + likeOrDislike]:result.postId}, $pull:{["activities." + opposite]:result.postId}})
+        const userRes = await updateUserById({id:user._id}, {$push:{["activities." + likeOrDislike]:result.postId}, $pull:{["activities." + opposite]:result.postId}})
         generateAccessToken(userRes)
         return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
     }
@@ -74,14 +74,10 @@ async function updatePost(responsePost, idPost, user) {
         pseudo: user.pseudo,
         avatar: user.avatar
     }
-    console.log("test updatePost function")
-    console.log(responsePost)
     const result = await updatePostResponse(responsePost, idPost, user)
-    console.log(result)
 
     if (result.success!== null && result.success!== undefined){
-        const userRes = await updateUserArrayById({id:user._id}, {$push: {["activities.response"]: result.postId}})
-        console.log(userRes)
+        const userRes = await updateUserById({id:user._id}, {$push: {["activities.response"]: result.postId}})
         generateAccessToken(userRes)
         return getHandlerForUserPost(userRes,result, "mise à jour du post impossible");
     }

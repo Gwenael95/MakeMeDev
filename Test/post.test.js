@@ -114,13 +114,10 @@ describe('Post', () => {
     it('should be able to send response to a post', async () => {
         const response = await request.post(url + 'post-add-response')
             .set('Authorization', 'Bearer ' + newUser.body.token)
-            .send({responsePost: responsePost, idPost:newPost.body.success.post.post[0]._id })
+            .send({responsePost: responsePost, idPost:newPost.body.success.post._id })
         const postCheck = await request.get(url + 'post?search=[]')
-        console.log(response.body)
-
-        console.log(postCheck.body)
         expect(postCheck.body.success[0].post[3].description).toBe("better solution");
         expect(response.status).toBe(200);
-        expect(response.body.success.user.activities.response).toContain(newPost.body.success._id)
+        expect(response.body.success.user.activities.response).toContain(newPost.body.success.post._id)
     });
 });

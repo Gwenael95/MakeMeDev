@@ -59,7 +59,7 @@ async function updateUser(filter, update) {
 }
 
 /** @function
- * @name updateUserArrayById
+ * @name updateUserById
  * Update user's data depending on his ID and wanted fields to set
  * @param {object} data - user's data
  * @param update
@@ -71,13 +71,6 @@ async function updateUserById(data, update) {
 }
 
 
-/** @function
- * @name updateUserArrayById
- */
-async function updateUserArrayById(data, fieldToSet) {
-    userSchema.plugin(uniqueValidator)
-    return await updateUser({_id: ObjectId(data.id)},fieldToSet)
-}
 
 //region helpers
 /** @function
@@ -95,4 +88,4 @@ function filterPassword(data) {
 
 //endregion
 
-module.exports = {signUp, signIn, updateUserById,  updateUserArrayById};
+module.exports = {signUp, signIn, updateUserById};
