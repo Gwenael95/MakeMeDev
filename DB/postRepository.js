@@ -40,14 +40,18 @@ async function getPost(searchedData) {
 
 
 function getCommentaryId(result, id) {
-    let commentaryId;
-    for (let el of result.post) {
-        if (JSON.stringify(el._id) === JSON.stringify(id)) {
-            commentaryId = el.commentary[el.commentary.length - 1]._id
-            break
+    try {
+        let commentaryId;
+        for (let el of result.post) {
+            if (JSON.stringify(el._id) === JSON.stringify(id)) {
+                commentaryId = el.commentary[el.commentary.length - 1]._id
+                break
+            }
         }
+        return commentaryId;
+    }catch (e) {
+        return null
     }
-    return commentaryId;
 }
 
 function getResponseId(result) {
@@ -63,15 +67,17 @@ async function updatePost(filter, update, id) {
         .lean()
         .exec()
         .then((result ) => {
+            console.log(result)
             return {success: result, postId: id , responseId: getResponseId(result), commentaryId: getCommentaryId(result, id)}
         })
         .catch(err => {
+            console.log(err)
             return {error: err.errors}
         });
 }
 
 async function updatePostFunction(functionPost, idPost) {
-    return await updatePost({"post._id": ObjectId(idPost)}, {$set : {"post.function": functionPost}}, idPost)
+    return await updatePost({"post._id": ObjectId(idPost)}, {$set : {"post.$.function": functionPost}}, idPost)
 }
 
 async function updatePostResponse(responsePost, idPost) {
