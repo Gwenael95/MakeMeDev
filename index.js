@@ -1,27 +1,17 @@
 // region Prepare to include the server code into our web_server
-const express = require("express");
-const http = require("http");
-const cors = require("cors");
-const app = express();
-const server = http.createServer(app);
-const bodyParser = require("body-parser");
-require('dotenv').config();
+//region MongoDB connection
 const database = require("./Tools/DB/database")
-
-// endregion
-
-//region mongodb connection
 database.connect()
 //endregion
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+const http = require("http");
+const {app} = require("./app")
 
-//Cors
-app.use(cors({ origin: true, credentials: true }));
+const server = http.createServer(app);
+require('dotenv').config();
 
-const router = require("./router");
-router(app);
+// endregion
+
 
 const PORT = process.env.PORT || 4021;
 server.listen(PORT, () => {

@@ -70,6 +70,10 @@ async function updatePost(filter, update, id) {
         });
 }
 
+async function updatePostFunction(functionPost, idPost) {
+    return await updatePost({"post._id": ObjectId(idPost)}, {$set : {"post.function": functionPost}}, idPost)
+}
+
 async function updatePostResponse(responsePost, idPost) {
     return await updatePost({"_id": ObjectId(idPost)}, {$push : {post: responsePost}}, idPost)
 }
@@ -247,4 +251,4 @@ function getMatchStringRegex(data, dbField){
 //endregion
 
 
-module.exports = {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary};
+module.exports = {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary, updatePostFunction};

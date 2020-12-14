@@ -1,5 +1,5 @@
 const {getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
-const {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary} = require("../DB/postRepository")
+const {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary, updatePostFunction} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
 const {updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
@@ -74,7 +74,15 @@ async function updateVote(vote, idPost, user) {
     return getHandler({error: "update vote failed"}, "mise à jour des votes du post impossible");
 }
 
-async function updatePost(responsePost, idPost, user) {
+async function updateFunction(functionPost, idPost, user) {
+    if (functionPost['function']) {
+        return getHandler(await updatePostFunction(functionPost, idPost, user), "mise à jour de la fonction réussie")
+    }
+    return getHandler({error: "update response failed"}, "mise à jou du post impossible");
+}
+
+
+async function addPostResponse(responsePost, idPost, user) {
     responsePost['author'] = {
         userId: user._id,
         pseudo: user.pseudo,
@@ -91,7 +99,7 @@ async function updatePost(responsePost, idPost, user) {
     return getHandler({error: "update response failed"}, "mise à jou du post impossible");
 }
 
-async function updateCommentary(commentaryPost, idPost, user) {
+async function addCommentary(commentaryPost, idPost, user) {
     commentaryPost['author'] = {
         userId: user._id,
         pseudo: user.pseudo,
@@ -199,4 +207,4 @@ function sortPostByLikes(data) {
 
 //endregion
 
-module.exports = {create, get, updateVote, updatePost, updateCommentary};
+module.exports = {create, get, updateVote, addPostResponse, addCommentary, updateFunction};
