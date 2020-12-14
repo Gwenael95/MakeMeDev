@@ -74,12 +74,13 @@ async function updatePost(responsePost, idPost, user) {
         pseudo: user.pseudo,
         avatar: user.avatar
     }
-    const result = await updatePostResponse(responsePost, idPost, user)
-
-    if (result.success!== null && result.success!== undefined){
-        const userRes = await updateUserById({id:user._id}, {$push: {["activities.response"]: result.postId}})
-        generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes,result, "mise à jour du post impossible");
+    if (responsePost['function'] && responsePost['description'] ) {
+        const result = await updatePostResponse(responsePost, idPost, user)
+        if (result.success!== null && result.success!== undefined){
+            const userRes = await updateUserById({id:user._id}, {$push: {["activities.response"]: result.postId}})
+            generateAccessToken(userRes)
+            return getHandlerForUserPost(userRes,result, "mise à jour du post impossible");
+        }
     }
     return getHandler({error:"update response failed"}, "mise à jou du post impossible");
 }

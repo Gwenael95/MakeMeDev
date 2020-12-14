@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const {generate, verify} = require("password-hash");
 const UserModel = mongoose.model('users', userSchema)
-const {isDefinedAndNotNull} = require("../Tools/Common/undefinedControl")
 
 /** @function
  * @name signUp
