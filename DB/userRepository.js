@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const {generate, verify} = require("password-hash");
 const UserModel = mongoose.model('users', userSchema)
+const {isDefinedAndNotNull} = require("../Tools/Common/undefinedControl")
 
 /** @function
  * @name signUp
@@ -58,7 +59,7 @@ async function updateUser(filter, update) {
 }
 
 /** @function
- * @name updateUserVotesById
+ * @name updateUserArrayById
  * Update user's data depending on his ID and wanted fields to set
  * @param {object} data - user's data
  * @param {array} fieldArray - array of fields to set
@@ -71,9 +72,9 @@ async function updateUserById(data, fieldArray) {
 
 
 /** @function
- * @name updateUserVotesById
+ * @name updateUserArrayById
  */
-async function updateUserVotesById(data, fieldToSet) {
+async function updateUserArrayById(data, fieldToSet) {
     userSchema.plugin(uniqueValidator)
     return await updateUser({_id: ObjectId(data.id)}, createSetUpdateVotes(fieldToSet))
 }
@@ -111,16 +112,24 @@ function setUpdateValue(data, keysArray) {
 }
 
 function createSetUpdateVotes( fieldToSet) {
-    let updateValuePull = {}
-    for (let key of Object.keys(fieldToSet.pull)){
-        updateValuePull[key] = fieldToSet.pull[key]
+    let req = {}
+    if( isDefinedAndNotNull(fieldToSet.pull)) {
+        let updateValuePull = {}
+        for (let key of Object.keys(fieldToSet.pull)) {
+            updateValuePull[key] = fieldToSet.pull[key]
+        }
+        req["$pull"]=updateValuePull
     }
-    let updateValuePush = {}
-    for (let key of Object.keys(fieldToSet.push)){
-        updateValuePush[key] = fieldToSet.push[key]
+    if(isDefinedAndNotNull(fieldToSet.push)) {
+        let updateValuePush = {}
+        for (let key of Object.keys(fieldToSet.push)) {
+            updateValuePush[key] = fieldToSet.push[key]
+        }
+        req["$push"]=updateValuePush
+
     }
-    return {$push:updateValuePush, $pull:updateValuePull}
+    return req
 }
 //endregion
 
-module.exports = {signUp, signIn, updateUserById,  updateUserVotesById};
+module.exports = {signUp, signIn, updateUserById,  updateUserArrayById};

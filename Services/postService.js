@@ -1,8 +1,10 @@
 const {getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
 const {addPost, getPost, updateLikeOrDislike} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
-const { updateUserVotesById} = require("../DB/userRepository");
+const { updateUserArrayById, updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
+const {isDefinedAndNotNull, isUndefinedOrNull} = require("../Tools/Common/undefinedControl")
+
 let test = ""
 
 //region exported methods
@@ -12,13 +14,31 @@ let test = ""
  * We had one more field : paramsTypes to have an object with a number of occurrence of each params
  * It will make it simpler to search if a post contains an amount of params
  * @param {object} post - post to add, should be really similar to postModels {@link '../Models/postModels'}.
+ * @param {object} user - user to update, should be really similar to userModels {@link '../Models/userModels'}.
  * @returns {Promise<{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
-async function create(post) {
+async function create(post, user) {
     setTypes(post, "params");
     setTypes(post, "returns");
-    const result = await addPost(post);
+    post.author = post.post[0].author ={
+            "pseudo" : user.pseudo,
+            "avatar" : user.avatar
+    }
+    const result = await addPost(post, user);
+    if (result.success){
+        const userRes = await updateUserById({id:user._id, post:post._id}, ["post"])
+        generateAccessToken(userRes)
+        return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
+    }
     return getHandler(result);
+}
+
+async function updateUserIfSuccess(isSuccess) {
+    if (isSuccess){
+        const userRes = await updateUserById({id:user._id, post:post}, ["post"])
+        generateAccessToken(userRes)
+        return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
+    }
 }
 
 
@@ -40,8 +60,8 @@ async function updateVote(vote, idPost, user) {
     const opposite = vote === 1 ? "dislike" : "like"
     //check if updated , then update user
     let result = await updateLikeOrDislike(likeOrDislike, idPost, user)
-    if (result.success!== null && result.success!== undefined){
-        const userRes = await updateUserVotesById({id:user._id}, {push:{["activities." + likeOrDislike]:result.postId}, pull:{["activities." + opposite]:result.postId}})
+    if (isDefinedAndNotNull(result.success)){
+        const userRes = await updateUserArrayById({id:user._id}, {push:{["activities." + likeOrDislike]:result.postId}, pull:{["activities." + opposite]:result.postId}})
         generateAccessToken(userRes)
         const getUser = getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
         return getUser;
@@ -53,7 +73,8 @@ async function updateVote(vote, idPost, user) {
 
 //region not exported functions
 function setTypes(post, paramsOrResults) {
-    if (post[paramsOrResults] === undefined || post[paramsOrResults] === null) {
+
+    if (isUndefinedOrNull(post[paramsOrResults])) {
         post[paramsOrResults] = []
     }
     let arr = []
@@ -123,7 +144,7 @@ function getSearchValue( delimiter){
 }
 
 function sortAllPostByLike(data){
-    if (data.success!==null && data.success!==undefined) {
+    if (isDefinedAndNotNull(data.success)) {
         for (let func of data.success) {
             func = sortPostByLikes(func)
         }

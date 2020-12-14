@@ -12,7 +12,7 @@ const ObjectId = mongoose.Types.ObjectId;
  * @param {object} postData - post to add, should correspond to postModels {@link '../Models/postModels'}.
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
  */
-async function addPost(postData) {
+async function addPost(postData, user) {
     const doc = new PostModel(postData);
     return await doc.save().then(result => {
         return {success: result}
