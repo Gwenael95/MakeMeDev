@@ -55,6 +55,10 @@ async function updatePost(filter, update, id) {
         });
 }
 
+async function updatePostResponse(responsePost, idPost) {
+    return await updatePost({"_id": ObjectId(idPost)}, {$push : {post: responsePost}}, idPost)
+}
+
 async function updateLikeOrDislike(likeOrDislike, idPost, user) {
     let opposite = {like:"dislike", dislike:"like"}[likeOrDislike]
     //check if user already vote for this post;
@@ -66,11 +70,9 @@ async function updateLikeOrDislike(likeOrDislike, idPost, user) {
 
     if (!(user.activities[likeOrDislike].includes(idPost) || user.activities[opposite].includes( idPost))) {
         setPost = {$inc: {["post.$." + likeOrDislike]:1}}
-        console.log("test opo" + opposite)
     }
     else if(user.activities[opposite].includes( idPost)) {
         setPost = {$inc: {["post.$." + likeOrDislike]:1, ["post.$." + opposite]:-1}}
-        console.log("test si déja ajouté : opo" + opposite)
 
     }
     else{
@@ -227,4 +229,4 @@ function getMatchStringRegex(data, dbField){
 //endregion
 
 
-module.exports = {addPost, getPost, updateLikeOrDislike};
+module.exports = {addPost, getPost, updateLikeOrDislike, updatePostResponse};

@@ -14,6 +14,7 @@ exports.userSchema = new mongoose.Schema({
     activities: {
         like: [{type: mongoose.Types.ObjectId}],
         dislike: [{type: mongoose.Types.ObjectId}],
+        response: [{type: mongoose.Types.ObjectId}],
         commentary: [
             {
                 post_id: {type: mongoose.Types.ObjectId},

@@ -27,9 +27,28 @@ async function getUser(user) {
 }
 
 async function updateUser(user) {
-    const userData = await updateUserById(user, ["pseudo", "mail", "avatar"]);
+    const userData = await updateUserById(user, setUpdateValue(user, ["pseudo", "mail", "avatar"]) );
     generateAccessToken(userData);
     return getHandler(userData , "ce compte n'existe pas")
+}
+
+
+/** @function
+ * @name setUpdateValue
+ * Define all keys to set
+ * @param {object} data - data that will be set
+ * @param {array} keysArray - all keys to update
+ * @returns {{$set: {}}}
+ */
+function setUpdateValue(data, keysArray) {
+    let updateValue = {}
+    /*for (let key of Object.keys(data)){
+        updateValue[key] = data[key]
+    }*/
+    for (let key of keysArray){
+        updateValue[key] = data[key]
+    }
+    return {$set: updateValue}
 }
 
 

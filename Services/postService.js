@@ -1,7 +1,7 @@
 const {getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
-const {addPost, getPost, updateLikeOrDislike} = require("../DB/postRepository")
+const {addPost, getPost, updateLikeOrDislike, updatePostResponse} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
-const { updateUserVotesById} = require("../DB/userRepository");
+const { updateUserVotesById, updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
 let test = ""
 
@@ -47,6 +47,20 @@ async function updateVote(vote, idPost, user) {
         return getUser;
     }
     return getHandler({error:"update vote failed"}, "mise à jour des votes du post impossible");
+}
+
+async function updatePost(responsePost, idPost, user) {
+    responsePost['author'] = {
+        pseudo: user.pseudo,
+        avatar: user.avatar
+    }
+    const result = await updatePostResponse(responsePost, idPost, user)
+    if (result.success!== null && result.success!== undefined){
+        const userRes = await updateUserById({id:user._id}, {$push: {["activities.response"]: result.postId}})
+        generateAccessToken(userRes)
+        return getHandlerForUserPost(userRes,result, "mise à jour du post impossible");
+    }
+    return getHandler({error:"update response failed"}, "mise à jou du post impossible");
 }
 //endregion
 
@@ -137,6 +151,7 @@ function sortPostByLikes(data){
     })
     return data
 }
+
 //endregion
 
-module.exports = {create, get, updateVote};
+module.exports = {create, get, updateVote, updatePost};
