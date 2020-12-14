@@ -47,7 +47,6 @@ async function create(post, user) {
     const result = await addPost(post, user);
     if (result.success) {
         const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
-
         return closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
     }
     return getHandler(result);
