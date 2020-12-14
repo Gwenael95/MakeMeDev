@@ -9,6 +9,7 @@ exports.postSchema = new mongoose.Schema({
         shared: {type: Number, default: 0},
         name: {type: String, required: true},
         author: {
+            userId: {type: mongoose.Types.ObjectId, required: true},
             pseudo: {type: String, required: true},
             avatar: {type: String, required: true},
             creationDate: {type: String, default:  new Date().getTime() / 1000}
@@ -34,6 +35,7 @@ exports.postSchema = new mongoose.Schema({
         post: [
             {
                 author: {
+                    userId: {type: mongoose.Types.ObjectId, required: true},
                     pseudo: {type: String, required: true},
                     avatar: {type: String, required: true},
                     creationDate: {type: String, default:  new Date().getTime() / 1000}
@@ -45,7 +47,11 @@ exports.postSchema = new mongoose.Schema({
                 totalLike: {type: Number, default: 0},
                 commentary: [
                     {
-                        pseudo: {type: String, required: true},
+                        author: {
+                            userId: {type: mongoose.Types.ObjectId, required: true},
+                            pseudo: {type: String, required: true},
+                            avatar: {type: String, required: true}
+                        },
                         commentary: {type: String, required: true},
                         date: {type: String, default:  new Date().getTime() / 1000}
                     }

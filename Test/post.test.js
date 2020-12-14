@@ -116,7 +116,6 @@ describe('Post', () => {
             .set('Authorization', 'Bearer ' + newUser.body.token)
             .send({responsePost: responsePost, idPost:newPost.body.success.post._id })
         const postCheck = await request.get(url + 'post?search=[]')
-        console.log(response.body.success.post.post)
         expect(postCheck.body.success[0].post[3].description).toBe("better solution");
         expect(response.status).toBe(200);
         expect(response.body.success.user.activities.response).toContain(postCheck.body.success[0].post[3]._id)
@@ -128,9 +127,8 @@ describe('Post', () => {
             .set('Authorization', 'Bearer ' + newUser.body.token)
             .send({commentaryPost: commentaryPost, idPost:newPost.body.success.post.post[0]._id })
         const postCheck = await request.get(url + 'post?search=[]')
-        console.log(postCheck.body.success[0].post[2].commentary);
         expect(response.status).toBe(200);
         expect(postCheck.body.success[0].post[2].commentary[1].commentary).toBe("first");
-        expect(response.body.success.user.activities.commentary).toContain(newPost.body.success.post.post[2]._id)
+        expect(response.body.success.user.activities.commentary).toContain(postCheck.body.success[0].post[2].commentary[1]._id)
     });
 });

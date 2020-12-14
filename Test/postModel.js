@@ -1,9 +1,5 @@
 exports.post = {
-    "post": {"author" : {
-            "creationDate" : "2020-10-10",
-            "pseudo" : "test",
-            "avatar" : "test"
-        },
+    "post": {
         "name": "test",
         "tag" : ['test'],
         "params" : [
@@ -27,6 +23,7 @@ exports.post = {
         "post" : [
             {
                 "author" : {
+                    "userId": "5fd688dec05dfb4a8eb64d1f",
                     "creationDate" : "2020-10-10",
                     "pseudo" : "test",
                     "avatar" : "test"
@@ -38,17 +35,22 @@ exports.post = {
                 "function" : "multiply2x(num){return num*2}",
                 "commentary" : [
                     {
-                        "date" : "2020-10-12",
-                        "pseudo" : "test",
+                        "author" : {
+                            "userId": "5fd688dec05dfb4a8eb64d1f",
+                            "creationDate" : "2020-10-10",
+                            "pseudo" : "test",
+                            "avatar" : "test"
+                        },
                         "commentary" : "i really needed this, thx"
                     }
                 ]
             },
             {
                 "author" : {
+                    "userId": "5fd688dec05dfb4a8eb64d1f",
                     "creationDate" : "2020-10-10",
-                    "pseudo" : "gwen",
-                    "avatar" : "gwen"
+                    "pseudo" : "test",
+                    "avatar" : "test"
                 },
                 "description" : "simplify your function",
                 "like" : 4,
@@ -57,17 +59,22 @@ exports.post = {
                 "function" : "multiply2x(num){return num+num}",
                 "commentary" : [
                     {
-                        "date" : "2020-10-12",
-                        "pseudo" : "Jo",
+                        "author" : {
+                            "userId": "5fd688dec05dfb4a8eb64d1f",
+                            "creationDate" : "2020-10-10",
+                            "pseudo" : "test",
+                            "avatar" : "test"
+                        },
                         "commentary" : "i really needed this, thx"
                     }
                 ]
             },
             {
                 "author" : {
+                    "userId": "5fd688dec05dfb4a8eb64d1f",
                     "creationDate" : "2020-10-10",
-                    "pseudo" : "anto",
-                    "avatar" : "anto"
+                    "pseudo" : "test",
+                    "avatar" : "test"
                 },
                 "description" : "other function",
                 "like" : 4,
@@ -76,8 +83,12 @@ exports.post = {
                 "function" : "multiplyPow2(num){return num**2}",
                 "commentary" : [
                     {
-                        "date" : "2020-10-12",
-                        "pseudo" : "Jo",
+                        "author" : {
+                            "userId": "5fd688dec05dfb4a8eb64d1f",
+                            "creationDate" : "2020-10-10",
+                            "pseudo" : "test",
+                            "avatar" : "test"
+                        },
                         "commentary" : "i really needed this, thx"
                     }
                 ]
