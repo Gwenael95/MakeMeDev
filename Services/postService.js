@@ -83,7 +83,7 @@ async function updateVote(vote, idPost, user) {
             $push: {["activities." + likeOrDislike]: result.postId},
             $pull: {["activities." + opposite]: result.postId}
         })
-        return closeUserUpdateAction(userRes, result, "ajout du " + likeOrDislike + " sur le post " + idPost + " impossible")
+        return closeUserUpdateAction(userRes, sortAllPostByLike(result), "ajout du " + likeOrDislike + " sur le post " + idPost + " impossible")
     }
     return getHandler({error: "update vote failed"}, "mise à jour des votes du post impossible");
 }
