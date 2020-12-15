@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">MakeMeDev/Controllers/postController.js | makemedev</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="projet web 2020"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="makemedev"><meta property="twitter:description" content="projet web 2020"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Gwenael95/MakeMeDev"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  </ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Controllers/postController.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const { create, get, updateVote, addPostResponse, addCommentary, updateFunction } = require(&quot;../Services/postService&quot;);
+const {emptyRequest} = require(&quot;../Tools/Controller/controllerHelper&quot;);
+
+
+/** @function
+ * @name getPost
+ * Get a post from database if our query isn&apos;t empty
+ * @param {Request} req - request received
+ * @param {Response} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise&lt;*|boolean|void&gt;}
+ */
+exports.getPost = async (req, res, next)  =&gt; {
+    const {search} =  req.query
+    const response = emptyRequest(search) ? emptyRequest(search) : await get(search)
+    return res.status(response.code).send(response.body)
+};
+
+/** @function
+ * @name sendPost
+ * Send a post to add in database if our post data isn&apos;t empty
+ * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
+ * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise&lt;*|boolean|void&gt;}
+ */
+exports.sendPost = async (req, res, next) =&gt; {
+    const {post} = req.body;
+    const response = emptyRequest(post) ? emptyRequest(post) : await create(post, req.user)
+    return res.status(response.code).send(response.body)
+};
+
+
+/** @function
+ * @name sendVote
+ * Send a vote to like or dislike a post in DB
+ * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
+ * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise&lt;*|boolean|void&gt;}
+ */
+exports.sendVote = async (req, res, next)  =&gt; {
+    const {vote, idPost} =  req.body
+    const response = emptyRequest(vote) ? emptyRequest(vote) : await updateVote(vote, idPost, req.user)
+    return res.status(response.code).send(response.body)
+};
+
+/** @function
+ * @name addResponse
+ * Send a response to add to a post in DB
+ * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
+ * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise&lt;*|boolean|void&gt;}
+ */
+exports.addResponse = async (req, res, next)  =&gt; {
+    const {responsePost, idPost} =  req.body
+    const response = emptyRequest(responsePost) ? emptyRequest(responsePost) : await addPostResponse(responsePost, idPost, req.user)
+    return res.status(response.code).send(response.body)
+};
+
+/** @function
+ * @name addCommentary
+ * Send a comment to add to a post in DB
+ * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
+ * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise&lt;*|boolean|void&gt;}
+ */
+exports.addCommentary = async (req, res, next)  =&gt; {
+    const {commentaryPost, idPost} =  req.body
+    const response = emptyRequest(commentaryPost) ? emptyRequest(commentaryPost) : await addCommentary(commentaryPost, idPost, req.user)
+    return res.status(response.code).send(response.body)
+};
+
+/** @function
+ * @name updateFunction
+ * Send a function to update it in a post in DB
+ * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
+ * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise&lt;*|boolean|void&gt;}
+ */
+exports.updateFunction = async (req, res, next)  =&gt; {
+    const {functionPost, idPost} =  req.body
+    const response = emptyRequest(functionPost) ? emptyRequest(functionPost) : await updateFunction(functionPost, idPost, req.user)
+    return res.status(response.code).send(response.body)
+};
+
+
+
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
