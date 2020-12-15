@@ -1,0 +1,6 @@
+{
+  "source": "../MakeMeDev",
+  "destination": "./docs",
+  "excludes": ["(node_modules|docs|foo.js)"],
+  "plugins": [{"name": "esdoc-standard-plugin"}]
+}

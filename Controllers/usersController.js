@@ -35,7 +35,7 @@ exports.updateUser = async (req, res, next) => {
  * @returns {Promise<*|boolean|void>}
  */
 exports.signIn = async (req, res, next)  => {
-    const user = req.query;
+    const {user} = req.body;
     const response = emptyRequest(user) ? emptyRequest(user) : await getUser(user)
     return res.status(response.code).send(response.body)
 };

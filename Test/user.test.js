@@ -2,6 +2,15 @@ const {request, url} = require("./config/launcher")
 const { user } = require("./models");
 const { prepareReqWithToken} = require("./config/testHelper")
 
+const userPseudo= user.user.pseudo
+const userPassword= user.user.password
+
+const userSignIn = {
+    user:{
+        login: userPseudo,
+        password: userPassword,
+    }
+}
 describe('User', () => {
     let newUser;
     beforeEach(async () => {
@@ -15,20 +24,23 @@ describe('User', () => {
     });
 
     it('should be able to get user', async () => {
-        const userName = "userName"
-        const response = await request.get(url + "users?login=" + userName + "&password=123123")
+        const response = await request.post(url + "user-signin").send(userSignIn)
         expect(response.status).toBe(200);
-        expect(response.body.success.pseudo).toBe(userName)
+        expect(response.body.success.pseudo).toBe(userPseudo)
     });
 
     it('should not be able to get user', async () => {
-        const userName = "userName"
-        const response = await request.get(url + "users?login=" + userName + "&password=hi")
+        const response = await request.post(url + "user-signin").send({
+            user:{
+                login: userPseudo,
+                password: "testpassword",
+            }
+        })
         expect(response.status).toBe(404);
     });
 
     it('should be able to update user', async () => {
-        const user = await request.get(url + "users?login=userName&password=123123")
+        const user = await request.post(url + "user-signin").send(userSignIn)
         const userData = {
             user: {
                 id: user.body.success._id,
@@ -47,7 +59,7 @@ describe('User', () => {
 
 
     it('should not be able to update user without crash', async () => {
-        const user = await request.get(url + "users?login=userName&password=123123")
+        const user = await request.post(url + "user-signin").send(userSignIn)
         const userData = {
             user: {
                 id: "1",

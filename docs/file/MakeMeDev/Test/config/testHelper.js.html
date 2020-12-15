@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">MakeMeDev/Test/config/testHelper.js | makemedev</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="projet web 2020"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="makemedev"><meta property="twitter:description" content="projet web 2020"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Gwenael95/MakeMeDev"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  </ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Test/config/testHelper.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const { request, url} = require(&quot;./launcher&quot;)
+
+//region functions adding expects
+/** @function
+ * @name expectExcept
+ * Add Expects where response object has a key containing field defined by expected keys.
+ * If there should be some keys to avoid, we describe the exceptKeys, like for user&apos;s password .
+ * @param {array} resKeys - an array containing keys from the response
+ * @param {array} expectedKeys - an array containing expected keys (if adding username, we should find this field)
+ * @param {array} exceptKeys - an array with exception keys, that we don&apos;t wan&apos;t to check
+ */
+function expectExcept(resKeys, expectedKeys, exceptKeys=[]){
+    for (let key of expectedKeys){
+        if (!exceptKeys.includes(key)) {
+            expect(resKeys).toContain(key)
+        }
+    }
+}
+
+/** @function
+ * @name expectedResponseOnUserUpsert
+ * Add an Expect status 200, and check if the response body.success contains user &amp; post keys.
+ * @param {object} response - an object containing response&apos;s data
+ */
+function expectedResponseOnUserUpsert(response){
+    expectedStatus(response)
+    //expect().toStrictEqual([&quot;user&quot;, &quot;post&quot;])
+    expectExcept(  Object.keys(getBodyRes(response)), [ &quot;user&quot;, &quot;post&quot;] )
+}
+
+/** @function
+ * @name expectedStatus
+ * Add an Expect status 200.
+ * @param {object} response - an object containing response&apos;s data
+ */
+function expectedStatus(response){
+    expect(response.status).toBe(200);
+}
+
+//endregion
+
+//region other functions
+//region getter of object path (defined by our postModel architecture)
+/** @function
+ * @name getBodyRes
+ * Return the body from a response, use if a day we change response body structure.
+ * This way, it will be easy to set the body content
+ * @param {object} response - response from api
+ * @returns {SrvPoller.success|{post, user, token}|string|boolean|Event|null}
+ */
+function getBodyRes(response){
+    try {
+        return response.body.success
+    }catch (e) {
+        return null
+    }
+}
+
+/** @function
+ * @name getPostAt
+ * Get a post from a response at a defined position thanks to index.
+ * We supposed that the searched post (an answer) is at index 0 from the response body
+ * @param {object} res - response from api
+ * @param {object} index - index of a post we want in the array of posts (answers)
+ * @returns {object}
+ */
+function getPostAt(res, index=2){
+    return getBodyRes(res)[0].post[index]
+}
+
+/** @function
+ * @name getUserActivities
+ * Get user activities from a response.
+ * @param {object} res - response from api
+ * @returns {object}
+ */
+function getUserActivities(res){
+    return getBodyRes(res).user.activities
+}
+//endregion
+
+//region DB requests
+/** @function
+ * @name getAllPostReq
+ * Get a response from DB that get all post.
+ * @returns {object}
+ */
+async function getAllPostReq(){
+    return await request.get(url + &apos;post?search=[]&apos;)
+}
+
+/** @function
+ * @name requestPostVote
+ * Post a request to DB to add a like or a dislike to a post
+ * @param {object} user - user that add a like
+ * @param {object} post - post receiving the like
+ * @param {object} voteValue - value of the vote; 1 to like, -1 to dislike
+ * @returns {object}
+ */
+async function requestPostVote(user, post, voteValue ){
+    //console.log(user.body)
+    return await request.post(url + &apos;post-vote&apos;)
+        .set(&apos;Authorization&apos;, &apos;Bearer &apos; + user.body.token)
+        .send({vote:voteValue, idPost:getBodyRes(post).post.post[0]._id})
+}
+//endregion
+
+
+/** @function
+ * @name prepareReqWithToken
+ * Prepare a request on a defined url that need a token authorization
+ * @param {object} user - user&apos;s data from a response
+ * @param {object} completeUrl - the target url
+ * @returns {*}
+ */
+function prepareReqWithToken(user, completeUrl){
+    return request.post(completeUrl)
+        .set(&apos;Authorization&apos;, &apos;Bearer &apos; + user.body.token)
+}
+//endregion
+
+module.exports =
+    {expectExcept, expectedResponseOnUserUpsert, getBodyRes, expectedStatus, getPostAt, getUserActivities,
+     getAllPostReq, requestPostVote ,prepareReqWithToken}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
