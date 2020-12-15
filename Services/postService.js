@@ -80,6 +80,7 @@ async function updateVote(vote, idPost, user) {
 
 async function addPostResponse(responsePost, idPost, user) {
     addAuthor(user, responsePost)
+    addDate(responsePost, "creationDate")
     if (responsePost['function'] && responsePost['description']) {
         const result = await updatePostResponse(responsePost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
@@ -92,6 +93,7 @@ async function addPostResponse(responsePost, idPost, user) {
 
 async function addCommentary(commentaryPost, idPost, user) {
     addAuthor(user, commentaryPost)
+    addDate(commentaryPost, "date")
     if (commentaryPost['commentary']) {
         const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
@@ -119,6 +121,11 @@ function addAuthor(author, object){
         "avatar": author.avatar
     }
 }
+
+function addDate(object, fieldName="creationDate"){
+    object[fieldName] = new Date().getTime() / 1000
+}
+
 
 function setTypes(post, paramsOrResults) {
     if (isUndefinedOrNull(post[paramsOrResults])) {

@@ -105,6 +105,22 @@ describe('Post', () => {
         expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
         expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
     });
+
+    it('should be able to send 2 commentary with 2 different timestamp', async () => {
+        const response1 = await prepareReqWithToken(newUser, url + "post-add-commentary")
+            .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
+        const postCheck = await getAllPostReq()
+        const response2 = await prepareReqWithToken(response1, url + "post-add-commentary")
+            .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
+        const postCheck2 = await getAllPostReq()
+        let comment = getPostAt(postCheck).commentary
+        let comment2 = getPostAt(postCheck2).commentary
+
+        expect(response1.status).toBe(200);
+        expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
+        expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
+        expect(comment[comment.length-1].date< comment2[comment2.length-1].date).toBe(true)
+    });
     //endregion
 
 });

@@ -38,8 +38,8 @@ exports.postSchema = new mongoose.Schema({
                     userId: {type: mongoose.Types.ObjectId, required: true},
                     pseudo: {type: String, required: true},
                     avatar: {type: String, required: true},
-                    creationDate: {type: String, default:  new Date().getTime() / 1000}
                 },
+                creationDate: {type: String, default:  new Date().getTime() / 1000},
                 function: {type: String, required: true},
                 description: {type: String, required: true},
                 like: {type: Number, default: 0},

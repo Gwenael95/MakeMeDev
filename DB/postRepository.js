@@ -64,6 +64,8 @@ async function updatePost(filter, update, id) {
             filter,
             update,
             {new: true, context: "query"})
+        //for options=> upsert: true, setDefaultsOnInsert: true
+        // (use on $setOnInsert; for us create issue) to update date on insert
         .lean()
         .exec()
         .then((result ) => {

@@ -10,16 +10,18 @@ exports.post = {
                 "defaultValue" : "10"
             }
         ],
-        "returns" : [{
-            "name" : "result",
-            "type" : "int",
-            "description" : "result value"
-        },
+        "returns" : [
             {
                 "name" : "result",
-                "type" : "array",
+                "type" : "int",
                 "description" : "result value"
-            }],
+                },
+                {
+                    "name" : "result",
+                    "type" : "array",
+                    "description" : "result value"
+                }
+            ],
         "post" : [
             {
                 "author" : {
