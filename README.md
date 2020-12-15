@@ -1,34 +1,42 @@
 
 # MakeMeDev
-Projet web de l'an 2020, MakeMeDev a pour but de permettre aux utilisateurs 
-de poster et rechercher des functions produites par la communauté dev.
+2020 Web project at Coding factory, MakeMeDev aim to allow users
+to post and search functions from other developers.
 
--   Utilisateur connecté
-    - 
-L'utilisateur pourra se créer un compte avec mail, mot de passe et pseudo.
-Cela lui donnera alors le droit de poster des fonctions répondant à une problématique.
 
-Cet utilisateur devra fournir :
--   un nom de fonction
--   décrire l'utilité de cette dernière
--   définir ses différents arguments 
+#initialisation
+To run this server:
+
+    node index.js
+    
+    
+#Sign in user
+    
+Signed in user will create an account with mail, pseudo, password.
+It will allow to post new functions to solve a problematic.
+
+This user will have to :
+-   give a name to his function
+-   describe the function, how it works, which problem it solve ...
+-   define all arguments and returns values :
     -   type 
-    -   nom 
+    -   name 
     -   description
-    -   valeur par défaut
--   définir la valeur de retour
--   fournir des tags
+    -   default value (`for arguments, not required`)
+-   add tags
 
-D'autres utilisateurs pourront proposer une amélioration de cette fonction.
-Ce sera alors à la communauté de faire ressortir la solution optimal
-via les likes et dislikes.
+Other signed in users may propose to enhance this function,
+they just have to add a post on the function they want.
+The rest of the community will elect the optimal solution by voting 
+thanks to like and dislike.
 
-Tout ceci permettra aux autres utilisateurs de trouver la fonction correspondant
-à leur besoin.
+This will allow every user, even if not registered, to find solution to
+their issues thanks to the dev community.
 
 
--   Utilisateur non connecté (visiteur)
-    - 
+# Utilisateur non connecté (visiteur)
+Unregistered user may only explore all functions, but won't
+participate to develop the MakeMeDev community.
 
-Les visiteurs non connecté pourront seulement consulter les posts, ils ne pourront 
-donc pas participer à la création et amélioration de fonctions.
+#serveur
+[serveur](http://185.163.126.173:4021)

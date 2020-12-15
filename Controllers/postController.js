@@ -4,9 +4,10 @@ const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 /** @function
  * @name getPost
+ * @async
  * Get a post from database if our query isn't empty
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
@@ -19,8 +20,8 @@ exports.getPost = async (req, res, next)  => {
 /** @function
  * @name sendPost
  * Send a post to add in database if our post data isn't empty
- * @param {Request<{user:object, body:object, params:object}>} req - request received
- * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
@@ -34,8 +35,8 @@ exports.sendPost = async (req, res, next) => {
 /** @function
  * @name sendVote
  * Send a vote to like or dislike a post in DB
- * @param {Request<{user:object, body:object, params:object}>} req - request received
- * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
@@ -48,8 +49,8 @@ exports.sendVote = async (req, res, next)  => {
 /** @function
  * @name addResponse
  * Send a response to add to a post in DB
- * @param {Request<{user:object, body:object, params:object}>} req - request received
- * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
@@ -62,8 +63,8 @@ exports.addResponse = async (req, res, next)  => {
 /** @function
  * @name addCommentary
  * Send a comment to add to a post in DB
- * @param {Request<{user:object, body:object, params:object}>} req - request received
- * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
@@ -76,8 +77,8 @@ exports.addCommentary = async (req, res, next)  => {
 /** @function
  * @name updateFunction
  * Send a function to update it in a post in DB
- * @param {Request<{user:object, body:object, params:object}>} req - request received
- * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */

@@ -3,8 +3,8 @@ const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 /** @function
  * @name signUp
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
@@ -16,8 +16,8 @@ exports.signUp = async (req, res, next) => {
 
 /** @function
  * @name updateUser
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */
@@ -29,8 +29,8 @@ exports.updateUser = async (req, res, next) => {
 
 /** @function
  * @name signIn
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise<*|boolean|void>}
  */

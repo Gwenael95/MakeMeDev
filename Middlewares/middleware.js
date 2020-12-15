@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 /** @function
  * @name authenticateToken
  * Check User's token before authorized some community features
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {*}
  */

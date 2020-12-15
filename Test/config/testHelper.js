@@ -7,7 +7,7 @@ const { request, url} = require("./launcher")
  * If there should be some keys to avoid, we describe the exceptKeys, like for user's password .
  * @param {array} resKeys - an array containing keys from the response
  * @param {array} expectedKeys - an array containing expected keys (if adding username, we should find this field)
- * @param {array} exceptKeys - an array with exception keys, that we don't wan't to check
+ * @param {array} [exceptKeys=[]]  - an array with exception keys, that we don't wan't to check
  */
 function expectExcept(resKeys, expectedKeys, exceptKeys=[]){
     for (let key of expectedKeys){
@@ -61,7 +61,7 @@ function getBodyRes(response){
  * Get a post from a response at a defined position thanks to index.
  * We supposed that the searched post (an answer) is at index 0 from the response body
  * @param {object} res - response from api
- * @param {object} index - index of a post we want in the array of posts (answers)
+ * @param {object} [index=2] - index of a post we want in the array of posts (answers)
  * @returns {object}
  */
 function getPostAt(res, index=2){

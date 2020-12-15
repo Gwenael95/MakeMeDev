@@ -3,9 +3,9 @@
  * @name getHandler
  * Handle HTTP status code and body content to return in a response to Front team
  * For GET request
- * @param {{success: string, object}|{error: string}} data - object with success or error data
- * @param {string} notFoundMsg - message displayed if we got a success without data
- * @returns {{code: number, body: {error: string}}|{code: number, body: {error: *}}|{code: number, body: *}}
+ * @param {{success: object}|{error: string}} data - object with success or error data
+ * @param {string} [notFoundMsg="error"] - message displayed if we got a success without data
+ * @returns {{code: number, body: {error: string}}|{code: number, body: *}}
  */
 function getHandler(data, notFoundMsg="error"){
     if (data["success"]===null) {
@@ -22,6 +22,12 @@ function getHandler(data, notFoundMsg="error"){
 
 /** @function
  * @name getHandlerForUserPost
+ * Handle HTTP status code and body content to return in a response to Front team
+ * For GET request
+ * @param {{success: object}|{error: string}} user - user's data
+ * @param {{success: object}|{error: string}} post - post's data
+ * @param {string} [notFoundMsg="error"] - message displayed if we got a success without data
+ * @returns {{code: number, body: {success: {post: string | boolean | SrvPoller.success | Event, user: string | boolean | SrvPoller.success | Event}, token: *}}|{code: number, body: {error: string}}|{code: number, body: (*)}}
  */
 function getHandlerForUserPost(user, post, notFoundMsg="error"){
     if (user["success"] && post["success"]){
@@ -36,5 +42,6 @@ function getHandlerForUserPost(user, post, notFoundMsg="error"){
         return {code: 404, body: {error: "erreur en base de donnée"}}
     }
 }
+
 
 module.exports = {getHandler, getHandlerForUserPost}

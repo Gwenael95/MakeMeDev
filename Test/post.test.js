@@ -5,7 +5,9 @@ const { expectedResponseOnUserUpsert, expectExcept, getBodyRes, expectedStatus,
         prepareReqWithToken} = require("./config/testHelper")
 const post0 = post.post.post[0]
 
-
+/**
+ * @todo Make lot of tests, to test each possible situation
+ */
 describe('Post', () => {
     let newUser;
     let newPost;

@@ -1,3 +1,7 @@
+/**
+ * This file requires the modules {@link jsonwebtoken}
+ * @requires jsonwebtoken
+ */
 const jwt = require("jsonwebtoken");
 
 /** @function
