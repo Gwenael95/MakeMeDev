@@ -27,8 +27,8 @@ async function getUser(user) {
 }
 
 async function updateUser(user) {
-    const userData = await updateUserById(user, setUpdateValue(user, ["pseudo", "mail", "avatar"]) );
-    return closeUserAction(userData,"ce compte n'existe pas, impossible de mettre à jour" )
+    const userData = await updateUserById(user, setUpdateValue(user, ["pseudo", "mail", "avatar"]));
+    return closeUserAction(userData, "ce compte n'existe pas, impossible de mettre à jour")
 }
 //endregion
 

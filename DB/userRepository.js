@@ -65,10 +65,14 @@ async function updateUser(filter, update) {
  * @returns {Promise<{success: Object}|{error}>}
  */
 async function updateUserById(data, update) {
-    userSchema.plugin(uniqueValidator)
-    return await updateUser({_id: ObjectId(data.id)}, update)
+    try {
+        userSchema.plugin(uniqueValidator)
+        return await updateUser({_id: ObjectId(data.id)}, update)
+    }
+    catch (e) {
+        return {error : "erreur lors de la mise à jour de l'utilisateur"}
+    }
 }
-
 
 
 //region helpers

@@ -1,7 +1,8 @@
 const { request, url} = require("./config/launcher")
 const { post, responsePost, commentaryPost, user} = require("./models");
 const { expectedResponseOnUserUpsert, expectExcept, getBodyRes, expectedStatus,
-        getPostAt, getUserActivities, getAllPostReq, requestPostVote} = require("./config/expectedFunctions")
+        getPostAt, getUserActivities, getAllPostReq, requestPostVote,
+        prepareReqWithToken} = require("./config/testHelper")
 const post0 = post.post.post[0]
 
 
@@ -11,17 +12,16 @@ describe('Post', () => {
 
     beforeEach(async () => {
         newUser = await request.post(url + "users").send(user)
-        newPost = await request.post(url + "post")
-            .set('Authorization', 'Bearer ' + newUser.body.token)
-            .send(post)
+        newPost = await prepareReqWithToken(newUser, url + "post").send(post)
     })
 
+    //region create post and search posts
     it('should be able to create a post', async () => {
         const response = newPost;
         expect(Object.values(response.body).length).toEqual(2) //token & success
         expectedResponseOnUserUpsert(response)
         expectExcept(Object.keys(getBodyRes(response).user), Object.keys(user.user), ["password"])
-        expectExcept(Object.keys(getBodyRes(response).post), Object.keys(post.post), [])
+        expectExcept(Object.keys(getBodyRes(response).post), Object.keys(post.post))
     });
 
     it('should be able to search a post', async () => {
@@ -30,6 +30,7 @@ describe('Post', () => {
         expect(getBodyRes(response)[0].name).toBe("test")
         expectedStatus(response)
     });
+    //endregion
 
     //region vote (like or dislike)
     it('should be able to like a post if NEVER vote', async () => {
@@ -64,8 +65,6 @@ describe('Post', () => {
         expect(response2.body.error).toBe("update vote failed")
     });
 
-
-
     it('should be able to dislike a post', async () => {
         const response1 = await requestPostVote( newUser, newPost, 1)
         const postCheck1 = await getAllPostReq()
@@ -86,25 +85,26 @@ describe('Post', () => {
     });
     //endregion
 
-
+    //region add a post (answer) in a created post
     it('should be able to send response to a post', async () => {
-        const response = await request.post(url + 'post-add-response')
-            .set('Authorization', 'Bearer ' + newUser.body.token)
+        const response = await prepareReqWithToken(newUser, url + "post-add-response")
             .send({responsePost: responsePost, idPost:getBodyRes(newPost).post._id })
         const postCheck = await getAllPostReq()
         expect(getPostAt(postCheck, 3).description).toBe("better solution");
         expect(response.status).toBe(200);
         expect(getUserActivities(response).response).toContain(getPostAt(postCheck, 3)._id)
     });
+    //endregion
 
-
+    //region add commentary to a post
     it('should be able to send a commentary to a post', async () => {
-        const response = await request.post(url + 'post-add-commentary')
-            .set('Authorization', 'Bearer ' + newUser.body.token)
+        const response = await prepareReqWithToken(newUser, url + "post-add-commentary")
             .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
         const postCheck = await getAllPostReq()
         expect(response.status).toBe(200);
         expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
         expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
     });
+    //endregion
+
 });
