@@ -46,7 +46,7 @@ async function getPostByFunction(searchedData) {
  */
 async function getPostById(postId) {
     return await PostModel
-        .aggregate([{$match: {_id: ObjectId(postId)}}])
+        .findOne({_id: ObjectId(postId)})
         .exec()
         .then(result => {return {success: result}})
         .catch(err => {

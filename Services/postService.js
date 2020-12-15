@@ -24,12 +24,14 @@ async function get(search) {
     if (isDefinedAndNotNull(search.search)) {
         const objectSearchPost = getSearchPost(search.search)
         queryRes = await getPostByFunction(objectSearchPost);
+        return getHandler(sortAllPostByLike(queryRes), "Aucun post correspondant");
+
     }
     else {
         queryRes = await getPostById(search.postId);
+        queryRes.success = sortPostByLikes(queryRes.success)
+        return getHandler(queryRes, "ce post n'existe pas");
     }
-    return getHandler(sortAllPostByLike(queryRes), "ce post n'existe pas");
-
 }
 
 async function updateFunction(functionPost, idPost, user) {
