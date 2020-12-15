@@ -1,25 +1,6 @@
 const { create, get, updateVote, addPostResponse, addCommentary, updateFunction } = require("../Services/postService");
 const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
-/** @function
- * @name sendPost
- * Send a post to add in database if our post data isn't empty
- * @param {Request<{user:object, body:object, params:object}>} req - request received
- * @param {Response<{status:int}>} res - response to dispatched
- * @param {Function} next - get control to the next middleware function
- * @returns {Promise<*|boolean|void>}
- */
-exports.sendPost = async (req, res, next) => {
-    const {post} = req.body;
-    const response = emptyRequest(post) ? emptyRequest(post) : await create(post, req.user)
-    return res.status(response.code).send(response.body)
-};
-
-exports.sendVote = async (req, res, next)  => {
-    const {vote, idPost} =  req.body
-    const response = emptyRequest(vote) ? emptyRequest(vote) : await updateVote(vote, idPost, req.user)
-    return res.status(response.code).send(response.body)
-};
 
 /** @function
  * @name getPost
@@ -35,19 +16,71 @@ exports.getPost = async (req, res, next)  => {
     return res.status(response.code).send(response.body)
 };
 
+/** @function
+ * @name sendPost
+ * Send a post to add in database if our post data isn't empty
+ * @param {Request<{user:object, body:object, params:object}>} req - request received
+ * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise<*|boolean|void>}
+ */
+exports.sendPost = async (req, res, next) => {
+    const {post} = req.body;
+    const response = emptyRequest(post) ? emptyRequest(post) : await create(post, req.user)
+    return res.status(response.code).send(response.body)
+};
 
+
+/** @function
+ * @name sendVote
+ * Send a vote to like or dislike a post in DB
+ * @param {Request<{user:object, body:object, params:object}>} req - request received
+ * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise<*|boolean|void>}
+ */
+exports.sendVote = async (req, res, next)  => {
+    const {vote, idPost} =  req.body
+    const response = emptyRequest(vote) ? emptyRequest(vote) : await updateVote(vote, idPost, req.user)
+    return res.status(response.code).send(response.body)
+};
+
+/** @function
+ * @name addResponse
+ * Send a response to add to a post in DB
+ * @param {Request<{user:object, body:object, params:object}>} req - request received
+ * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise<*|boolean|void>}
+ */
 exports.addResponse = async (req, res, next)  => {
     const {responsePost, idPost} =  req.body
     const response = emptyRequest(responsePost) ? emptyRequest(responsePost) : await addPostResponse(responsePost, idPost, req.user)
     return res.status(response.code).send(response.body)
 };
 
+/** @function
+ * @name addCommentary
+ * Send a comment to add to a post in DB
+ * @param {Request<{user:object, body:object, params:object}>} req - request received
+ * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise<*|boolean|void>}
+ */
 exports.addCommentary = async (req, res, next)  => {
     const {commentaryPost, idPost} =  req.body
     const response = emptyRequest(commentaryPost) ? emptyRequest(commentaryPost) : await addCommentary(commentaryPost, idPost, req.user)
     return res.status(response.code).send(response.body)
 };
 
+/** @function
+ * @name updateFunction
+ * Send a function to update it in a post in DB
+ * @param {Request<{user:object, body:object, params:object}>} req - request received
+ * @param {Response<{status:int}>} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise<*|boolean|void>}
+ */
 exports.updateFunction = async (req, res, next)  => {
     const {functionPost, idPost} =  req.body
     const response = emptyRequest(functionPost) ? emptyRequest(functionPost) : await updateFunction(functionPost, idPost, req.user)
