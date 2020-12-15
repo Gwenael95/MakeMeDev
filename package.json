@@ -4,7 +4,18 @@
   "description": "projet web 2020",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "NODE_ENV=test jest --detectOpenHandles"
+  },
+  "jest": {
+    "verbose": true,
+    "globalSetup": "<rootDir>/Test/config/setup.js",
+    "globalTeardown": "<rootDir>/Test/config/teardown.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/Test/config/setupAfterEnv.js"
+    ],
+    "testEnvironment": "<rootDir>/Test/config/environment.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +34,24 @@
   },
   "homepage": "https://github.com/Gwenael95/MakeMeDev#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "@jest/globals": "^26.6.2",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "express": "^4.17.1",
+    "jest-environment-node": "^26.6.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.11.5",
+    "mongoose-unique-validator": "^2.0.3",
+    "password-hash": "^1.2.2"
+  },
+  "devDependencies": {
+    "cookies": "^0.8.0",
+    "cors": "^2.8.5",
+    "jest": "^26.6.3",
+    "mongodb-memory-server": "^6.9.2",
+    "supertest": "^6.0.1"
   }
 }
