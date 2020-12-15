@@ -3,6 +3,7 @@ const {signUp, signIn, updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
 const {setUpdateValue} = require('../Tools/DB/requestOperator')
 
+//region exported functions
 /** @function
  * @name addUser
  * Create a new user, that will be add in database
@@ -11,8 +12,7 @@ const {setUpdateValue} = require('../Tools/DB/requestOperator')
  */
 async function addUser(user) {
     const result = await signUp(user);
-    generateAccessToken(result)
-    return getHandler(result);
+    return closeUserAction(result )
 }
 
 /** @function
@@ -23,17 +23,20 @@ async function addUser(user) {
  */
 async function getUser(user) {
     const userData = await signIn(user);
-    generateAccessToken(userData)
-    return getHandler(userData , "ce compte n'existe pas")
+    return closeUserAction(userData,"aucun compte ne correspond à cette recherche" )
 }
 
 async function updateUser(user) {
-    const userData = await updateUserById(user, setUpdateValue(user, ["pseudo", "mail", "avatar"]) );
-    generateAccessToken(userData);
-    return getHandler(userData , "ce compte n'existe pas")
+    const userData = await updateUserById(user, setUpdateValue(user, ["pseudo", "mail", "avatar"]));
+    return closeUserAction(userData, "ce compte n'existe pas, impossible de mettre à jour")
 }
+//endregion
 
-
-
+//region not exported function
+function closeUserAction(userData, msg="erreur en base de données"){
+    generateAccessToken(userData);
+    return getHandler(userData , msg)
+}
+//endregion
 
 module.exports = {addUser, getUser, updateUser};

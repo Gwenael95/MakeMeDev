@@ -25,7 +25,7 @@ function getHandler(data, notFoundMsg="error"){
  */
 function getHandlerForUserPost(user, post, notFoundMsg="error"){
     if (user["success"] && post["success"]){
-        return {code: 200, body: {success:{token:user.token, user:user.success, post:post.success}}}
+        return {code: 200, body: {success:{ user:user.success, post:post.success}, token:user.token}}
     }
     else if (user["success"]===null || user["success"]===null) {
         return {code: 404, body: {error: notFoundMsg}}

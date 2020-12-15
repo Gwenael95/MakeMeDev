@@ -105,3 +105,11 @@ exports.responsePost = {
 exports.commentaryPost = {
     "commentary" : "first"
 }
+
+exports.user = {
+    user: {
+        pseudo: 'userName',
+            mail: 'useremail@email.com',
+            password: '123123',
+    }
+}

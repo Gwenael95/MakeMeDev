@@ -1,49 +1,13 @@
 const {getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
-const {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary} = require("../DB/postRepository")
+const {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary, updatePostFunction} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
 const {updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
 const {isDefinedAndNotNull, isUndefinedOrNull} = require("../Tools/Common/undefinedControl")
-const {setUpdateValue} = require('../Tools/DB/requestOperator')
 
 let test = ""
 
 //region exported methods
-/** @function
- * @name create
- * Create a new post, that will be add in database.
- * We had one more field : paramsTypes to have an object with a number of occurrence of each params
- * It will make it simpler to search if a post contains an amount of params
- * @param {object} post - post to add, should be really similar to postModels {@link '../Models/postModels'}.
- * @param {object} user - user to update, should be really similar to userModels {@link '../Models/userModels'}.
- * @returns {Promise<{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}>}
- */
-async function create(post, user) {
-    setTypes(post, "params");
-    setTypes(post, "returns");
-    post.author = post.post[0].author = {
-        "userId": user._id,
-        "pseudo": user.pseudo,
-        "avatar": user.avatar
-    }
-    const result = await addPost(post, user);
-    if (result.success) {
-        const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
-        generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes, result, "mise à jour des votes utilisateur impossible");
-    }
-    return getHandler(result);
-}
-
-/*
-async function updateUserIfSuccess(isSuccess, function) {
-    if (isSuccess){
-        const userRes = await updateUserById({id:user._id, post:post}, ["post"])
-        generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
-    }
-}*/
-
 
 /** @function
  * @name get
@@ -58,6 +22,47 @@ async function get(post) {
     return getHandler(sortAllPostByLike(await getPost(objectSearchPost)), "ce post n'existe pas");
 }
 
+async function updateFunction(functionPost, idPost, user) {
+    if (functionPost) {
+        return getHandler(await updatePostFunction(functionPost, idPost), "mise à jour de la fonction réussie")
+    }
+    return getHandler({error: "update response failed"}, "mise à jou du post impossible");
+}
+
+
+/** @function
+ * @name create
+ * Create a new post, that will be add in database.
+ * We had one more field : paramsTypes to have an object with a number of occurrence of each params
+ * It will make it simpler to search if a post contains an amount of params
+ * @param {object} post - post to add, should be really similar to postModels {@link '../Models/postModels'}.
+ * @param {object} user - user to update, should be really similar to userModels {@link '../Models/userModels'}.
+ * @returns {Promise<{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}>}
+ */
+async function create(post, user) {
+    setTypes(post, "params");
+    setTypes(post, "returns");
+    addAuthor(user ,post)
+    addAuthor(user ,post.post[0])
+    const result = await addPost(post, user);
+    if (result.success) {
+        const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
+        return closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
+    }
+    return getHandler(result);
+}
+
+/*
+async function updateUserIfSuccess(isSuccess, function) {
+    if (isSuccess){
+        const userRes = await function
+        generateAccessToken(userRes)
+        return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
+    }
+}*/
+
+
+
 async function updateVote(vote, idPost, user) {
     const likeOrDislike = vote === 1 ? "like" : "dislike"
     const opposite = vote === 1 ? "dislike" : "like"
@@ -68,41 +73,30 @@ async function updateVote(vote, idPost, user) {
             $push: {["activities." + likeOrDislike]: result.postId},
             $pull: {["activities." + opposite]: result.postId}
         })
-        generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes, result, "mise à jour des votes utilisateur impossible");
+        return closeUserUpdateAction(userRes, result, "ajout du " + likeOrDislike + " sur le post " + idPost + " impossible")
     }
     return getHandler({error: "update vote failed"}, "mise à jour des votes du post impossible");
 }
 
-async function updatePost(responsePost, idPost, user) {
-    responsePost['author'] = {
-        userId: user._id,
-        pseudo: user.pseudo,
-        avatar: user.avatar
-    }
+async function addPostResponse(responsePost, idPost, user) {
+    addAuthor(user, responsePost)
     if (responsePost['function'] && responsePost['description']) {
         const result = await updatePostResponse(responsePost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.response"]: result.responseId}})
-            generateAccessToken(userRes)
-            return getHandlerForUserPost(userRes, result, "mise à jour du post impossible");
+            return closeUserUpdateAction(userRes, result, "ajout d'une nouvelle reponse , mais mis à jour de l'utilisateur impossible")
         }
     }
-    return getHandler({error: "update response failed"}, "mise à jou du post impossible");
+    return getHandler({error: "update response failed"}, "ajout de reponse au post impossible");
 }
 
-async function updateCommentary(commentaryPost, idPost, user) {
-    commentaryPost['author'] = {
-        userId: user._id,
-        pseudo: user.pseudo,
-        avatar: user.avatar
-    }
+async function addCommentary(commentaryPost, idPost, user) {
+    addAuthor(user, commentaryPost)
     if (commentaryPost['commentary']) {
         const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
-            generateAccessToken(userRes)
-            return getHandlerForUserPost(userRes, result, "ajout du commentaires impossible");
+            return closeUserUpdateAction(userRes, result, "ajout du commentaires, mais mis à jour de l'utilisateur impossible")
         }
     }
     return getHandler({error: "update response failed"}, "ajout du commentaires impossible");
@@ -112,8 +106,21 @@ async function updateCommentary(commentaryPost, idPost, user) {
 
 
 //region not exported functions
-function setTypes(post, paramsOrResults) {
+function closeUserUpdateAction(userData, postData, msg="erreur en base de données"){
+    generateAccessToken(userData)
+    return getHandlerForUserPost(userData, postData, "ajout du commentaires impossible");
+}
 
+
+function addAuthor(author, object){
+    object.author =  {
+        "userId": author._id,
+        "pseudo": author.pseudo,
+        "avatar": author.avatar
+    }
+}
+
+function setTypes(post, paramsOrResults) {
     if (isUndefinedOrNull(post[paramsOrResults])) {
         post[paramsOrResults] = []
     }
@@ -199,4 +206,4 @@ function sortPostByLikes(data) {
 
 //endregion
 
-module.exports = {create, get, updateVote, updatePost, updateCommentary};
+module.exports = {create, get, updateVote, addPostResponse, addCommentary, updateFunction};
