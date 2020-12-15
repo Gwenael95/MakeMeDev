@@ -32,6 +32,13 @@ describe('Post', () => {
         expect(getBodyRes(response)[0].name).toBe("test")
         expectedStatus(response)
     });
+
+    it('should be able to search a post', async () => {
+        const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post._id)
+        expect(typeof getBodyRes(response)).toBe("object")
+        expect(getBodyRes(response)[0].name).toBe("test")
+        expectedStatus(response)
+    });
     //endregion
 
     //region vote (like or dislike)

@@ -12,8 +12,7 @@ const {emptyRequest} = require("../Tools/Controller/controllerHelper");
  * @returns {Promise<*|boolean|void>}
  */
 exports.getPost = async (req, res, next)  => {
-    const {search} =  req.query
-    const response = emptyRequest(search) ? emptyRequest(search) : await get(search)
+    const response = emptyRequest(req.search) ? emptyRequest(req.search) : await get(req.search)
     return res.status(response.code).send(response.body)
 };
 

@@ -1,5 +1,6 @@
 const {getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
-const {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary, updatePostFunction} = require("../DB/postRepository")
+const {addPost, getPostByFunction, getPostById, updateLikeOrDislike, updatePostResponse,
+    updatePostResponseCommentary, updatePostFunction} = require("../DB/postRepository")
 const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
 const {updateUserById} = require("../DB/userRepository");
 const {generateAccessToken} = require("../Tools/token")
@@ -14,12 +15,21 @@ let test = ""
  * Get posts depending on a request get thanks to a string with strict typography to demarcate
  * each field we have to check, and if not exist it will not be searched at all
  * Structure : [functionName](param1, param2, ?){returnedVar}"functionDescription"#tag1, tag2, tag3#
- * @param {string} post - post's field to find in database
+ * OR use a post id to get the corresponding post.
+ * @param {object} search - search's field to find in database
  * @returns {Promise<{code: number, body: {error: *}}|{code: number, body: *}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
-async function get(post) {
-    const objectSearchPost = getSearchPost(post)
-    return getHandler(sortAllPostByLike(await getPost(objectSearchPost)), "ce post n'existe pas");
+async function get(search) {
+    let queryRes
+    if (isDefinedAndNotNull(search.search)) {
+        const objectSearchPost = getSearchPost(search.search)
+        queryRes = await getPostByFunction(objectSearchPost);
+    }
+    else {
+        queryRes = await getPostById(search.postId);
+    }
+    return getHandler(sortAllPostByLike(queryRes), "ce post n'existe pas");
+
 }
 
 async function updateFunction(functionPost, idPost, user) {

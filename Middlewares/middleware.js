@@ -19,4 +19,11 @@ function authenticateToken(req, res, next) {
     })
 }
 
-module.exports = {authenticateToken}
+function checkIfIdOrName(req, res, next) {
+    const {search, postId} =  req.query
+    req.search = {search:search, postId:postId}
+    next()
+}
+
+
+module.exports = {authenticateToken, checkIfIdOrName}
