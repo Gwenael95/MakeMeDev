@@ -6,7 +6,7 @@
  */
 function emptyRequest (reqData){
     if (reqData === undefined || Object.keys(reqData).length === 0 && reqData.constructor === Object) {
-        return {code: 404, body: {error: "Requete vide"}}
+        return {code: 400, body: {error: "Requete vide"}}
     }
 }
 

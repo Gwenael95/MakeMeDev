@@ -28,7 +28,8 @@ describe('Post', () => {
 
     it('should not be able to create a post because bad post', async () => {
         const response = await prepareReqWithToken(newUser, url + "post").send({post:{name:"testBadPost"}});
-        expect(response.status).toBe(404)
+        //expect(response.status).toBe(404)
+        expectedStatus(response, 400)
     });
 
     it('should be able to search a post', async () => {
@@ -38,7 +39,7 @@ describe('Post', () => {
         expectedStatus(response)
     });
 
-    it('should be able to search a post', async () => {
+    it('should be able to search a post by id', async () => {
         const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post._id)
         expect(typeof getBodyRes(response)).toBe("object")
         expect(getBodyRes(response).name).toBe("test")
@@ -49,10 +50,8 @@ describe('Post', () => {
     //region vote (like or dislike)
     it('should be able to like a post if NEVER vote', async () => {
         const response = await requestPostVote( newUser, newPost, 1)
-        console.log(response.body)
-
         const postCheck = await getAllPostReq()
-        expectedStatus(response)
+        expectedStatus(response, 201)
 
         expect(getPostAt(postCheck).like).toBe(post0.like+1)
         expect(getUserActivities(response).like).toContain(getBodyRes(newPost).post.post[0]._id)
@@ -61,7 +60,7 @@ describe('Post', () => {
     it('should be able to dislike a post if NEVER vote', async () => {
         const response = await requestPostVote( newUser, newPost, -1)
         const postCheck = await getAllPostReq()
-        expectedStatus(response)
+        expectedStatus(response, 201)
         expect(getPostAt(postCheck).dislike).toBe(post0.dislike+1)
         expect(getUserActivities(response).dislike).toContain(getBodyRes(newPost).post.post[0]._id)
     });
@@ -73,8 +72,8 @@ describe('Post', () => {
         const response2 = await requestPostVote( response1, newPost, 1)
         const postCheck2 = await getAllPostReq()
 
-        expect(response1.status).toBe(200);
-        expect(response2.status).toBe(404);
+        expectedStatus(response1, 201)
+        expectedStatus(response2, 500)
         expect(getPostAt(postCheck1).like).toBe(post0.like+1)
         expect(getPostAt(postCheck2).like).toBe(post0.like+1)
         expect(getUserActivities(response1).like).toContain(getBodyRes(newPost).post.post[0]._id)
@@ -87,9 +86,9 @@ describe('Post', () => {
         const response2 = await requestPostVote( response1, newPost, -1)
         const postCheck2 = await getAllPostReq()
 
+        expectedStatus(response1, 201)
+        expectedStatus(response2, 201)
 
-        expect(response1.status).toBe(200);
-        expect(response2.status).toBe(200);
         expect(getPostAt(postCheck1).like).toBe(post0.like+1)
         expect(getPostAt(postCheck1).dislike).toBe(post0.dislike)
         expect(getPostAt(postCheck2).like).toBe(post0.like)
@@ -106,8 +105,8 @@ describe('Post', () => {
         const response = await prepareReqWithToken(newUser, url + "post-add-response")
             .send({responsePost: responsePost, idPost:getBodyRes(newPost).post._id })
         const postCheck = await getAllPostReq()
+        expectedStatus(response, 201)
         expect(getPostAt(postCheck, 3).description).toBe("better solution");
-        expect(response.status).toBe(200);
         expect(getUserActivities(response).response).toContain(getPostAt(postCheck, 3)._id)
     });
     //endregion
@@ -117,7 +116,7 @@ describe('Post', () => {
         const response = await prepareReqWithToken(newUser, url + "post-add-commentary")
             .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
         const postCheck = await getAllPostReq()
-        expect(response.status).toBe(200);
+        expectedStatus(response, 201)
         expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
         expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
     });
@@ -132,7 +131,7 @@ describe('Post', () => {
         let comment = getPostAt(postCheck).commentary
         let comment2 = getPostAt(postCheck2).commentary
 
-        expect(response1.status).toBe(200);
+        expectedStatus(response1, 201)
         expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
         expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
         expect(comment[comment.length-1].date< comment2[comment2.length-1].date).toBe(true)

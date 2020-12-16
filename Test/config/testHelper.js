@@ -23,7 +23,7 @@ function expectExcept(resKeys, expectedKeys, exceptKeys=[]){
  * @param {object} response - an object containing response's data
  */
 function expectedResponseOnUserUpsert(response){
-    expectedStatus(response)
+    expectedStatus(response, 201)
     expectExcept(  Object.keys(getBodyRes(response)), [ "user", "post"] )
 }
 
@@ -31,9 +31,10 @@ function expectedResponseOnUserUpsert(response){
  * @name expectedStatus
  * Add an Expect status 200.
  * @param {object} response - an object containing response's data
+ * @param {int} [status=200] - expected status
  */
-function expectedStatus(response){
-    expect(response.status).toBe(200);
+function expectedStatus(response, status= 200){
+    expect(response.status).toBe(status);
 }
 
 //endregion
@@ -64,7 +65,6 @@ function getBodyRes(response){
  * @returns {object}
  */
 function getPostAt(res, index=2){
-    console.log(res.body)
     return getBodyRes(res)[0].post[index]
 }
 
