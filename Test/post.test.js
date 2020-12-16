@@ -26,6 +26,11 @@ describe('Post', () => {
         expectExcept(Object.keys(getBodyRes(response).post), Object.keys(post.post))
     });
 
+    it('should not be able to create a post because bad post', async () => {
+        const response = await prepareReqWithToken(newUser, url + "post").send({post:{name:"testBadPost"}});
+        expect(response.status).toBe(404)
+    });
+
     it('should be able to search a post', async () => {
         const response = await request.get(url + 'post?search=test(int){int, ?} "function to multiply" #test#')
         expect(typeof getBodyRes(response)).toBe("object")

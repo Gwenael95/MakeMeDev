@@ -53,16 +53,21 @@ async function updateFunction(functionPost, idPost, user) {
  * @returns {Promise<{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
 async function create(post, user) {
-    setTypes(post, "params");
-    setTypes(post, "returns");
-    addAuthor(user ,post)
-    addAuthor(user ,post.post[0])
-    const result = await addPost(post, user);
-    if (result.success) {
-        const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
-        return closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
+    try {
+        setTypes(post, "params");
+        setTypes(post, "returns");
+        addAuthor(user ,post)
+        addAuthor(user ,post.post[0])
+        const result = await addPost(post, user);
+        if (result.success) {
+            const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
+            return closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
+        }
+        return getHandler(result);
     }
-    return getHandler(result);
+    catch (e) {
+        return getHandler({error: "erreur lors de la création du post"})
+    }
 }
 
 /*
