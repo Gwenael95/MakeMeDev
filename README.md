@@ -7,13 +7,13 @@ to post and search functions from other developers.
 * [User](#User)
 * [Search](#Search)
 
-##Initialisation
+## Initialisation
 To run this server:
 
     node index.js
     
-##User
-###Sign in user
+## User
+### Signed in user
 Signed in user will create an account with mail, pseudo, password.
 It will allow to post new functions to solve a problematic.
 
@@ -35,13 +35,13 @@ thanks to like and dislike.
 This will allow every user, even if not registered, to find solution to
 their issues thanks to the dev community.
 
-###Utilisateur non connecté (visiteur)
+### Utilisateur non connecté (visiteur)
 
 Unregistered user may only explore all functions, but won't
 participate to develop the MakeMeDev community.
 
-##Search
-###Which are criteria to search function
+## Search
+### Which are criteria to search function
 You can search function by: 
 -   name
 -   params type 
@@ -49,8 +49,8 @@ You can search function by:
 -   description
 -   tags
 
-###How to write it
-####Function name
+### How to write it
+#### Function name
 If you want to search by function name, 
 first step is to write it.
 Function name is `always` at the beginning of a request.
@@ -64,7 +64,7 @@ accurate name       => sortMyArray
 less precise name   => sortMy      
 ```
 
-####Params
+#### Params
 If you want to search by params, 
 first step is to write brackets `()`.
 Into those brackets, write the type of params to search.
@@ -82,7 +82,7 @@ one int             => (int)
 1 int, 2 unknowns   => (int, ?, ?)
 ```
 
-####Returns
+#### Returns
 If you want to search by returns, 
 first step is to write braces `{}`.
 Into those braces, write the type of returns to search.
@@ -95,7 +95,7 @@ unknown         => {?}
 one int or null => {int, null}
 ```
 
-####Description
+#### Description
 If you want to search by description, 
 first step is to write double quote `""`.
 Then, write a complete or a part of the description.
@@ -107,7 +107,7 @@ accurate description       => "a function to sort array returning the new array 
 less precise description   => "function to sort"      
 ```
 
-####Tags
+#### Tags
 If you want to search by tags, first step is to write square brackets `[]`.
 Into those square brackets, write all tags you want to search.
 >We search all function with all your tags or more.
@@ -120,7 +120,7 @@ Example:
 2 tags => [sort, easy]    
 ```
 
-###Combination
+### Combination
 Each of those could be used to search function or not.
 You can use a combination of these to accurate your search.
 
