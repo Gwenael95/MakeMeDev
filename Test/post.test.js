@@ -49,6 +49,8 @@ describe('Post', () => {
     //region vote (like or dislike)
     it('should be able to like a post if NEVER vote', async () => {
         const response = await requestPostVote( newUser, newPost, 1)
+        console.log(response.body)
+
         const postCheck = await getAllPostReq()
         expectedStatus(response)
 

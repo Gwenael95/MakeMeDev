@@ -64,6 +64,7 @@ function getBodyRes(response){
  * @returns {object}
  */
 function getPostAt(res, index=2){
+    console.log(res.body)
     return getBodyRes(res)[0].post[index]
 }
 
