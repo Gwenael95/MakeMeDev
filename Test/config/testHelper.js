@@ -24,7 +24,6 @@ function expectExcept(resKeys, expectedKeys, exceptKeys=[]){
  */
 function expectedResponseOnUserUpsert(response){
     expectedStatus(response)
-    //expect().toStrictEqual(["user", "post"])
     expectExcept(  Object.keys(getBodyRes(response)), [ "user", "post"] )
 }
 
@@ -86,7 +85,7 @@ function getUserActivities(res){
  * @returns {object}
  */
 async function getAllPostReq(){
-    return await request.get(url + 'post?search=[]')
+    return await request.get(url + 'post?search=')
 }
 
 /** @function
@@ -99,8 +98,8 @@ async function getAllPostReq(){
  */
 async function requestPostVote(user, post, voteValue ){
     //console.log(user.body)
-    return await request.post(url + 'post-vote')
-        .set('Authorization', 'Bearer ' + user.body.token)
+
+    return await prepareReqWithToken(user, url + 'post-vote')
         .send({vote:voteValue, idPost:getBodyRes(post).post.post[0]._id})
 }
 //endregion
