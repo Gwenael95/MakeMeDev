@@ -8,7 +8,7 @@ const { getSearchPost} = require("../Tools/Services/searchPost");
 const { isDefinedAndNotNull} = require("../Tools/Common/undefinedControl");
 const { addDate, addAuthor, setTypes} = require("../Tools/Services/addField");
 const { sortPostByLikes, sortAllPostByLike} = require("../Tools/Services/sortPost");
-const { getHandler, getHandlerForUserPost} = require("../Tools/Services/responseHandler");
+const { getHandler, getHandlerForUserPost, updateDbHandler} = require("../Tools/Services/responseHandler");
 //endregion
 
 //region exported methods
@@ -37,9 +37,9 @@ async function get(search) {
 
 async function updateFunction(functionPost, idPost, user) {
     if (functionPost) {
-        return getHandler(await updatePostFunction(functionPost, idPost), "mise à jour de la fonction réussie")
+        return updateDbHandler(await updatePostFunction(functionPost, idPost), "mise à jour de la fonction réussie", 500)
     }
-    return getHandler({error: "update response failed"}, "mise à jou du post impossible");
+    return updateDbHandler({error: "update response failed"}, "mise à jour du post impossible");
 }
 
 
@@ -63,23 +63,12 @@ async function create(post, user) {
             const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
             return closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
         }
-        return getHandler(result);
+        return updateDbHandler(result, "mis a jour du post impossible", 500);
     }
     catch (e) {
-        return getHandler({error: "erreur lors de la création du post"})
+        return updateDbHandler({error: "erreur lors de la création du post"})
     }
 }
-
-/*
-async function updateUserIfSuccess(isSuccess, function) {
-    if (isSuccess){
-        const userRes = await function
-        generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes,result, "mise à jour des votes utilisateur impossible");
-    }
-}*/
-
-
 
 async function updateVote(vote, idPost, user) {
     const likeOrDislike = vote === 1 ? "like" : "dislike"
@@ -94,7 +83,7 @@ async function updateVote(vote, idPost, user) {
         result.success = sortPostByLikes(result.success)
         return closeUserUpdateAction(userRes, result, "ajout du " + likeOrDislike + " sur le post " + idPost + " impossible")
     }
-    return getHandler({error: "update vote failed"}, "mise à jour des votes du post impossible");
+    return updateDbHandler({error: "update vote failed"}, "mise à jour des votes du post impossible", 500);
 }
 
 async function addPostResponse(responsePost, idPost, user) {
@@ -108,7 +97,7 @@ async function addPostResponse(responsePost, idPost, user) {
             return closeUserUpdateAction(userRes, result, "ajout d'une nouvelle reponse , mais mis à jour de l'utilisateur impossible")
         }
     }
-    return getHandler({error: "update response failed"}, "ajout de reponse au post impossible");
+    return updateDbHandler({error: "update response failed"}, "ajout de reponse au post impossible");
 }
 
 async function addCommentary(commentaryPost, idPost, user) {
@@ -122,7 +111,7 @@ async function addCommentary(commentaryPost, idPost, user) {
             return closeUserUpdateAction(userRes, result, "ajout du commentaires, mais mis à jour de l'utilisateur impossible")
         }
     }
-    return getHandler({error: "update response failed"}, "ajout du commentaires impossible");
+    return updateDbHandler({error: "update response failed"}, "ajout du commentaires impossible");
 }
 
 //endregion
