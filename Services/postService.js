@@ -104,6 +104,7 @@ async function addPostResponse(responsePost, idPost, user) {
         const result = await updatePostResponse(responsePost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.response"]: result.responseId}})
+            result.success = sortPostByLikes(result.success)
             return closeUserUpdateAction(userRes, result, "ajout d'une nouvelle reponse , mais mis à jour de l'utilisateur impossible")
         }
     }
@@ -117,6 +118,7 @@ async function addCommentary(commentaryPost, idPost, user) {
         const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
+            result.success = sortPostByLikes(result.success)
             return closeUserUpdateAction(userRes, result, "ajout du commentaires, mais mis à jour de l'utilisateur impossible")
         }
     }
