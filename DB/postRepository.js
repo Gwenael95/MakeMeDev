@@ -23,12 +23,12 @@ async function addPost(postData, user) {
 
 
 /** @function
- * @name getPost
+ * @name getPostByFunction
  * Get post in database depending on a many fields, and return the result of this try
  * @param {object} searchedData - data to search in database
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
  */
-async function getPost(searchedData) {
+async function getPostByFunction(searchedData) {
     return await PostModel
         .aggregate(getPipeline(searchedData))//.sort({"post.totalLike":1})
         .exec()
@@ -37,6 +37,23 @@ async function getPost(searchedData) {
             return {error: err.errors}
         });
 }
+
+/** @function
+ * @name getPostById
+ * Get post in database depending on post Id, and return the result of this try
+ * @param {object} postId - post's Id to search in database
+ * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ */
+async function getPostById(postId) {
+    return await PostModel
+        .findOne({_id: ObjectId(postId)})
+        .exec()
+        .then(result => {return {success: result}})
+        .catch(err => {
+            return {error: err.errors}
+        });
+}
+
 
 
 function getCommentaryId(result, id) {
@@ -257,4 +274,5 @@ function getMatchStringRegex(data, dbField){
 //endregion
 
 
-module.exports = {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary, updatePostFunction};
+module.exports = {addPost, getPostByFunction, getPostById, updateLikeOrDislike,
+    updatePostResponse, updatePostResponseCommentary, updatePostFunction};

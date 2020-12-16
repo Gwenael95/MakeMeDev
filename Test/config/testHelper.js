@@ -23,8 +23,7 @@ function expectExcept(resKeys, expectedKeys, exceptKeys=[]){
  * @param {object} response - an object containing response's data
  */
 function expectedResponseOnUserUpsert(response){
-    expectedStatus(response)
-    //expect().toStrictEqual(["user", "post"])
+    expectedStatus(response, 201)
     expectExcept(  Object.keys(getBodyRes(response)), [ "user", "post"] )
 }
 
@@ -32,9 +31,10 @@ function expectedResponseOnUserUpsert(response){
  * @name expectedStatus
  * Add an Expect status 200.
  * @param {object} response - an object containing response's data
+ * @param {int} [status=200] - expected status
  */
-function expectedStatus(response){
-    expect(response.status).toBe(200);
+function expectedStatus(response, status= 200){
+    expect(response.status).toBe(status);
 }
 
 //endregion
@@ -86,7 +86,7 @@ function getUserActivities(res){
  * @returns {object}
  */
 async function getAllPostReq(){
-    return await request.get(url + 'post?search=[]')
+    return await request.get(url + 'post?search=')
 }
 
 /** @function
@@ -99,8 +99,8 @@ async function getAllPostReq(){
  */
 async function requestPostVote(user, post, voteValue ){
     //console.log(user.body)
-    return await request.post(url + 'post-vote')
-        .set('Authorization', 'Bearer ' + user.body.token)
+
+    return await prepareReqWithToken(user, url + 'post-vote')
         .send({vote:voteValue, idPost:getBodyRes(post).post.post[0]._id})
 }
 //endregion

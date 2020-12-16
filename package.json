@@ -40,6 +40,7 @@
     "esdoc": "^1.1.0",
     "esdoc-standard-plugin": "^1.0.0",
     "express": "^4.17.1",
+    "express-rate-limit": "^5.2.3",
     "jest-environment-node": "^26.6.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.3",
