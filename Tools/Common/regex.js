@@ -4,7 +4,7 @@ const searchRegex = {
     params: /(?<=\()(.*)(?=\))/g,
     returns : /(?<=\{)(.*)(?=\})/g,
     description : /(?<=\")(.*)(?=\")/g,
-    tags : /(?<=\#)(.*)(?=\#)/g,
+    tags : /(?<=\[)(.*)(?=\])/g,
 }
 
 module.exports = {searchRegex}
