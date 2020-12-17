@@ -67,6 +67,9 @@ async function create(post, user) {
         setTypes(post, "returns");
         addAuthor(user ,post)
         addAuthor(user ,post.post[0])
+        addDate(post.post[0])
+        addDate(post)
+
         const result = await addPost(post, user);
         if (result.success) {
             const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
@@ -134,7 +137,7 @@ async function updateVote(vote, idPost, user) {
  */
 async function addPostResponse(responsePost, idPost, user) {
     addAuthor(user, responsePost)
-    addDate(responsePost, "creationDate")
+    addDate(responsePost)
     if (responsePost['function'] && responsePost['description']) {
         const result = await updatePostResponse(responsePost, idPost, user)
         if (result.success !== null && result.success !== undefined) {

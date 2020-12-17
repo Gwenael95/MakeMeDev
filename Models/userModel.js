@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {postSchema} = require("./postModel");
 
 /**
  * Our User Model used for mongoDB {@link '../DB/userRepository.js'}.

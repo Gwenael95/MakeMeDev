@@ -12,8 +12,9 @@ exports.postSchema = new mongoose.Schema({
             userId: {type: mongoose.Types.ObjectId, required: true},
             pseudo: {type: String, required: true},
             avatar: {type: String, required: true},
-            creationDate: {type: String, default:  new Date().getTime() / 1000}
         },
+        creationDate: {type: String, default:  new Date().getTime() / 1000},
+
         params: [
             {
                 name: {type: String, required: true},

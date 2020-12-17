@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 /** @function
  * @name authenticateToken
- * Check User's token before authorized some community features
+ * Check User's token before authorized some community features, add user field in req.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -19,11 +19,18 @@ function authenticateToken(req, res, next) {
     })
 }
 
-function checkIfIdOrName(req, res, next) {
+/** @function
+ * @name handleGetPost
+ * Allow to search post by id or with several criteria extracted from a string.
+ * @param {Object.<Request>} req - request received
+ * @param {Object.<Response>} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ */
+function handleGetPost(req, res, next) {
     const {search, postId} =  req.query
     req.search = {search:search, postId:postId}
     next()
 }
 
 
-module.exports = {authenticateToken, checkIfIdOrName}
+module.exports = {authenticateToken, handleGetPost}

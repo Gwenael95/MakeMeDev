@@ -119,7 +119,7 @@ describe('Post', () => {
         expect(getPostAt(postCheck1).like).toBe(post0.like+1)
         expect(getPostAt(postCheck2).like).toBe(post0.like+1)
         expect(getUserActivities(response1).like).toContain(getBodyRes(newPost).post.post[0]._id)
-        expect(response2.body.error).toBe("update vote failed")
+        expect(response2.body.error).toBe("Update vote failed")
     });
 
     /**

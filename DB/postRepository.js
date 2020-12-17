@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {postSchema} = require("../Models/postModel");
 const PostModel = mongoose.model('posts', postSchema)
-const {countOccurrencesFromArray} = require("../Tools/Common/countOccurence")
+const {countOccurrencesFromArray} = require("../Tools/Common/countOccurrence")
 const {filterDelSpaces} = require("../Tools/Common/stringOperation")
 const ObjectId = mongoose.Types.ObjectId;
 

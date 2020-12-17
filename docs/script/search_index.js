@@ -415,8 +415,8 @@ window.esdocSearchIndex = [
   ],
   [
     "makemedev/tools/common/countoccurence.js",
-    "file/MakeMeDev/Tools/Common/countOccurence.js.html",
-    "MakeMeDev/Tools/Common/countOccurence.js",
+    "file/MakeMeDev/Tools/Common/countOccurrence.js.html",
+    "MakeMeDev/Tools/Common/countOccurrence.js",
     "file"
   ],
   [
