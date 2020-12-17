@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | makemedev</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="projet web 2020"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="makemedev"><meta property="twitter:description" content="projet web 2020"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Gwenael95/MakeMeDev"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  </ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="makemedev">MakeMeDev</h1><p>2020 Web project at Coding factory, MakeMeDev aim to allow users
+to post and search functions from other developers.</p>
+<ul>
+<li><a href="#Initialisation">Initialisation</a></li>
+<li><a href="#User">User</a></li>
+<li><a href="#Search">Search</a></li>
+</ul>
+<h2 id="initialisation">Initialisation</h2><p>To run this server:</p>
+<pre><code><code class="source-code prettyprint">node index.js</code>
+</code></pre><h2 id="user">User</h2><h3 id="signed-in-user">Signed in user</h3><p>Signed in user will create an account with mail, pseudo, password.
+It will allow to post new functions to solve a problematic.</p>
+<p>This user will have to :</p>
+<ul>
+<li>give a name to his function</li>
+<li>describe the function, how it works, which problem it solve ...</li>
+<li>define all arguments and returns values :<ul>
+<li>type </li>
+<li>name </li>
+<li>description</li>
+<li>default value (<code>for arguments, not required</code>)</li>
+</ul>
+</li>
+<li>add tags</li>
+</ul>
+<p>Other signed in users may propose to enhance this function,
+they just have to add a post on the function they want.
+The rest of the community will elect the optimal solution by voting 
+thanks to like and dislike.</p>
+<p>This will allow every user, even if not registered, to find solution to
+their issues thanks to the dev community.</p>
+<h3 id="utilisateur-non-connect&#xE9;--visiteur-">Utilisateur non connect&#xE9; (visiteur)</h3><p>Unregistered user may only explore all functions, but won&apos;t
+participate to develop the MakeMeDev community.</p>
+<h2 id="search">Search</h2><h3 id="which-are-criteria-to-search-function">Which are criteria to search function</h3><p>You can search function by: </p>
+<ul>
+<li>name</li>
+<li>params type </li>
+<li>returns type</li>
+<li>description</li>
+<li>tags</li>
+</ul>
+<h3 id="how-to-write-it">How to write it</h3><h4 id="function-name">Function name</h4><p>If you want to search by function name, 
+first step is to write it.
+Function name is <code>always</code> at the beginning of a request.</p>
+<blockquote>
+<p>This name could be uncompleted, we search function with a name
+containing your searched name.</p>
+</blockquote>
+<p>Example:</p>
+<pre><code><code class="source-code prettyprint">accurate name       =&gt; sortMyArray
+less precise name   =&gt; sortMy      </code>
+</code></pre><h4 id="params">Params</h4><p>If you want to search by params, 
+first step is to write brackets <code>()</code>.
+Into those brackets, write the type of params to search.</p>
+<blockquote>
+<p>The number of params is important, you can search function without params 
+with single brackets.</p>
+<p>Moreover, if you want to search function without knowing all params type, replace
+the unknown ones by ?</p>
+</blockquote>
+<p>Examples:</p>
+<pre><code><code class="source-code prettyprint">no params           =&gt; ()
+one int             =&gt; (int)
+2 int, 1 array      =&gt; (int, int, array)
+1 int, 2 unknowns   =&gt; (int, ?, ?)</code>
+</code></pre><h4 id="returns">Returns</h4><p>If you want to search by returns, 
+first step is to write braces <code>{}</code>.
+Into those braces, write the type of returns to search.</p>
+<blockquote>
+<p>Refer to <a href="#Params">Params</a> for details explanations on types.</p>
+</blockquote>
+<p>Examples:</p>
+<pre><code><code class="source-code prettyprint">no returns      =&gt; {}
+unknown         =&gt; {?}
+one int or null =&gt; {int, null}</code>
+</code></pre><h4 id="description">Description</h4><p>If you want to search by description, 
+first step is to write double quote <code>&quot;&quot;</code>.
+Then, write a complete or a part of the description.</p>
+<p>Example:</p>
+<pre><code><code class="source-code prettyprint">accurate description       =&gt; &quot;a function to sort array returning the new array or null if isn&apos;t of type array&quot;
+less precise description   =&gt; &quot;function to sort&quot;      </code>
+</code></pre><h4 id="tags">Tags</h4><p>If you want to search by tags, first step is to write square brackets <code>[]</code>.
+Into those square brackets, write all tags you want to search.</p>
+<blockquote>
+<p>We search all function with all your tags or more.
+Empty brackets mean you want a function without any tag</p>
+</blockquote>
+<p>Example:</p>
+<pre><code><code class="source-code prettyprint">1 tags =&gt; [sort]
+2 tags =&gt; [sort, easy]    </code>
+</code></pre><h3 id="combination">Combination</h3><p>Each of those could be used to search function or not.
+You can use a combination of these to accurate your search.</p>
+<p>Find below an example of search request:</p>
+<p><code>functionName(int, int){int, ?} &quot;function to multiply&quot; [tag, tag]</code></p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
