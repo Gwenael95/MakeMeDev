@@ -2,7 +2,7 @@
 /** @function
  * @name getHandler
  * Handle HTTP status code and body content to return in a response to Front team
- * For GET request
+ * For GET request.
  * @param {{success: object}|{error: string}} data - object with success or error data
  * @param {string} [notFoundMsg="error"] - message displayed if we got a success without data
  * @param {int} [codeErr=400] - code to send if there is an error
@@ -16,14 +16,14 @@ function getHandler(data, notFoundMsg="error, can't find this in database", code
     } else if (data["error"]) {
         return {code: codeErr, body: data}
     } else {
-        return {code: 520, body: {error: "erreur en base de donnée"}}
+        return {code: 520, body: {error: "DB error"}}
     }
 }
 
 /** @function
  * @name updateDbHandler
  * Handle HTTP status code and body content to return in a response to Front team
- * For POST request (when adding a document)
+ * For POST request (when adding a document).
  * @param {{success: object}|{error: string}} data - object with success or error data
  * @param {string} [notFoundMsg="error"] - message displayed if we got a success without data
  * @param {int} [codeErr=400] - code to send if there is an error
@@ -37,7 +37,7 @@ function updateDbHandler(data, notFoundMsg="error, can't add this in database", 
     } else if (data["error"]) {
         return {code: codeErr, body: data}
     } else {
-        return {code: 520, body: {error: "erreur en base de donnée"}}
+        return {code: 520, body: {error: "DB error"}}
     }
 }
 
@@ -61,7 +61,7 @@ function getHandlerForUserPost(user, post, notFoundMsg="error, can't update user
     else if (user["error"] || post["error"]) {
         return {code: 404, body: user["error"] ? user : post }
     } else {
-        return {code: 520, body: {error: "erreur en base de donnée"}}
+        return {code: 520, body: {error: "DB error"}}
     }
 }
 

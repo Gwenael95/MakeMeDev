@@ -2,9 +2,19 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 
+/** @function
+ * @name connect
+ * Connect to DB for test or production
+ */
 function connect() {
     if (mongoose.connection.readyState === 0) {
-        process.env.NODE_ENV === 'test' ? configTest() : configMongo()
+        mongoose.connect((process.env.NODE_ENV === 'test' ? global.__DB_URL__ :process.env.URL_MONGO),
+            {
+                useUnifiedTopology: true,
+                useNewUrlParser: true,
+                useCreateIndex: true,
+                useFindAndModify: false
+            });
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
         db.once('open', function (){
@@ -13,25 +23,9 @@ function connect() {
     }
 }
 
-const configTest = () => {
-    mongoose.connect(global.__DB_URL__,
-        {
-            useUnifiedTopology: true,
-            useNewUrlParser: true,
-            useCreateIndex: true,
-            useFindAndModify: false
-        })
-}
-
-const configMongo = () => {
-    mongoose.connect(process.env.URL_MONGO,
-    {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useFindAndModify: false
-    })}
-
+/** @function
+ * @name truncate
+ */
 function truncate()  {
     if (mongoose.connection.readyState !== 0) {
         const { collections } = mongoose.connection;
@@ -44,6 +38,9 @@ function truncate()  {
     }
 }
 
+/** @function
+ * @name disconnect
+ */
 function disconnect() {
     if (mongoose.connection.readyState !== 0) {
         mongoose.disconnect();

@@ -56,6 +56,7 @@ async function get(search) {
  * @name create
  * Create a new post, that will be add in database.
  * We add some field : paramsTypes and returnsTypes to have an object with a number of occurrence of each params.
+ * Also creation date for post
  * It will make it simpler to search post depending on the amount of params or returns with getPost function.
  * @param {object} post - post to add, should be really similar to postModels {@link '../Models/postModels'}.
  * @param {object} user - user to update, should be really similar to userModels {@link '../Models/userModels'}.
