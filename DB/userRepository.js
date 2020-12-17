@@ -1,10 +1,42 @@
-const uniqueValidator = require('mongoose-unique-validator')
+/**
+ * This file requires {@link module:../Models/userModel}, {@link module:../Tools/DB/userHelper}.
+ * @requires module:../Models/userModel
+ * @requires module:../Tools/DB/userHelper
+ */
 const {userSchema} = require("../Models/userModel");
+const {filterPassword} = require("../Tools/DB/userHelper");
+const uniqueValidator = require('mongoose-unique-validator')
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const {generate, verify} = require("password-hash");
 const UserModel = mongoose.model('users', userSchema)
 
+
+//region get
+/** @function
+ * @name signIn
+ * Check if user's data are in database and check if password is correct,
+ * depending on login value, and return the result of this try.
+ * Login could be mail or pseudo.
+ * @param {object} userData - data to search in database
+ * @returns {Promise<{success: *}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ */
+async function signIn(userData) {
+    return await UserModel.findOne({  $or: [
+            { pseudo: userData.login  },
+            { mail: userData.login },
+        ]}, { "__v": 0} ).lean()
+        .exec()
+        .then(result => {
+            return result===null ? {error: "login incorrect"}
+                : verify(userData.password, result.password) ? {success: filterPassword(result)}
+                    : {error: "mot de passe incorrect"}
+        })
+        .catch(err => {return {error: err.errors}});
+}
+//endregion
+
+//region post
 /** @function
  * @name signUp
  * Add a new user in database, and return the result of this try
@@ -19,28 +51,16 @@ async function signUp(userData) {
         .then(result => {return {success: filterPassword(result)}})
         .catch(err => {return {error: err.errors}})
 }
+//endregion
 
+//region patch
 /** @function
- * @name signIn
- * Check if user's data are in database and right, depending on a many fields, and return the result of this try
- * @param {object} userData - data to search in database
- * @returns {Promise<{success: *}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ * @name updateUser
+ * A generic function used to update a user.
+ * @param {object} filter - object used by mongoDB to select corresponding documents in DB.
+ * @param {object} update - object containing fields to set (ex: $set, or $push).
+ * @returns {Promise<{success: Object}|{error}>}
  */
-async function signIn(userData) {
-    return await UserModel.findOne({  $or: [
-            { pseudo: userData.login  },
-            { mail: userData.login },
-        ]}, { "__v": 0} ).lean()
-        .exec()
-        .then(result => {
-            return result===null ? {error: "login incorrect"}
-            : verify(userData.password, result.password) ? {success: filterPassword(result)}
-            : {error: "mot de passe incorrect"}
-        })
-        .catch(err => {return {error: err.errors}});
-}
-
-
 async function updateUser(filter, update) {
     return await UserModel
         .findOneAndUpdate(
@@ -61,7 +81,7 @@ async function updateUser(filter, update) {
  * @name updateUserById
  * Update user's data depending on his ID and wanted fields to set
  * @param {object} data - user's data
- * @param update
+ * @param {object} update - object containing fields to set (ex: $set, or $push).
  * @returns {Promise<{success: Object}|{error}>}
  */
 async function updateUserById(data, update) {
@@ -73,22 +93,7 @@ async function updateUserById(data, update) {
         return {error : "erreur lors de la mise à jour de l'utilisateur"}
     }
 }
-
-
-//region helpers
-/** @function
- * @name filterPassword
- * Delete user password, to avoid security issues.
- * if we forgot to add lean to delete password, we ensure to return a useless string
- * @param {object} data - an object from where to delete one field : password
- * @returns {object}
- */
-function filterPassword(data) {
-    data["password"] = ":)"
-    delete data.password
-    return data
-}
-
 //endregion
+
 
 module.exports = {signUp, signIn, updateUserById};

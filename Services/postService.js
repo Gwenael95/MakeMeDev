@@ -13,8 +13,8 @@
  * @requires module:../Tools/Services/sortPost
  * @requires module:../Tools/Services/responseHandler
  */
-const { addPost, getPostByFunction, getPostById, updateLikeOrDislike, updatePostResponse,
-        updatePostResponseCommentary, updatePostFunction} = require("../DB/postRepository");
+const { addPost, getPostByFunction, getPostById, updateLikeOrDislike, pushPostResponse,
+        pushPostResponseCommentary, updatePostFunction} = require("../DB/postRepository");
 const { updateUserById} = require("../DB/userRepository");
 
 //region Tools
@@ -140,7 +140,7 @@ async function addPostResponse(responsePost, idPost, user) {
     addAuthor(user, responsePost)
     addDate(responsePost)
     if (responsePost['function'] && responsePost['description']) {
-        const result = await updatePostResponse(responsePost, idPost, user)
+        const result = await pushPostResponse(responsePost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.response"]: result.responseId}})
             result.success = sortPostByLikes(result.success)
@@ -163,7 +163,7 @@ async function addCommentary(commentaryPost, idPost, user) {
     addAuthor(user, commentaryPost)
     addDate(commentaryPost, "date")
     if (commentaryPost['commentary']) {
-        const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
+        const result = await pushPostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
             result.success = sortPostByLikes(result.success)

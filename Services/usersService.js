@@ -8,7 +8,7 @@
  */
 const {getHandler, updateDbHandler} = require("../Tools/Services/responseHandler");
 const {generateAccessToken} = require("../Tools/token")
-const {setUpdateValue} = require('../Tools/DB/requestOperator')
+const {setUpdateValue} = require('../Tools/Services/requestOperator')
 const {signUp, signIn, updateUserById} = require("../DB/userRepository");
 
 
