@@ -3,7 +3,7 @@
  * @requires module:./Tools/rateLimiter
  * @requires module:./router
  */
-const { rateLimiterUsingThirdParty } = require('./Tools/rateLimiter');
+const { rateLimiterUsingThirdParty } = require('./Src/Tools/rateLimiter');
 const router = require("./router");
 const express = require('express');
 const bodyParser = require("body-parser");

@@ -16,6 +16,11 @@
         "interfaces": ["describe", "it", "context", "suite", "test"],
         "includes": ["(spec|Spec|test|Test)\\.js$"],
         "excludes": ["\\.config\\$"]
+      },
+      "src": {
+        "source": "./Src/",
+        "interfaces": ["function", "name","type", "requires"],
+        "includes": ["(spec|Spec|test|Test)\\.js$"]
       }
     }
 
