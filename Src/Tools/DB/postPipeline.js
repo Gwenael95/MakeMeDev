@@ -157,7 +157,7 @@ function getNameQuery(data) {
  */
 function getMatchStringRegex(data, dbField){
     if (data !== null) {
-        return [{$match: {[dbField]: {$regex: data}}}];
+        return [{$match: {[dbField]: {$regex: data, $options: 'i'}}}];
     }
     return []
 }

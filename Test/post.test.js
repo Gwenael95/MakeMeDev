@@ -52,6 +52,7 @@ describe('Post', () => {
         expectedStatus(response, 400)
     });
 
+    //region search request
     /**
      * @test {getPost}
      * Try to search a post document in mongoDB with a correct request with search param
@@ -59,7 +60,7 @@ describe('Post', () => {
     it('should be able to search a post', async () => {
         const response = await request.get(url + 'post?search=test(int){int, ?} "function to multiply" [test]')
         expect(typeof getBodyRes(response)).toBe("object")
-        expect(getBodyRes(response)[0].name).toBe("test")
+        expect(getBodyRes(response)[0].name).toBe(post.post.name)
         expectedStatus(response)
     });
 
@@ -70,7 +71,7 @@ describe('Post', () => {
     it('should be able to search a post by id', async () => {
         const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post._id)
         expect(typeof getBodyRes(response)).toBe("object")
-        expect(getBodyRes(response).name).toBe("test")
+        expect(getBodyRes(response).name).toBe(post.post.name)
         expectedStatus(response)
     });
 
@@ -80,13 +81,12 @@ describe('Post', () => {
      */
     it('should be able to search a post by id', async () => {
         const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post.post[0]._id)
-
-        console.log(getBodyRes(response))
         expect(typeof getBodyRes(response)).toBe("object")
-        expect(getBodyRes(response).name).toBe("test")
+        expect(getBodyRes(response).name).toBe(post.post.name)
         expect(getBodyRes(response).post[2]._id).toBe(getBodyRes(newPost).post.post[0]._id)
         expectedStatus(response)
     });
+    //endregion
     //endregion
 
     //region vote (like or dislike)
@@ -187,7 +187,7 @@ describe('Post', () => {
         const postCheck = await getAllPostReq()
         expectedStatus(response, 201)
 
-        expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
+        expect(getPostAt(postCheck).commentary[1].commentary).toBe(commentaryPost.commentary);
         expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck)._id)
     });
 
@@ -207,7 +207,7 @@ describe('Post', () => {
         let comment2 = getPostAt(postCheck2).commentary
 
         expectedStatus(response1, 201)
-        expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
+        expect(getPostAt(postCheck).commentary[1].commentary).toBe(commentaryPost.commentary);
         expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck)._id)
         expect(comment[comment.length-1].date< comment2[comment2.length-1].date).toBe(true)
     });

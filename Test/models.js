@@ -4,7 +4,7 @@
  */
 exports.post = {
     "post": {
-        "name": "test",
+        "name": "Test",
         "tag" : ['test'],
         "params" : [
             {
