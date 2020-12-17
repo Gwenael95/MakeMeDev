@@ -1,6 +1,10 @@
+/**
+ * This module requires {@link module:../../Tools/DB/database}.
+ * @requires module:../../Tools/DB/database
+ */
+const databaseHelper = require('../../Tools/DB/database');
 require('dotenv').config();
 
-const databaseHelper = require('../../Tools/DB/database');
 
 beforeAll(() => {
     return databaseHelper.connect();
