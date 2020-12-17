@@ -6,7 +6,7 @@
  * @requires module:./models
  */
 const {request, url} = require("./config/launcher")
-const { prepareReqWithToken, expectedStatus} = require("./config/testHelper")
+const { prepareReqWithToken, expectedStatus, getBodyRes, expectExcept} = require("./config/testHelper")
 const { user } = require("./models");
 
 /**
@@ -61,7 +61,7 @@ describe('User', () => {
     it('should be able to get user', async () => {
         const response = await request.post(url + "user-signin").send(userSignIn)
         expectedStatus(response, 200)
-        expect(response.body.success.pseudo).toBe(userPseudo)
+        expect(getBodyRes(response).pseudo).toBe(userPseudo)
     });
 
     /**
@@ -78,6 +78,7 @@ describe('User', () => {
         expectedStatus(response, 404)
     });
     //endregion
+
 
     //region update user
     /**
@@ -98,9 +99,11 @@ describe('User', () => {
         const response = await prepareReqWithToken(user,url + "update-users" )
             .send(userData);
         expectedStatus(response, 201)
-        expect(response.body.success.pseudo).toBe(userData.user.pseudo)
-        expect(response.body.success.mail).toBe(userData.user.mail)
-        expect(response.body.success.avatar).toBe(userData.user.avatar)
+        expect(getBodyRes(response).pseudo).toBe(userData.user.pseudo)
+        expect(getBodyRes(response).mail).toBe(userData.user.mail)
+        expect(getBodyRes(response).avatar).toBe(userData.user.avatar)
+        expectExcept(  Object.keys(getBodyRes(response)), Object.keys(userData.user), ["id"] )
+
     });
 
     /**
@@ -108,7 +111,7 @@ describe('User', () => {
      * Try to update a user with new pseudo, mail and avatar object
      * thanks to a bad user id.
      */
-    it('should not be able to update user without crash', async () => {
+    it('should be able to update user because use id from token', async () => {
         const user = await request.post(url + "user-signin").send(userSignIn)
         const userData = {
             user: {
@@ -120,7 +123,35 @@ describe('User', () => {
         }
         const response = await prepareReqWithToken(user,url + "update-users" )
             .send(userData);
-        expectedStatus(response, 500)
+        expectedStatus(response, 201)
+        expect(getBodyRes(response).pseudo).toBe(userData.user.pseudo)
+        expect(getBodyRes(response).mail).toBe(userData.user.mail)
+        expect(getBodyRes(response).avatar).toBe(userData.user.avatar)
+        expectExcept(  Object.keys(getBodyRes(response)), Object.keys(userData.user), ["id"] )
+
+    });
+
+
+    /**
+     * @test {updateUser}
+     * Try to update a user with new mail and avatar object
+     */
+    it('should not be able to update user without crash', async () => {
+        const user = await request.post(url + "user-signin").send(userSignIn)
+        const userData = {
+            user: {
+                mail: 'test@test.com',
+                avatar: 'test'
+            }
+        }
+        const response = await prepareReqWithToken(user,url + "update-users" )
+            .send(userData);
+        expectedStatus(response, 201)
+        expect(getBodyRes(response).pseudo).toBe(userPseudo)
+        expect(getBodyRes(response).mail).toBe(userData.user.mail)
+        expect(getBodyRes(response).avatar).toBe(userData.user.avatar)
+        expectExcept(  Object.keys(getBodyRes(response)), Object.keys(userData.user), ["id"] )
+
     });
     //endregion
 

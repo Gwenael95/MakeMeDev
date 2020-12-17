@@ -24,6 +24,7 @@ exports.signUp = async (req, res, next) => {
  */
 exports.updateUser = async (req, res, next) => {
     const {user} = req.body;
+    user.id = req.user._id
     const response = emptyRequest(user) ? emptyRequest(user) : await updateUser(user)
     return res.status(response.code).send(response.body)
 };
