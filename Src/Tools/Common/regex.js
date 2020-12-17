@@ -4,7 +4,7 @@
  * @type {{functionName: RegExp, description: RegExp, returns: RegExp, params: RegExp, tags: RegExp}}
  */
 const searchRegex = {
-    functionName: /^[a-z]+[a-zA-Z0-9]+/,
+    functionName: /^[a-zA-Z]+[a-zA-Z0-9]?/,
     params: /(?<=\()(.*)(?=\))/g,
     returns : /(?<=\{)(.*)(?=\})/g,
     description : /(?<=\")(.*)(?=\")/g,

@@ -55,13 +55,24 @@ describe('Post', () => {
     //region search request
     /**
      * @test {getPost}
-     * Try to search a post document in mongoDB with a correct request with search param
+     * Try to search a post document in mongoDB with a correct request with search several params
      */
     it('should be able to search a post', async () => {
         const response = await request.get(url + 'post?search=test(int){int, ?} "function to multiply" [test]')
         expect(typeof getBodyRes(response)).toBe("object")
         expect(getBodyRes(response)[0].name).toBe(post.post.name)
         expectedStatus(response)
+    });
+
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with function name in param
+     */
+    it('should not be able to search a post because no function name with j', async () => {
+        const response = await request.get(url + 'post?search=j')
+        expect(typeof getBodyRes(response)).toBe("object")
+        expect(getBodyRes(response)[0]).toBe(undefined)
+        expectedStatus(response, 200)
     });
 
     /**
