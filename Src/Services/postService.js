@@ -140,7 +140,7 @@ async function addPostResponse(responsePost, idPost, user) {
     addAuthor(user, responsePost)
     addDate(responsePost)
     if (responsePost['function'] && responsePost['description']) {
-        const result = await pushPostResponse(responsePost, idPost, user)
+        const result = await pushPostResponse(responsePost, idPost)
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.response"]: result.responseId}})
             result.success = sortPostByLikes(result.success)
@@ -163,9 +163,9 @@ async function addCommentary(commentaryPost, idPost, user) {
     addAuthor(user, commentaryPost)
     addDate(commentaryPost, "date")
     if (commentaryPost['commentary']) {
-        const result = await pushPostResponseCommentary(commentaryPost, idPost, user)
+        const result = await pushPostResponseCommentary(commentaryPost, idPost)
         if (result.success !== null && result.success !== undefined) {
-            const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
+            const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.postId}})
             result.success = sortPostByLikes(result.success)
             return closeUserUpdateAction(userRes, result, "Add a new commentary, but can't update user's data")
         }

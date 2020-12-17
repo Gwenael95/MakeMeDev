@@ -186,8 +186,9 @@ describe('Post', () => {
             .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
         const postCheck = await getAllPostReq()
         expectedStatus(response, 201)
+
         expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
-        expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
+        expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck)._id)
     });
 
     /**
@@ -207,7 +208,7 @@ describe('Post', () => {
 
         expectedStatus(response1, 201)
         expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
-        expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
+        expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck)._id)
         expect(comment[comment.length-1].date< comment2[comment2.length-1].date).toBe(true)
     });
     //endregion
