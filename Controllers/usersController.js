@@ -3,6 +3,7 @@ const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 /** @function
  * @name signUp
+ * Create a new account on our app, saved in mongoDb
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
