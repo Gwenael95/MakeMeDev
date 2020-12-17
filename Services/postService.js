@@ -1,5 +1,20 @@
+/**
+ * This Service file requires {@link module:../DB/postRepository }, {@link module:../DB/userRepository},
+ * {@link module:../Tools/token}, {@link module:../Tools/Services/searchPost },
+ * {@link module:../Tools/Common/undefinedControl }, {@link module:../Tools/Services/addField}
+ * {@link module:../Tools/Services/sortPost} and {@link module:../Tools/Services/responseHandler}
+
+ * @requires module:../DB/postRepository
+ * @requires module:../DB/userRepository
+ * @requires module:../Tools/token
+ * @requires module:../Tools/Services/searchPost
+ * @requires module:../Tools/Common/undefinedControl
+ * @requires module:../Tools/Services/addField
+ * @requires module:../Tools/Services/sortPost
+ * @requires module:../Tools/Services/responseHandler
+ */
 const { addPost, getPostByFunction, getPostById, updateLikeOrDislike, updatePostResponse,
-    updatePostResponseCommentary, updatePostFunction} = require("../DB/postRepository");
+        updatePostResponseCommentary, updatePostFunction} = require("../DB/postRepository");
 const { updateUserById} = require("../DB/userRepository");
 
 //region Tools
@@ -12,45 +27,39 @@ const { getHandler, getHandlerForUserPost, updateDbHandler} = require("../Tools/
 //endregion
 
 //region exported methods
-
+//region get
 /** @function
  * @name get
  * Get posts depending on a request get thanks to a string with strict typography to demarcate
- * each field we have to check, and if not exist it will not be searched at all
- * Structure : [functionName](param1, param2, ?){returnedVar}"functionDescription"#tag1, tag2, tag3#
+ * each field, and if not exist it will not be a criteria to search at all.
+ * Structure : functionName(param1, param2, ?){returned1, returned2}"functionDescription"[tag1, tag2, tag3]
  * OR use a post id to get the corresponding post.
- * @param {object} search - search's field to find in database
+ * @param {object} search - search field to find in database
  * @returns {Promise<{code: number, body: {error: *}}|{code: number, body: *}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
 async function get(search) {
     if (isDefinedAndNotNull(search.search)) {
         const objectSearchPost = getSearchPost(search.search)
         let queryRes = await getPostByFunction(objectSearchPost);
-        return getHandler(sortAllPostByLike(queryRes), "Aucun post correspondant");
+        return getHandler(sortAllPostByLike(queryRes), "No post exists with these details");
     }
     else {
         let queryRes = await getPostById(search.postId);
         queryRes.success = sortPostByLikes(queryRes.success)
-        return getHandler(queryRes, "ce post n'existe pas");
+        return getHandler(queryRes, "No post exists with this id");
     }
 }
+//endregion
 
-async function updateFunction(functionPost, idPost, user) {
-    if (functionPost) {
-        return updateDbHandler(await updatePostFunction(functionPost, idPost), "mise à jour de la fonction réussie", 500)
-    }
-    return updateDbHandler({error: "update response failed"}, "mise à jour du post impossible");
-}
-
-
+//region post
 /** @function
  * @name create
  * Create a new post, that will be add in database.
- * We had one more field : paramsTypes to have an object with a number of occurrence of each params
- * It will make it simpler to search if a post contains an amount of params
+ * We add some field : paramsTypes and returnsTypes to have an object with a number of occurrence of each params.
+ * It will make it simpler to search post depending on the amount of params or returns with getPost function.
  * @param {object} post - post to add, should be really similar to postModels {@link '../Models/postModels'}.
  * @param {object} user - user to update, should be really similar to userModels {@link '../Models/userModels'}.
- * @returns {Promise<{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}>}
+ * @returns {Promise<{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}>}
  */
 async function create(post, user) {
     try {
@@ -61,19 +70,47 @@ async function create(post, user) {
         const result = await addPost(post, user);
         if (result.success) {
             const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
-            return closeUserUpdateAction(userRes, result, "post créé, mais mise à jour des données utilisateur impossible")
+            return closeUserUpdateAction(userRes, result, "Post created, but can't update user's data")
         }
-        return updateDbHandler(result, "mis a jour du post impossible", 500);
+        return updateDbHandler(result, "Error when creating post", 500);
     }
     catch (e) {
-        return updateDbHandler({error: "erreur lors de la création du post"})
+        return updateDbHandler({error: "Can't create this post: bad request"})
     }
 }
+//endregion
 
+//region patch
+/** @function
+ * @name updateFunction
+ * Update a function from a post or post response thanks to its id.
+ * @param {string} functionPost - the complete function, real code that could be run.
+ * @param {string} idPost - post's or response post's id to update
+ * @param {object} user - current user's data
+ * @todo Check if current user if post or post response author
+ * @returns {Promise<{code: number, body: {error: string}}|{code: number, body: *}>}
+ */
+async function updateFunction(functionPost, idPost, user) {
+    if (functionPost) {
+        return updateDbHandler(await updatePostFunction(functionPost, idPost), "Error when updating post function", 500)
+    }
+    return updateDbHandler({error: "Update function failed"}, "can't update post function: no functionPost found");
+}
+
+/** @function
+ * @name updateVote
+ * Used to add or update a vote in DB for a post. Then we update user to know if it already have
+ * like or dislike a function.
+ * @param {int|string} vote - vote value. If it's an int, 1="like" & -1="dislike"
+ * @param {string} idPost - post's id
+ * @param {object} user - user's data
+ * @returns {Promise<{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}>}
+ */
 async function updateVote(vote, idPost, user) {
-    const likeOrDislike = vote === 1 ? "like" : "dislike"
-    const opposite = vote === 1 ? "dislike" : "like"
+    const likeOrDislike = vote === 1 || vote === "like" ? "like" : "dislike"
+    const opposite = vote === 1 || vote === "like" ? "dislike" : "like"
     let result = await updateLikeOrDislike(likeOrDislike, idPost, user)
+
     //check if updated , then update user
     if (isDefinedAndNotNull(result.success)) {
         const userRes = await updateUserById({id: user._id}, {
@@ -81,11 +118,20 @@ async function updateVote(vote, idPost, user) {
             $pull: {["activities." + opposite]: result.postId}
         })
         result.success = sortPostByLikes(result.success)
-        return closeUserUpdateAction(userRes, result, "ajout du " + likeOrDislike + " sur le post " + idPost + " impossible")
+        return closeUserUpdateAction(userRes, result, "Adding " + likeOrDislike + " on post with id= " + idPost + " is impossible")
     }
-    return updateDbHandler({error: "update vote failed"}, "mise à jour des votes du post impossible", 500);
+    return updateDbHandler({error: "Update vote failed"}, "Can't update vote post", 500);
 }
 
+/** @function
+ * @name addPostResponse
+ * Add a response to a post (with a new function proposal) after adding author and date.
+ * Then we update user to save in his activities he post a response.
+ * @param {object} responsePost - a response to a post
+ * @param {string} idPost - post's id
+ * @param {object} user - user's data
+ * @returns {Promise<{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}>}
+ */
 async function addPostResponse(responsePost, idPost, user) {
     addAuthor(user, responsePost)
     addDate(responsePost, "creationDate")
@@ -94,12 +140,21 @@ async function addPostResponse(responsePost, idPost, user) {
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.response"]: result.responseId}})
             result.success = sortPostByLikes(result.success)
-            return closeUserUpdateAction(userRes, result, "ajout d'une nouvelle reponse , mais mis à jour de l'utilisateur impossible")
+            return closeUserUpdateAction(userRes, result, "Add a new response,but can't update user's data")
         }
     }
-    return updateDbHandler({error: "update response failed"}, "ajout de reponse au post impossible");
+    return updateDbHandler({error: "Adding response failed"}, "Can't add response to post");
 }
 
+/** @function
+ * @name addCommentary
+ * Add a commentary to a post after adding author and date. Then we update user to save in his
+ * activities he add a commentary to a post.
+ * @param {object} commentaryPost - a commentary post
+ * @param {string} idPost - post's id
+ * @param {object} user - user's data
+ * @returns {Promise<{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}>}
+ */
 async function addCommentary(commentaryPost, idPost, user) {
     addAuthor(user, commentaryPost)
     addDate(commentaryPost, "date")
@@ -108,19 +163,28 @@ async function addCommentary(commentaryPost, idPost, user) {
         if (result.success !== null && result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {["activities.commentary"]: result.commentaryId}})
             result.success = sortPostByLikes(result.success)
-            return closeUserUpdateAction(userRes, result, "ajout du commentaires, mais mis à jour de l'utilisateur impossible")
+            return closeUserUpdateAction(userRes, result, "Add a new commentary, but can't update user's data")
         }
     }
-    return updateDbHandler({error: "update response failed"}, "ajout du commentaires impossible");
+    return updateDbHandler({error: "Adding commentary failed"}, "Can't add a commentary");
 }
-
+//endregion
 //endregion
 
 
 //region not exported functions
-function closeUserUpdateAction(userData, postData, msg="erreur en base de données"){
+/** @function
+ * @name closeUserUpdateAction
+ * This function is used to close action. We generate a new token
+ * and return a http code status and body
+ * @param {object} userData - user's data from a response
+ * @param {object} postData - post's data from a response
+ * @param {string } [msg= "erreur en base de données"] - message to send in body if there is an issue
+ * @returns {{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}}
+ */
+function closeUserUpdateAction(userData, postData, msg="DB error"){
     generateAccessToken(userData)
-    return getHandlerForUserPost(userData, postData, "ajout du commentaires impossible");
+    return getHandlerForUserPost(userData, postData, msg);
 }
 
 //endregion
