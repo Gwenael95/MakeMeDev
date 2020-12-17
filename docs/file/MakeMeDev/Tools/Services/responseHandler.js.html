@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -38,30 +38,58 @@
 /** @function
  * @name getHandler
  * Handle HTTP status code and body content to return in a response to Front team
- * For GET request
- * @param {{success: string, object}|{error: string}} data - object with success or error data
- * @param {string} notFoundMsg - message displayed if we got a success without data
- * @returns {{code: number, body: {error: string}}|{code: number, body: {error: *}}|{code: number, body: *}}
+ * For GET request.
+ * @param {{success: object}|{error: string}} data - object with success or error data
+ * @param {string} [notFoundMsg=&quot;error&quot;] - message displayed if we got a success without data
+ * @param {int} [codeErr=400] - code to send if there is an error
+ * @returns {{code: number, body: {error: string}}|{code: number, body: *}}
  */
-function getHandler(data, notFoundMsg=&quot;error&quot;){
+function getHandler(data, notFoundMsg=&quot;error, can&apos;t find this in database&quot;, codeErr=400){
     if (data[&quot;success&quot;]===null) {
         return {code: 404, body: {error: notFoundMsg}}
     } else if (data[&quot;success&quot;]) {
         return {code: 200, body: data}
     } else if (data[&quot;error&quot;]) {
-        return {code: 404, body: data}
+        return {code: codeErr, body: data}
     } else {
-        return {code: 404, body: {error: &quot;erreur en base de donn&#xE9;e&quot;}}
+        return {code: 520, body: {error: &quot;DB error&quot;}}
+    }
+}
+
+/** @function
+ * @name updateDbHandler
+ * Handle HTTP status code and body content to return in a response to Front team
+ * For POST request (when adding a document).
+ * @param {{success: object}|{error: string}} data - object with success or error data
+ * @param {string} [notFoundMsg=&quot;error&quot;] - message displayed if we got a success without data
+ * @param {int} [codeErr=400] - code to send if there is an error
+ * @returns {{code: number, body: {error: string}}|{code: number, body: *}}
+ */
+function updateDbHandler(data, notFoundMsg=&quot;error, can&apos;t add this in database&quot;, codeErr=400){
+    if (data[&quot;success&quot;]===null) {
+        return {code: 404, body: {error: notFoundMsg}}
+    } else if (data[&quot;success&quot;]) {
+        return {code: 201, body: data}
+    } else if (data[&quot;error&quot;]) {
+        return {code: codeErr, body: data}
+    } else {
+        return {code: 520, body: {error: &quot;DB error&quot;}}
     }
 }
 
 
 /** @function
  * @name getHandlerForUserPost
+ * Handle HTTP status code and body content to return in a response to Front team
+ * For GET request
+ * @param {{success: object}|{error: string}} user - user&apos;s data
+ * @param {{success: object}|{error: string}} post - post&apos;s data
+ * @param {string} [notFoundMsg=&quot;error&quot;] - message displayed if we got a success without data
+ * @returns {{code: number, body: {success: {post: string | boolean | SrvPoller.success | Event, user: string | boolean | SrvPoller.success | Event}, token: *}}|{code: number, body: {error: string}}|{code: number, body: (*)}}
  */
-function getHandlerForUserPost(user, post, notFoundMsg=&quot;error&quot;){
+function getHandlerForUserPost(user, post, notFoundMsg=&quot;error, can&apos;t update user data : not found in database&quot;){
     if (user[&quot;success&quot;] &amp;&amp; post[&quot;success&quot;]){
-        return {code: 200, body: {success:{ user:user.success, post:post.success}, token:user.token}}
+        return {code: 201, body: {success:{ user:user.success, post:post.success}, token:user.token}}
     }
     else if (user[&quot;success&quot;]===null || user[&quot;success&quot;]===null) {
         return {code: 404, body: {error: notFoundMsg}}
@@ -69,11 +97,12 @@ function getHandlerForUserPost(user, post, notFoundMsg=&quot;error&quot;){
     else if (user[&quot;error&quot;] || post[&quot;error&quot;]) {
         return {code: 404, body: user[&quot;error&quot;] ? user : post }
     } else {
-        return {code: 404, body: {error: &quot;erreur en base de donn&#xE9;e&quot;}}
+        return {code: 520, body: {error: &quot;DB error&quot;}}
     }
 }
 
-module.exports = {getHandler, getHandlerForUserPost}
+
+module.exports = {getHandler, getHandlerForUserPost, updateDbHandler}
 </code></pre>
 
 </div>

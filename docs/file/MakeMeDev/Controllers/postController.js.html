@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,29 +34,37 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Controllers/postController.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const { create, get, updateVote, addPostResponse, addCommentary, updateFunction } = require(&quot;../Services/postService&quot;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This Controller file requires {@link module:../Services/postService }  and
+ * {@link module:../Tools/Controller/controllerHelper}.
+ * @requires module:../Services/postService
+ * @requires module:../Tools/Controller/controllerHelper
+ */
+const { create, get, updateVote, addPostResponse, addCommentary, updateFunction } = require(&quot;../Services/postService&quot;);
 const {emptyRequest} = require(&quot;../Tools/Controller/controllerHelper&quot;);
 
-
+//region get
 /** @function
  * @name getPost
- * Get a post from database if our query isn&apos;t empty
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * @async
+ * Get a post from database if our query isn&apos;t empty.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
 exports.getPost = async (req, res, next)  =&gt; {
-    const {search} =  req.query
-    const response = emptyRequest(search) ? emptyRequest(search) : await get(search)
+    const response = emptyRequest(req.search) ? emptyRequest(req.search) : await get(req.search)
     return res.status(response.code).send(response.body)
 };
+//endregion
 
+//region post
 /** @function
  * @name sendPost
- * Send a post to add in database if our post data isn&apos;t empty
- * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
- * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * Send a post to add in database if our post data isn&apos;t empty.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
@@ -65,13 +73,14 @@ exports.sendPost = async (req, res, next) =&gt; {
     const response = emptyRequest(post) ? emptyRequest(post) : await create(post, req.user)
     return res.status(response.code).send(response.body)
 };
+//endregion
 
-
+//region patch
 /** @function
  * @name sendVote
- * Send a vote to like or dislike a post in DB
- * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
- * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * Send a vote to like or dislike a post in DB.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
@@ -83,9 +92,9 @@ exports.sendVote = async (req, res, next)  =&gt; {
 
 /** @function
  * @name addResponse
- * Send a response to add to a post in DB
- * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
- * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * Send a response to add to a post in DB.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
@@ -97,9 +106,9 @@ exports.addResponse = async (req, res, next)  =&gt; {
 
 /** @function
  * @name addCommentary
- * Send a comment to add to a post in DB
- * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
- * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * Send a comment to add to a post in DB.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
@@ -111,9 +120,9 @@ exports.addCommentary = async (req, res, next)  =&gt; {
 
 /** @function
  * @name updateFunction
- * Send a function to update it in a post in DB
- * @param {Request&lt;{user:object, body:object, params:object}&gt;} req - request received
- * @param {Response&lt;{status:int}&gt;} res - response to dispatched
+ * Send a function to update it in a post in DB.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
@@ -122,7 +131,7 @@ exports.updateFunction = async (req, res, next)  =&gt; {
     const response = emptyRequest(functionPost) ? emptyRequest(functionPost) : await updateFunction(functionPost, idPost, req.user)
     return res.status(response.code).send(response.body)
 };
-
+//endregion
 
 
 

@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,217 +34,197 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Services/postService.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const {getHandler, getHandlerForUserPost} = require(&quot;../Tools/Services/responseHandler&quot;);
-const {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary, updatePostFunction} = require(&quot;../DB/postRepository&quot;)
-const {countOccurrencesFromArray} = require(&quot;../Tools/Common/countOccurence&quot;)
-const {updateUserById} = require(&quot;../DB/userRepository&quot;);
-const {generateAccessToken} = require(&quot;../Tools/token&quot;)
-const {isDefinedAndNotNull, isUndefinedOrNull} = require(&quot;../Tools/Common/undefinedControl&quot;)
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This Service file requires {@link module:../DB/postRepository }, {@link module:../DB/userRepository},
+ * {@link module:../Tools/token}, {@link module:../Tools/Services/searchPost },
+ * {@link module:../Tools/Common/undefinedControl }, {@link module:../Tools/Services/addField}
+ * {@link module:../Tools/Services/sortPost} and {@link module:../Tools/Services/responseHandler}
 
-let test = &quot;&quot;
+ * @requires module:../DB/postRepository
+ * @requires module:../DB/userRepository
+ * @requires module:../Tools/token
+ * @requires module:../Tools/Services/searchPost
+ * @requires module:../Tools/Common/undefinedControl
+ * @requires module:../Tools/Services/addField
+ * @requires module:../Tools/Services/sortPost
+ * @requires module:../Tools/Services/responseHandler
+ */
+const { addPost, getPostByFunction, getPostById, updateLikeOrDislike, pushPostResponse,
+        pushPostResponseCommentary, updatePostFunction} = require(&quot;../DB/postRepository&quot;);
+const { updateUserById} = require(&quot;../DB/userRepository&quot;);
+
+//region Tools
+const { generateAccessToken} = require(&quot;../Tools/token&quot;);
+const { getSearchPost} = require(&quot;../Tools/Services/searchPost&quot;);
+const { isDefinedAndNotNull} = require(&quot;../Tools/Common/undefinedControl&quot;);
+const { addDate, addAuthor, setTypes} = require(&quot;../Tools/Services/addField&quot;);
+const { sortPostByLikes, sortAllPostByLike} = require(&quot;../Tools/Services/sortPost&quot;);
+const { getHandler, getHandlerForUserPost, updateDbHandler} = require(&quot;../Tools/Services/responseHandler&quot;);
+//endregion
 
 //region exported methods
-
+//region get
 /** @function
  * @name get
  * Get posts depending on a request get thanks to a string with strict typography to demarcate
- * each field we have to check, and if not exist it will not be searched at all
- * Structure : [functionName](param1, param2, ?){returnedVar}&quot;functionDescription&quot;#tag1, tag2, tag3#
- * @param {string} post - post&apos;s field to find in database
+ * each field, and if not exist it will not be a criteria to search at all.
+ * Structure : functionName(param1, param2, ?){returned1, returned2}&quot;functionDescription&quot;[tag1, tag2, tag3]
+ * OR use a post id to get the corresponding post.
+ * @param {object} search - search field to find in database
  * @returns {Promise&lt;{code: number, body: {error: *}}|{code: number, body: *}|{code: number, body: *}|{code: number, body: {error: string}}&gt;}
  */
-async function get(post) {
-    const objectSearchPost = getSearchPost(post)
-    return getHandler(sortAllPostByLike(await getPost(objectSearchPost)), &quot;ce post n&apos;existe pas&quot;);
-}
-
-async function updateFunction(functionPost, idPost, user) {
-    if (functionPost) {
-        return getHandler(await updatePostFunction(functionPost, idPost), &quot;mise &#xE0; jour de la fonction r&#xE9;ussie&quot;)
+async function get(search) {
+    if (isDefinedAndNotNull(search.search)) {
+        const objectSearchPost = getSearchPost(search.search)
+        let queryRes = await getPostByFunction(objectSearchPost);
+        return getHandler(sortAllPostByLike(queryRes), &quot;No post exists with these details&quot;);
     }
-    return getHandler({error: &quot;update response failed&quot;}, &quot;mise &#xE0; jou du post impossible&quot;);
+    else {
+        let queryRes = await getPostById(search.postId);
+        queryRes.success = sortPostByLikes(queryRes.success)
+        return getHandler(queryRes, &quot;No post exists with this id&quot;);
+    }
 }
+//endregion
 
-
+//region post
 /** @function
  * @name create
  * Create a new post, that will be add in database.
- * We had one more field : paramsTypes to have an object with a number of occurrence of each params
- * It will make it simpler to search if a post contains an amount of params
+ * We add some field : paramsTypes and returnsTypes to have an object with a number of occurrence of each params.
+ * Also creation date for post
+ * It will make it simpler to search post depending on the amount of params or returns with getPost function.
  * @param {object} post - post to add, should be really similar to postModels {@link &apos;../Models/postModels&apos;}.
  * @param {object} user - user to update, should be really similar to userModels {@link &apos;../Models/userModels&apos;}.
- * @returns {Promise&lt;{code: number, body: {error: {}}}|{code: number, body: *}|{code: number, body: {error: string}}&gt;}
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
  */
 async function create(post, user) {
-    setTypes(post, &quot;params&quot;);
-    setTypes(post, &quot;returns&quot;);
-    addAuthor(user ,post)
-    addAuthor(user ,post.post[0])
-    const result = await addPost(post, user);
-    if (result.success) {
-        const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
-        return closeUserUpdateAction(userRes, result, &quot;post cr&#xE9;&#xE9;, mais mise &#xE0; jour des donn&#xE9;es utilisateur impossible&quot;)
+    try {
+        setTypes(post, &quot;params&quot;);
+        setTypes(post, &quot;returns&quot;);
+        addAuthor(user ,post)
+        addAuthor(user ,post.post[0])
+        addDate(post.post[0])
+        addDate(post)
+
+        const result = await addPost(post, user);
+        if (result.success) {
+            const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
+            return closeUserUpdateAction(userRes, result, &quot;Post created, but can&apos;t update user&apos;s data&quot;)
+        }
+        return updateDbHandler(result, &quot;Error when creating post&quot;, 500);
     }
-    return getHandler(result);
+    catch (e) {
+        return updateDbHandler({error: &quot;Can&apos;t create this post: bad request&quot;})
+    }
+}
+//endregion
+
+//region patch
+/** @function
+ * @name updateFunction
+ * Update a function from a post or post response thanks to its id.
+ * @param {string} functionPost - the complete function, real code that could be run.
+ * @param {string} idPost - post&apos;s or response post&apos;s id to update
+ * @param {object} user - current user&apos;s data
+ * @todo Check if current user if post or post response author
+ * @returns {Promise&lt;{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
+async function updateFunction(functionPost, idPost, user) {
+    if (functionPost) {
+        return updateDbHandler(await updatePostFunction(functionPost, idPost), &quot;Error when updating post function&quot;, 500)
+    }
+    return updateDbHandler({error: &quot;Update function failed&quot;}, &quot;can&apos;t update post function: no functionPost found&quot;);
 }
 
-/*
-async function updateUserIfSuccess(isSuccess, function) {
-    if (isSuccess){
-        const userRes = await function
-        generateAccessToken(userRes)
-        return getHandlerForUserPost(userRes,result, &quot;mise &#xE0; jour des votes utilisateur impossible&quot;);
-    }
-}*/
-
-
-
+/** @function
+ * @name updateVote
+ * Used to add or update a vote in DB for a post. Then we update user to know if it already have
+ * like or dislike a function.
+ * @param {int|string} vote - vote value. If it&apos;s an int, 1=&quot;like&quot; &amp; -1=&quot;dislike&quot;
+ * @param {string} idPost - post&apos;s id
+ * @param {object} user - user&apos;s data
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
 async function updateVote(vote, idPost, user) {
-    const likeOrDislike = vote === 1 ? &quot;like&quot; : &quot;dislike&quot;
-    const opposite = vote === 1 ? &quot;dislike&quot; : &quot;like&quot;
+    const likeOrDislike = vote === 1 || vote === &quot;like&quot; ? &quot;like&quot; : &quot;dislike&quot;
+    const opposite = vote === 1 || vote === &quot;like&quot; ? &quot;dislike&quot; : &quot;like&quot;
     let result = await updateLikeOrDislike(likeOrDislike, idPost, user)
+
     //check if updated , then update user
     if (isDefinedAndNotNull(result.success)) {
         const userRes = await updateUserById({id: user._id}, {
             $push: {[&quot;activities.&quot; + likeOrDislike]: result.postId},
             $pull: {[&quot;activities.&quot; + opposite]: result.postId}
         })
-        return closeUserUpdateAction(userRes, result, &quot;ajout du &quot; + likeOrDislike + &quot; sur le post &quot; + idPost + &quot; impossible&quot;)
+        result.success = sortPostByLikes(result.success)
+        return closeUserUpdateAction(userRes, result, &quot;Adding &quot; + likeOrDislike + &quot; on post with id= &quot; + idPost + &quot; is impossible&quot;)
     }
-    return getHandler({error: &quot;update vote failed&quot;}, &quot;mise &#xE0; jour des votes du post impossible&quot;);
+    return updateDbHandler({error: &quot;Update vote failed&quot;}, &quot;Can&apos;t update vote post&quot;, 500);
 }
 
+/** @function
+ * @name addPostResponse
+ * Add a response to a post (with a new function proposal) after adding author and date.
+ * Then we update user to save in his activities he post a response.
+ * @param {object} responsePost - a response to a post
+ * @param {string} idPost - post&apos;s id
+ * @param {object} user - user&apos;s data
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
 async function addPostResponse(responsePost, idPost, user) {
     addAuthor(user, responsePost)
-    addDate(responsePost, &quot;creationDate&quot;)
+    addDate(responsePost)
     if (responsePost[&apos;function&apos;] &amp;&amp; responsePost[&apos;description&apos;]) {
-        const result = await updatePostResponse(responsePost, idPost, user)
+        const result = await pushPostResponse(responsePost, idPost, user)
         if (result.success !== null &amp;&amp; result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {[&quot;activities.response&quot;]: result.responseId}})
-            return closeUserUpdateAction(userRes, result, &quot;ajout d&apos;une nouvelle reponse , mais mis &#xE0; jour de l&apos;utilisateur impossible&quot;)
+            result.success = sortPostByLikes(result.success)
+            return closeUserUpdateAction(userRes, result, &quot;Add a new response,but can&apos;t update user&apos;s data&quot;)
         }
     }
-    return getHandler({error: &quot;update response failed&quot;}, &quot;ajout de reponse au post impossible&quot;);
+    return updateDbHandler({error: &quot;Adding response failed&quot;}, &quot;Can&apos;t add response to post&quot;);
 }
 
+/** @function
+ * @name addCommentary
+ * Add a commentary to a post after adding author and date. Then we update user to save in his
+ * activities he add a commentary to a post.
+ * @param {object} commentaryPost - a commentary post
+ * @param {string} idPost - post&apos;s id
+ * @param {object} user - user&apos;s data
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
 async function addCommentary(commentaryPost, idPost, user) {
     addAuthor(user, commentaryPost)
     addDate(commentaryPost, &quot;date&quot;)
     if (commentaryPost[&apos;commentary&apos;]) {
-        const result = await updatePostResponseCommentary(commentaryPost, idPost, user)
+        const result = await pushPostResponseCommentary(commentaryPost, idPost, user)
         if (result.success !== null &amp;&amp; result.success !== undefined) {
             const userRes = await updateUserById({id: user._id}, {$push: {[&quot;activities.commentary&quot;]: result.commentaryId}})
-            return closeUserUpdateAction(userRes, result, &quot;ajout du commentaires, mais mis &#xE0; jour de l&apos;utilisateur impossible&quot;)
+            result.success = sortPostByLikes(result.success)
+            return closeUserUpdateAction(userRes, result, &quot;Add a new commentary, but can&apos;t update user&apos;s data&quot;)
         }
     }
-    return getHandler({error: &quot;update response failed&quot;}, &quot;ajout du commentaires impossible&quot;);
+    return updateDbHandler({error: &quot;Adding commentary failed&quot;}, &quot;Can&apos;t add a commentary&quot;);
 }
-
+//endregion
 //endregion
 
 
 //region not exported functions
-function closeUserUpdateAction(userData, postData, msg=&quot;erreur en base de donn&#xE9;es&quot;){
+/** @function
+ * @name closeUserUpdateAction
+ * This function is used to close action. We generate a new token
+ * and return a http code status and body
+ * @param {object} userData - user&apos;s data from a response
+ * @param {object} postData - post&apos;s data from a response
+ * @param {string } [msg= &quot;erreur en base de donn&#xE9;es&quot;] - message to send in body if there is an issue
+ * @returns {{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}}
+ */
+function closeUserUpdateAction(userData, postData, msg=&quot;DB error&quot;){
     generateAccessToken(userData)
-    return getHandlerForUserPost(userData, postData, &quot;ajout du commentaires impossible&quot;);
-}
-
-
-function addAuthor(author, object){
-    object.author =  {
-        &quot;userId&quot;: author._id,
-        &quot;pseudo&quot;: author.pseudo,
-        &quot;avatar&quot;: author.avatar
-    }
-}
-
-function addDate(object, fieldName=&quot;creationDate&quot;){
-    object[fieldName] = new Date().getTime() / 1000
-}
-
-
-function setTypes(post, paramsOrResults) {
-    if (isUndefinedOrNull(post[paramsOrResults])) {
-        post[paramsOrResults] = []
-    }
-    let arr = []
-    for (let element of post[paramsOrResults]) {
-        arr.push(element.type)
-    }
-    post[paramsOrResults + &quot;Types&quot;] = countOccurrencesFromArray(arr)
-}
-
-function getSearchPost(post) {
-    test = post
-    return {
-        functionName: getStringDelimitedArea(&quot;[&quot;, &quot;]&quot;),
-        paramsTypes: getStringDelimitedArea(&quot;(&quot;, &quot;)&quot;),
-        returnsTypes: getStringDelimitedArea(&quot;{&quot;, &quot;}&quot;),
-        description: getSearchValue(&apos;&quot;&apos;),
-        tag: getSearchValue(&apos;#&apos;)
-    };
-}
-
-/** @function
- * @name getStringDelimitedArea
- * Get a string in a delimited area defined by first and last delimiter
- * If the second delimiter isn&apos;t found in string, return a string from first delimiter to end
- * @param {string} test - string to analyse
- * @param {string} firstDelimiter - first delimiter used  to get the result
- * @param {string} lastDelimiter - last delimiter used to get the result
- * @returns {string|null}
- */
-function getStringDelimitedArea(firstDelimiter, lastDelimiter) {
-    if (test.includes(firstDelimiter) &amp;&amp; test.includes(lastDelimiter)) {
-        let str = test.substring(test.lastIndexOf(firstDelimiter) + 1, test.lastIndexOf(lastDelimiter))
-        test = test.substring(test.lastIndexOf(lastDelimiter) + 1, test.length)
-        return str
-    } else {
-        return null;
-    }
-}
-
-/** @function
- * @name getSearchValue
- * Get a string in a delimited area defined by a delimiter
- * If there is only one delimiter, return null
- * @param {string} test - string to analyse
- * @param {string} delimiter - delimiter used to get the result
- * @returns {string|null}
- */
-function getSearchValue(delimiter) {
-    let value = []
-    let countCharacter = 0;
-    test.split(&quot;&quot;).map((searchCharacter, index) =&gt; {
-        if (searchCharacter === delimiter) {
-            countCharacter++
-            value.push(index)
-        }
-    })
-
-    if (countCharacter &gt;= 2) {
-        let str = test.substring(value[0] + 1, value[1])
-        test = test.substring(value[1] + 1, test.length)
-        return str
-    } else {
-        return null;
-    }
-}
-
-function sortAllPostByLike(data) {
-    if (isDefinedAndNotNull(data.success)) {
-        for (let func of data.success) {
-            func = sortPostByLikes(func)
-        }
-    }
-    return data
-}
-
-function sortPostByLikes(data) {
-    data.post.sort(function (a, b) {
-        return (b.like - b.dislike) - (a.like - a.dislike);
-    })
-    return data
+    return getHandlerForUserPost(userData, postData, msg);
 }
 
 //endregion

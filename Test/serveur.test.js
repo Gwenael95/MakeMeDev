@@ -10,7 +10,7 @@ const { rateLimiterConfig } = require('../Tools/rateLimiter');
 /**
  * @todo Make lot of tests, to test each possible situation
  */
-describe('Post', () => {
+describe('Server', () => {
 
     /**
      * @test {getPost}

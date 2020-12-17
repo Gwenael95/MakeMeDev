@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">MakeMeDev/Tools/Common/countOccurrence.js | makemedev</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">MakeMeDev/Tools/rateLimiter.js | makemedev</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -13,10 +13,10 @@
 
 <header>
   <a href="./">Home</a>
-
+  
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -28,22 +28,26 @@
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
-
+    
   </ul>
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Tools/Common/countOccurrence.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/** @function
- * @name countOccurrencesFromArray
- * Count occurrence of string in an array and return an object
- * with each string as key and occurrence as value
- * @param {array} arr - The array to analyse
- * @returns {object} - an object containing strings occurrences
+<div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Tools/rateLimiter.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const rateLimit = require(&apos;express-rate-limit&apos;);
+/**
+ * Config of our request limit, with 100 request per minute
+ * @type {{headers: boolean, windowMs: number, max: number, message: string}}
  */
-const countOccurrencesFromArray = arr =&gt; arr.reduce((prev, curr) =&gt; (prev[curr] = ++prev[curr] || 1, prev), {});
+const rateLimiterConfig = {
+    windowMs:   60 * 1000, // 1 mn in milliseconds
+    max: 100,
+    message: &apos;You have exceeded the 100 requests in 1 mn limit!&apos;,
+    headers: true,
+}
+const rateLimiterUsingThirdParty = rateLimit(rateLimiterConfig);
 
-module.exports = {countOccurrencesFromArray}
+module.exports = {rateLimiterUsingThirdParty, rateLimiterConfig}
 </code></pre>
 
 </div>

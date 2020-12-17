@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,12 +34,35 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Services/usersService.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const {getHandler} = require(&quot;../Tools/Services/responseHandler&quot;);
-const {signUp, signIn, updateUserById} = require(&quot;../DB/userRepository&quot;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This Service file requires {@link module:../Tools/Services/responseHandler }, {@link module:../Tools/token},
+ * {@link module:../Tools/DB/requestOperator} and {@link module:../DB/userRepository}
+ * @requires module:../Tools/Services/responseHandler
+ * @requires module:../Tools/token
+ * @requires module:../Tools/DB/requestOperator
+ * @requires module:../DB/userRepository
+ */
+const {getHandler, updateDbHandler} = require(&quot;../Tools/Services/responseHandler&quot;);
 const {generateAccessToken} = require(&quot;../Tools/token&quot;)
-const {setUpdateValue} = require(&apos;../Tools/DB/requestOperator&apos;)
+const {setUpdateValue} = require(&apos;../Tools/Services/requestOperator&apos;)
+const {signUp, signIn, updateUserById} = require(&quot;../DB/userRepository&quot;);
+
 
 //region exported functions
+//region get
+/** @function
+ * @name getUser
+ * Get user&apos;s data if a user with corresponding pseudo/mail and password exist.
+ * @param {object} user - user&apos;s data needed to signIn
+ * @returns {Promise&lt;{code: number, body: {error: string}}|{code: number, body: {error: *}}|{code: number, body: *}&gt;}
+ */
+async function getUser(user) {
+    const userData = await signIn(user);
+    return closeUserAction(userData,&quot;Any account found with this login/password&quot; ,false)
+}
+//endregion
+
+//region post
 /** @function
  * @name addUser
  * Create a new user, that will be add in database
@@ -48,30 +71,23 @@ const {setUpdateValue} = require(&apos;../Tools/DB/requestOperator&apos;)
  */
 async function addUser(user) {
     const result = await signUp(user);
-    return closeUserAction(result )
-}
-
-/** @function
- * @name getUser
- * Get users depending on field we want to found
- * @param {object} user - user&apos;s data needed to signIn
- * @returns {Promise&lt;{code: number, body: {error: string}}|{code: number, body: {error: *}}|{code: number, body: *}&gt;}
- */
-async function getUser(user) {
-    const userData = await signIn(user);
-    return closeUserAction(userData,&quot;aucun compte ne correspond &#xE0; cette recherche&quot; )
-}
-
-async function updateUser(user) {
-    const userData = await updateUserById(user, setUpdateValue(user, [&quot;pseudo&quot;, &quot;mail&quot;, &quot;avatar&quot;]));
-    return closeUserAction(userData, &quot;ce compte n&apos;existe pas, impossible de mettre &#xE0; jour&quot;)
+    return closeUserAction(result)
 }
 //endregion
 
+//region patch
+async function updateUser(user) {
+    const keysToUpdate = Object.keys(user).filter(word =&gt; [&quot;pseudo&quot;, &quot;mail&quot;, &quot;avatar&quot;].includes(word));
+    const userData = await updateUserById(user, setUpdateValue(user, keysToUpdate));
+    return closeUserAction(userData, &quot;Can&apos;t update this user: any corresponding account found&quot;)
+}
+//endregion
+//endregion
+
 //region not exported function
-function closeUserAction(userData, msg=&quot;erreur en base de donn&#xE9;es&quot;){
+function closeUserAction(userData,  msg=&quot;DB error&quot;, isSetDb=true){
     generateAccessToken(userData);
-    return getHandler(userData , msg)
+    return ( isSetDb ? updateDbHandler(userData , msg, 500) : getHandler(userData , msg, 404)  )
 }
 //endregion
 

@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,13 +34,21 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Controllers/usersController.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const {addUser, getUser, updateUser} = require(&quot;../Services/usersService&quot;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This Controller file requires {@link module:../Services/usersService }  and
+ * {@link module:../Tools/Controller/controllerHelper}.
+ * @requires module:../Services/usersService
+ * @requires module:../Tools/Controller/controllerHelper
+ */
+const {addUser, getUser, updateUser} = require(&quot;../Services/usersService&quot;);
 const {emptyRequest} = require(&quot;../Tools/Controller/controllerHelper&quot;);
 
+//region post
 /** @function
  * @name signUp
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * Create a new account on our app, saved in mongoDb
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
@@ -51,35 +59,36 @@ exports.signUp = async (req, res, next) =&gt; {
 };
 
 /** @function
+ * @name signIn
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ * @returns {Promise&lt;*|boolean|void&gt;}
+ */
+exports.signIn = async (req, res, next)  =&gt; {
+    const {user} = req.body;
+    const response = emptyRequest(user) ? emptyRequest(user) : await getUser(user)
+    return res.status(response.code).send(response.body)
+};
+//endregion
+
+
+//region patch
+/** @function
  * @name updateUser
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {Promise&lt;*|boolean|void&gt;}
  */
 exports.updateUser = async (req, res, next) =&gt; {
     const {user} = req.body;
+    user.id = req.user._id
     const response = emptyRequest(user) ? emptyRequest(user) : await updateUser(user)
     return res.status(response.code).send(response.body)
 };
 
-/** @function
- * @name signIn
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
- * @param {Function} next - get control to the next middleware function
- * @returns {Promise&lt;*|boolean|void&gt;}
- */
-exports.signIn = async (req, res, next)  =&gt; {
-    const user = req.query;
-    const response = emptyRequest(user) ? emptyRequest(user) : await getUser(user)
-    return res.status(response.code).send(response.body)
-};
-
-
-
-
-
+//endregion
 
 </code></pre>
 

@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,7 +34,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Test/models.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">exports.post = {
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * A more than complete post.
+ * @type {{post: {post: [{like: number, author: {avatar: string, creationDate: string, userId: string, pseudo: string}, dislike: number, function: string, totalLike: number, description: string, commentary: [{author: {avatar: string, creationDate: string, userId: string, pseudo: string}, commentary: string}]}, {like: number, author: {avatar: string, creationDate: string, userId: string, pseudo: string}, dislike: number, function: string, totalLike: number, description: string, commentary: [{author: {avatar: string, creationDate: string, userId: string, pseudo: string}, commentary: string}]}, {like: number, author: {avatar: string, creationDate: string, userId: string, pseudo: string}, dislike: number, function: string, totalLike: number, description: string, commentary: [{author: {avatar: string, creationDate: string, userId: string, pseudo: string}, commentary: string}]}], name: string, returns: [{name: string, description: string, type: string}, {name: string, description: string, type: string}], tag: [string], params: [{defaultValue: string, name: string, description: string, type: string}]}}}
+ */
+exports.post = {
     &quot;post&quot;: {
         &quot;name&quot;: &quot;test&quot;,
         &quot;tag&quot; : [&apos;test&apos;],
@@ -135,20 +139,70 @@
     }
 }
 
+/**
+ * A minimal post object that can be added in DB when creating a post
+ * @type {{post: {post: [{function: string, description: string}], name: string, returns: [{name: string, description: string, type: string}, {name: string, description: string, type: string}], tag: [string], params: [{defaultValue: string, name: string, description: string, type: string}]}}}
+ */
+exports.minimalPost = {
+    &quot;post&quot;: {
+        &quot;name&quot;: &quot;test&quot;,
+        &quot;tag&quot; : [&apos;test&apos;],
+        &quot;params&quot; : [
+            {
+                &quot;name&quot; : &quot;num&quot;,
+                &quot;type&quot; : &quot;int&quot;,
+                &quot;description&quot; : &quot;num to multiply&quot;,
+                &quot;defaultValue&quot; : &quot;10&quot;
+            }
+        ],
+        &quot;returns&quot; : [
+            {
+                &quot;name&quot; : &quot;result&quot;,
+                &quot;type&quot; : &quot;int&quot;,
+                &quot;description&quot; : &quot;result value&quot;
+            },
+            {
+                &quot;name&quot; : &quot;result&quot;,
+                &quot;type&quot; : &quot;array&quot;,
+                &quot;description&quot; : &quot;result value&quot;
+            }
+        ],
+        &quot;post&quot; : [
+            {
+                &quot;description&quot; : &quot;a function to multiply by 2 a num and returning the result&quot;,
+                &quot;function&quot; : &quot;multiply2x(num){return num*2}&quot;,
+            }
+        ]
+    }
+}
+
+
+/**
+ * A response post, that can be add to a post
+ * @type {{function: string, description: string}}
+ */
 exports.responsePost = {
     &quot;description&quot;: &quot;better solution&quot;,
     &quot;function&quot;: &quot;multiply2x2x2x2x2(num){return num*2}&quot;
 }
 
+/**
+ * A commentary post, that can be add to a post
+ * @type {{commentary: string}}
+ */
 exports.commentaryPost = {
     &quot;commentary&quot; : &quot;first&quot;
 }
 
+/**
+ * A user that can be inserted in database when sign up
+ * @type {{user: {password: string, mail: string, pseudo: string}}}
+ */
 exports.user = {
     user: {
         pseudo: &apos;userName&apos;,
-            mail: &apos;useremail@email.com&apos;,
-            password: &apos;123123&apos;,
+        mail: &apos;useremail@email.com&apos;,
+        password: &apos;123123&apos;,
     }
 }
 </code></pre>

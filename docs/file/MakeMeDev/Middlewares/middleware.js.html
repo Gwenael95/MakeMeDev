@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -38,9 +38,9 @@
 
 /** @function
  * @name authenticateToken
- * Check User&apos;s token before authorized some community features
- * @param {Request} req - request received
- * @param {Response} res - response to dispatched
+ * Check User&apos;s token before authorized some community features, add user field in req.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
  * @returns {*}
  */
@@ -55,7 +55,21 @@ function authenticateToken(req, res, next) {
     })
 }
 
-module.exports = {authenticateToken}
+/** @function
+ * @name handleGetPost
+ * Allow to search post by id or with several criteria extracted from a string.
+ * @param {Object.&lt;Request&gt;} req - request received
+ * @param {Object.&lt;Response&gt;} res - response to dispatched
+ * @param {Function} next - get control to the next middleware function
+ */
+function handleGetPost(req, res, next) {
+    const {search, postId} =  req.query
+    req.search = {search:search, postId:postId}
+    next()
+}
+
+
+module.exports = {authenticateToken, handleGetPost}
 </code></pre>
 
 </div>

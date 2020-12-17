@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -38,9 +38,19 @@
 require(&apos;dotenv&apos;).config();
 
 
+/** @function
+ * @name connect
+ * Connect to DB for test or production
+ */
 function connect() {
     if (mongoose.connection.readyState === 0) {
-        process.env.NODE_ENV === &apos;test&apos; ? configTest() : configMongo()
+        mongoose.connect((process.env.NODE_ENV === &apos;test&apos; ? global.__DB_URL__ :process.env.URL_MONGO),
+            {
+                useUnifiedTopology: true,
+                useNewUrlParser: true,
+                useCreateIndex: true,
+                useFindAndModify: false
+            });
         const db = mongoose.connection;
         db.on(&apos;error&apos;, console.error.bind(console, &apos;Erreur lors de la connexion&apos;));
         db.once(&apos;open&apos;, function (){
@@ -49,25 +59,9 @@ function connect() {
     }
 }
 
-const configTest = () =&gt; {
-    mongoose.connect(global.__DB_URL__,
-        {
-            useUnifiedTopology: true,
-            useNewUrlParser: true,
-            useCreateIndex: true,
-            useFindAndModify: false
-        })
-}
-
-const configMongo = () =&gt; {
-    mongoose.connect(process.env.URL_MONGO,
-    {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useFindAndModify: false
-    })}
-
+/** @function
+ * @name truncate
+ */
 function truncate()  {
     if (mongoose.connection.readyState !== 0) {
         const { collections } = mongoose.connection;
@@ -80,6 +74,9 @@ function truncate()  {
     }
 }
 
+/** @function
+ * @name disconnect
+ */
 function disconnect() {
     if (mongoose.connection.readyState !== 0) {
         mongoose.disconnect();

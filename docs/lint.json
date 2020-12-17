@@ -4,35 +4,31 @@
     "filePath": "MakeMeDev/DB/postRepository.js",
     "lines": [
       {
-        "lineNumber": 7,
+        "lineNumber": 55,
         "line": "/** @function"
       },
       {
-        "lineNumber": 8,
+        "lineNumber": 56,
         "line": " * @name addPost"
       },
       {
-        "lineNumber": 9,
+        "lineNumber": 57,
         "line": " * Insert a new post in database, and return the result of this try"
       },
       {
-        "lineNumber": 10,
-        "line": " * --Should update Current user information, push a new post--"
-      },
-      {
-        "lineNumber": 11,
+        "lineNumber": 58,
         "line": " * @param {object} postData - post to add, should correspond to postModels {@link '../Models/postModels'}."
       },
       {
-        "lineNumber": 12,
+        "lineNumber": 59,
         "line": " * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}"
       },
       {
-        "lineNumber": 13,
+        "lineNumber": 60,
         "line": " */"
       },
       {
-        "lineNumber": 14,
+        "lineNumber": 61,
         "line": "async function addPost(postData, user) {"
       }
     ],
@@ -42,110 +38,6 @@
     ],
     "docParams": [
       "postData"
-    ]
-  },
-  {
-    "name": "getStringDelimitedArea",
-    "filePath": "MakeMeDev/Services/postService.js",
-    "lines": [
-      {
-        "lineNumber": 151,
-        "line": "/** @function"
-      },
-      {
-        "lineNumber": 152,
-        "line": " * @name getStringDelimitedArea"
-      },
-      {
-        "lineNumber": 153,
-        "line": " * Get a string in a delimited area defined by first and last delimiter"
-      },
-      {
-        "lineNumber": 154,
-        "line": " * If the second delimiter isn't found in string, return a string from first delimiter to end"
-      },
-      {
-        "lineNumber": 155,
-        "line": " * @param {string} test - string to analyse"
-      },
-      {
-        "lineNumber": 156,
-        "line": " * @param {string} firstDelimiter - first delimiter used  to get the result"
-      },
-      {
-        "lineNumber": 157,
-        "line": " * @param {string} lastDelimiter - last delimiter used to get the result"
-      },
-      {
-        "lineNumber": 158,
-        "line": " * @returns {string|null}"
-      },
-      {
-        "lineNumber": 159,
-        "line": " */"
-      },
-      {
-        "lineNumber": 160,
-        "line": "function getStringDelimitedArea(firstDelimiter, lastDelimiter) {"
-      }
-    ],
-    "codeParams": [
-      "firstDelimiter",
-      "lastDelimiter"
-    ],
-    "docParams": [
-      "test",
-      "firstDelimiter",
-      "lastDelimiter"
-    ]
-  },
-  {
-    "name": "getSearchValue",
-    "filePath": "MakeMeDev/Services/postService.js",
-    "lines": [
-      {
-        "lineNumber": 170,
-        "line": "/** @function"
-      },
-      {
-        "lineNumber": 171,
-        "line": " * @name getSearchValue"
-      },
-      {
-        "lineNumber": 172,
-        "line": " * Get a string in a delimited area defined by a delimiter"
-      },
-      {
-        "lineNumber": 173,
-        "line": " * If there is only one delimiter, return null"
-      },
-      {
-        "lineNumber": 174,
-        "line": " * @param {string} test - string to analyse"
-      },
-      {
-        "lineNumber": 175,
-        "line": " * @param {string} delimiter - delimiter used to get the result"
-      },
-      {
-        "lineNumber": 176,
-        "line": " * @returns {string|null}"
-      },
-      {
-        "lineNumber": 177,
-        "line": " */"
-      },
-      {
-        "lineNumber": 178,
-        "line": "function getSearchValue(delimiter) {"
-      }
-    ],
-    "codeParams": [
-      "delimiter"
-    ],
-    "docParams": [
-      "test",
-      "delimiter"
     ]
   }
 ]

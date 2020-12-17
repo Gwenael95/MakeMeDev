@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -33,42 +33,99 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="makemedev">MakeMeDev</h1><p>Projet web de l&apos;an 2020, MakeMeDev a pour but de permettre aux utilisateurs 
-de poster et rechercher des functions produites par la communaut&#xE9; dev.</p>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="makemedev">MakeMeDev</h1><p>2020 Web project at Coding factory, MakeMeDev aim to allow users
+to post and search functions from other developers.</p>
 <ul>
-<li>Utilisateur connect&#xE9;<ul>
-<li>L&apos;utilisateur pourra se cr&#xE9;er un compte avec mail, mot de passe et pseudo.
-Cela lui donnera alors le droit de poster des fonctions r&#xE9;pondant &#xE0; une probl&#xE9;matique.</li>
+<li><a href="#Initialisation">Initialisation</a></li>
+<li><a href="#User">User</a></li>
+<li><a href="#Search">Search</a></li>
 </ul>
-</li>
-</ul>
-<p>Cet utilisateur devra fournir :</p>
+<h2 id="initialisation">Initialisation</h2><p>To run this server:</p>
+<pre><code><code class="source-code prettyprint">node index.js</code>
+</code></pre><h2 id="user">User</h2><h3 id="signed-in-user">Signed in user</h3><p>Signed in user will create an account with mail, pseudo, password.
+It will allow to post new functions to solve a problematic.</p>
+<p>This user will have to :</p>
 <ul>
-<li>un nom de fonction</li>
-<li>d&#xE9;crire l&apos;utilit&#xE9; de cette derni&#xE8;re</li>
-<li>d&#xE9;finir ses diff&#xE9;rents arguments <ul>
+<li>give a name to his function</li>
+<li>describe the function, how it works, which problem it solve ...</li>
+<li>define all arguments and returns values :<ul>
 <li>type </li>
-<li>nom </li>
+<li>name </li>
 <li>description</li>
-<li>valeur par d&#xE9;faut</li>
+<li>default value (<code>for arguments, not required</code>)</li>
 </ul>
 </li>
-<li>d&#xE9;finir la valeur de retour</li>
-<li>fournir des tags</li>
+<li>add tags</li>
 </ul>
-<p>D&apos;autres utilisateurs pourront proposer une am&#xE9;lioration de cette fonction.
-Ce sera alors &#xE0; la communaut&#xE9; de faire ressortir la solution optimal
-via les likes et dislikes.</p>
-<p>Tout ceci permettra aux autres utilisateurs de trouver la fonction correspondant
-&#xE0; leur besoin.</p>
+<p>Other signed in users may propose to enhance this function,
+they just have to add a post on the function they want.
+The rest of the community will elect the optimal solution by voting 
+thanks to like and dislike.</p>
+<p>This will allow every user, even if not registered, to find solution to
+their issues thanks to the dev community.</p>
+<h3 id="utilisateur-non-connect&#xE9;--visiteur-">Utilisateur non connect&#xE9; (visiteur)</h3><p>Unregistered user may only explore all functions, but won&apos;t
+participate to develop the MakeMeDev community.</p>
+<h2 id="search">Search</h2><h3 id="which-are-criteria-to-search-function">Which are criteria to search function</h3><p>You can search function by: </p>
 <ul>
-<li>Utilisateur non connect&#xE9; (visiteur)<ul>
-<li></li>
+<li>name</li>
+<li>params type </li>
+<li>returns type</li>
+<li>description</li>
+<li>tags</li>
 </ul>
-</li>
-</ul>
-<p>Les visiteurs non connect&#xE9; pourront seulement consulter les posts, ils ne pourront 
-donc pas participer &#xE0; la cr&#xE9;ation et am&#xE9;lioration de fonctions.</p>
+<h3 id="how-to-write-it">How to write it</h3><h4 id="function-name">Function name</h4><p>If you want to search by function name, 
+first step is to write it.
+Function name is <code>always</code> at the beginning of a request.</p>
+<blockquote>
+<p>This name could be uncompleted, we search function with a name
+containing your searched name.</p>
+</blockquote>
+<p>Example:</p>
+<pre><code><code class="source-code prettyprint">accurate name       =&gt; sortMyArray
+less precise name   =&gt; sortMy      </code>
+</code></pre><h4 id="params">Params</h4><p>If you want to search by params, 
+first step is to write brackets <code>()</code>.
+Into those brackets, write the type of params to search.</p>
+<blockquote>
+<p>The number of params is important, you can search function without params 
+with single brackets.</p>
+<p>Moreover, if you want to search function without knowing all params type, replace
+the unknown ones by ?</p>
+</blockquote>
+<p>Examples:</p>
+<pre><code><code class="source-code prettyprint">no params           =&gt; ()
+one int             =&gt; (int)
+2 int, 1 array      =&gt; (int, int, array)
+1 int, 2 unknowns   =&gt; (int, ?, ?)</code>
+</code></pre><h4 id="returns">Returns</h4><p>If you want to search by returns, 
+first step is to write braces <code>{}</code>.
+Into those braces, write the type of returns to search.</p>
+<blockquote>
+<p>Refer to <a href="#Params">Params</a> for details explanations on types.</p>
+</blockquote>
+<p>Examples:</p>
+<pre><code><code class="source-code prettyprint">no returns      =&gt; {}
+unknown         =&gt; {?}
+one int or null =&gt; {int, null}</code>
+</code></pre><h4 id="description">Description</h4><p>If you want to search by description, 
+first step is to write double quote <code>&quot;&quot;</code>.
+Then, write a complete or a part of the description.</p>
+<p>Example:</p>
+<pre><code><code class="source-code prettyprint">accurate description       =&gt; &quot;a function to sort array returning the new array or null if isn&apos;t of type array&quot;
+less precise description   =&gt; &quot;function to sort&quot;      </code>
+</code></pre><h4 id="tags">Tags</h4><p>If you want to search by tags, first step is to write square brackets <code>[]</code>.
+Into those square brackets, write all tags you want to search.</p>
+<blockquote>
+<p>We search all function with all your tags or more.
+Empty brackets mean you want a function without any tag</p>
+</blockquote>
+<p>Example:</p>
+<pre><code><code class="source-code prettyprint">1 tags =&gt; [sort]
+2 tags =&gt; [sort, easy]    </code>
+</code></pre><h3 id="combination">Combination</h3><p>Each of those could be used to search function or not.
+You can use a combination of these to accurate your search.</p>
+<p>Find below an example of search request:</p>
+<p><code>functionName(int, int){int, ?} &quot;function to multiply&quot; [tag, tag]</code></p>
 </div>
 </div>
 

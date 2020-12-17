@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,17 +34,64 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/DB/postRepository.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const mongoose = require(&apos;mongoose&apos;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This file requires {@link module:../Models/postModel}, {@link module:../Tools/DB/postPipeline},
+ * {@link module:../Tools/DB/postHelper}.
+ * @requires module:../Models/postModel&quot;
+ * @requires module:../Tools/DB/postPipeline
+ * @requires module:../Tools/DB/postHelper
+ */
+const mongoose = require(&apos;mongoose&apos;);
 const {postSchema} = require(&quot;../Models/postModel&quot;);
+const {getPipeline} = require(&quot;../Tools/DB/postPipeline&quot;)
+const {getLastResponseId, getLastCommentaryId} = require(&quot;../Tools/DB/postHelper&quot;)
+
+/**
+ * A mongoose post model
+ * @type {Model&lt;Document&gt;}
+ */
 const PostModel = mongoose.model(&apos;posts&apos;, postSchema)
-const {countOccurrencesFromArray} = require(&quot;../Tools/Common/countOccurence&quot;)
-const {filterDelSpaces} = require(&quot;../Tools/Common/stringOperation&quot;)
 const ObjectId = mongoose.Types.ObjectId;
 
+
+//region get
+/** @function
+ * @name getPostByFunction
+ * Get post in database depending on many criteria, and return the result of this try
+ * @param {object} searchedData - data to search in database
+ * @returns {Promise&lt;{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}&gt;}
+ */
+async function getPostByFunction(searchedData) {
+    return await PostModel
+        .aggregate(getPipeline(searchedData))//.sort({&quot;post.totalLike&quot;:1})
+        .exec()
+        .then(result =&gt; {return {success: result}})
+        .catch(err =&gt; {
+            return {error: err.errors}
+        });
+}
+
+/** @function
+ * @name getPostById
+ * Get post in database depending on post&apos;s Id, and return the result of this try
+ * @param {object} postId - post&apos;s Id to search in database
+ * @returns {Promise&lt;{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}&gt;}
+ */
+async function getPostById(postId) {
+    return await PostModel
+        .findOne({_id: ObjectId(postId)})
+        .exec()
+        .then(result =&gt; {return {success: result}})
+        .catch(err =&gt; {
+            return {error: err.errors}
+        });
+}
+//endregion
+
+//region post
 /** @function
  * @name addPost
  * Insert a new post in database, and return the result of this try
- * --Should update Current user information, push a new post--
  * @param {object} postData - post to add, should correspond to postModels {@link &apos;../Models/postModels&apos;}.
  * @returns {Promise&lt;{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}&gt;}
  */
@@ -56,81 +103,89 @@ async function addPost(postData, user) {
         return {error: err.errors}
     })
 }
+//endregion
 
+//region patch
 
 /** @function
- * @name getPost
- * Get post in database depending on a many fields, and return the result of this try
- * @param {object} searchedData - data to search in database
- * @returns {Promise&lt;{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}&gt;}
+ * @name updatePost
+ * A generic function used to update a post.
+ * @param {object} filter - object used by mongoDB to select corresponding documents in DB.
+ * @param {object} update - object containing fields to set (ex: $set, or $push).
+ * @param {string} id - a post&apos;s id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}&gt;}
  */
-async function getPost(searchedData) {
-    return await PostModel
-        .aggregate(getPipeline(searchedData))//.sort({&quot;post.totalLike&quot;:1})
-        .exec()
-        .then(result =&gt; {return {success: result}})
-        .catch(err =&gt; {
-            return {error: err.errors}
-        });
-}
-
-
-function getCommentaryId(result, id) {
-    try {
-        let commentaryId;
-        for (let el of result.post) {
-            if (JSON.stringify(el._id) === JSON.stringify(id)) {
-                commentaryId = el.commentary[el.commentary.length - 1]._id
-                break
-            }
-        }
-        return commentaryId;
-    }catch (e) {
-        return null
-    }
-}
-
-function getResponseId(result) {
-    return result.post[result.post.length - 1]._id;
-}
-
 async function updatePost(filter, update, id) {
     return await PostModel
         .findOneAndUpdate(
             filter,
             update,
             {new: true, context: &quot;query&quot;})
-        //for options=&gt; upsert: true, setDefaultsOnInsert: true
-        // (use on $setOnInsert; for us create issue) to update date on insert
         .lean()
         .exec()
         .then((result ) =&gt; {
-            return {success: result, postId: id , responseId: getResponseId(result), commentaryId: getCommentaryId(result, id)}
+            return {success: result, postId: id , responseId: getLastResponseId(result), commentaryId: getLastCommentaryId(result, id)}
         })
         .catch(err =&gt; {
             return {error: err.errors}
         });
 }
 
+/** @function
+ * @name updatePostFunction
+ * Update a post function.
+ * @param {string} functionPost - the new function
+ * @param {string} idPost - a post&apos;s id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}&gt;}
+ */
 async function updatePostFunction(functionPost, idPost) {
     return await updatePost({&quot;post._id&quot;: ObjectId(idPost)}, {$set : {&quot;post.$.function&quot;: functionPost}}, idPost)
 }
 
-async function updatePostResponse(responsePost, idPost) {
+/** @function
+ * @name pushPostResponse
+ * Add a post response.
+ * @param {object} responsePost - a new response post to add in an array in DB
+ * @param idPost - a post&apos;s id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}&gt;}
+ */
+async function pushPostResponse(responsePost, idPost) {
     return await updatePost({&quot;_id&quot;: ObjectId(idPost)}, {$push : {post: responsePost}}, idPost)
 }
 
-async function updatePostResponseCommentary(commentaryResponse, idPost) {
+/** @function
+ * @name pushPostResponseCommentary
+ * Add a post commentary.
+ * @param {object} commentaryResponse -  a new commentary to add in an array in DB
+ * @param idPost - a post&apos;s id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}&gt;}
+ */
+async function pushPostResponseCommentary(commentaryResponse, idPost) {
     return await updatePost({&quot;post._id&quot;: ObjectId(idPost)}, {$push : {&quot;post.$.commentary&quot;: commentaryResponse}}, idPost)
 }
 
+/** @function
+ * @name updateLikeOrDislike
+ * Add or update like/dislike for a post.
+ * start by checking if user already vote for this post.
+ * if not we increment the like/dislike counter.
+ * else, if it changes is mind (want to change a like by a dislike), we decrement
+ * the old vote and increase the new one.
+ * @param {string} likeOrDislike - a string equals to &apos;like&apos; or &apos;dislike&apos;
+ * @param {string} idPost - post&apos;s id
+ * @param {object} user - user&apos;s data (needed to know his activities)
+ * @returns {Promise&lt;{error: string}|*&gt;}
+ */
 async function updateLikeOrDislike(likeOrDislike, idPost, user) {
+    /**
+     * A string, opposite to the current vote
+     * @type {string}
+     */
     let opposite = {like:&quot;dislike&quot;, dislike:&quot;like&quot;}[likeOrDislike]
-    //check if user already vote for this post;
-    // if no : increment like or dislike field
-    // if yes : if it have added a like, and now send a like : DO NOTHING  (same for dislike)
-    //          if it have added a like and change is mind : $inc : -1 for like and $inc +1 for dislike (&amp; vice versa)
-    //update user activities
+    /**
+     * An object containing fields to set in DB
+     * @type {object}
+     */
     let setPost
 
     if (!(user.activities[likeOrDislike].includes(idPost) || user.activities[opposite].includes( idPost))) {
@@ -142,158 +197,13 @@ async function updateLikeOrDislike(likeOrDislike, idPost, user) {
     else{
         return {error:&quot;cet utilisateur &#xE0; d&#xE9;j&#xE0; mis un &quot; + likeOrDislike}
     }
-    //need to update user ACTIVITIES
     return await updatePost({&quot;post._id&quot;: ObjectId(idPost)}, setPost, idPost)
 }
-
-//region not exported function
-/** @function
- * @name getPipeline
- * Get a complex Pipeline to search all function depending on data search field
- * @param {object} data - post&apos;s data
- * @returns {[]}
- */
-function getPipeline(data) {
-    return getNameQuery(data)
-        .concat(getParamTypeQuery(data), getReturnTypeQuery(data), getDescriptionQuery(data), getTagQuery(data));
-}
-
-//region query for string&apos;s array
-/** @function
- * @name getTagQuery
- * Get a query to search function&apos;s tag in DB
- * @param {object} data - post&apos;s data
- * @returns {*[]|{$match: {field: {$all: data}}}[]}
- */
-function getTagQuery(data) {
-    return getMatchFromStringArray(data.tag, &quot;tag&quot;)
-}
-
-/** @function
- * @name getMatchFromStringArray
- * Create a $match for a defined field from database containing an array
- * Check if another array contains some or all elements of this DB field
- * @param {string} data - an array containing strings
- * @param {string} dbField - field name from DB
- * @returns {[]|[{$match: {field:{$all:data}}}]}
- */
-function getMatchFromStringArray(data, dbField) {
-    if (data !== null) {
-        let array = (filterDelSpaces(data).split(&quot;,&quot;))
-        if (array.length &gt; 0 &amp;&amp; data!==&quot;&quot;) {
-            return [{$match: {[dbField]: {$all: array}}}]
-        }
-        else if (data===&quot;&quot;) {
-            return [{$match: {[dbField]:{$size: 0}}}]
-        }
-    }
-    return []
-}
-//endregion
-
-function getTabParamOrReturn(data, types, paramsOrResults) {
-    let paramOrResultTypeQuery = []
-    if (data[types] !== null) {
-        let dataSearch = (filterDelSpaces(data[types]).split(&quot;,&quot;))
-        let occurrences = countOccurrencesFromArray(dataSearch)
-        if (dataSearch.length &gt; 0) {
-            return dataSearch.map(result =&gt; {
-                //search the number of ? indicated in request
-                if (result === &quot;?&quot;) {
-                    return {
-                        $match: {
-                            [paramsOrResults]: {$elemMatch: {type: {$regex: &quot;&quot;}}, $size: dataSearch.length}
-                        }
-                    }
-                } else if (dataSearch.length === 1 &amp;&amp; result === &quot;&quot;) {
-                    return {$match: {[paramsOrResults]: {$size: 0}}}
-                } //else search all param by params type and numbers of these types
-                else if (dataSearch.length &gt;= 1) {
-                    return {
-                        $match: {
-                            [paramsOrResults]: {$elemMatch: {type: result}, $size: dataSearch.length},
-                            [types + &quot;.&quot; + result]: {
-                                $lte: (occurrences[&quot;?&quot;] ? occurrences[&quot;?&quot;] : 0) + occurrences[result],
-                                $gte: occurrences[result]
-                            }
-                        }
-                    }
-                }
-                // else, there isn&apos;t any params in request, we search by other criteria
-                else {
-                    return {$match: {[paramsOrResults]: {$elemMatch: {type: {$regex: &quot;&quot;}}}}}
-                }
-            })
-        } else if (dataSearch.length === 0) {
-            return [{$match: {[paramsOrResults]: {$size: dataSearch.length}}}]
-        }
-    }
-    return paramOrResultTypeQuery;
-}
-
-//region query for params
-/** @function
- * @name getParamTypeQuery
- * Get a query to search function param&apos;s type in DB
- * $match work to search the appropriate number of params to search and types
- * @param {object} data - post&apos;s data
- * @returns {{$match: {params: {$size: number}}}[]|unknown[]|[]}
- */
-function getParamTypeQuery(data) {
-    return getTabParamOrReturn(data, &quot;paramsTypes&quot;, &quot;params&quot;);
-}
-
-/** @function
- * @name getReturnTypeQuery
- * Get a query to search function return&apos;s type in DB
- * @param {object} data - post&apos;s data
- * @returns {*[]|{$match: {field: {$regex: data}}}[]}
- */
-function getReturnTypeQuery(data) {
-    return getTabParamOrReturn(data, &quot;returnsTypes&quot;, &quot;returns&quot;);
-}
-//endregion
-
-//region query for string
-/** @function
- * @name getDescriptionQuery
- * Get a query to search function&apos;s description in DB
- * @param {object} data - post&apos;s data
- * @returns {*[]|{$match: {field: {$regex: data}}}[]}
- */
-function getDescriptionQuery(data) {
-    return getMatchStringRegex (data.description, &quot;post.description&quot;)
-}
-
-/** @function
- * @name getNameQuery
- * Get a query to search function&apos;s name in DB
- * @param {object} data - post&apos;s data
- * @returns {*[]|{$match: {field: {$regex: data}}}[]}
- */
-function getNameQuery(data) {
-    return getMatchStringRegex (data.functionName, &quot;name&quot;)
-}
-
-/** @function
- * @name getMatchStringRegex
- * Return an array with a $match for a defined DB field
- * @param {string} data - a string that will be used in regex
- * @param {string} dbField -
- * @returns {*[]|{$match: {field: {$regex:data}}}[]}
- */
-function getMatchStringRegex(data, dbField){
-    if (data !== null) {
-        return [{$match: {[dbField]: {$regex: data}}}];
-    }
-    return []
-}
-//endregion
-
 //endregion
 
 
-module.exports = {addPost, getPost, updateLikeOrDislike, updatePostResponse, updatePostResponseCommentary, updatePostFunction};
+module.exports = {addPost, getPostByFunction, getPostById, updateLikeOrDislike,
+    pushPostResponse, pushPostResponseCommentary, updatePostFunction};
 </code></pre>
 
 </div>

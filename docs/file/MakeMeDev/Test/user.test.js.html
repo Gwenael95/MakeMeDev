@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,37 +34,96 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Test/user.test.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const {request, url} = require(&quot;./config/launcher&quot;)
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This test file requires {@link module:./config/launcher}, {@link module:./config/testHelper }  and
+ * {@link module:./models}.
+ * @requires module:./config/launcher
+ * @requires module:./config/testHelper
+ * @requires module:./models
+ */
+const {request, url} = require(&quot;./config/launcher&quot;)
+const { prepareReqWithToken, expectedStatus, getBodyRes, expectExcept} = require(&quot;./config/testHelper&quot;)
 const { user } = require(&quot;./models&quot;);
-const { prepareReqWithToken} = require(&quot;./config/testHelper&quot;)
 
+/**
+ * user pseudo from the model
+ * @type {string} userPseudo
+ */
+const userPseudo= user.user.pseudo
+
+/**
+ * user password from the model
+ * @type {string} userPassword
+ */
+const userPassword= user.user.password
+
+/**
+ * user object containing pseudo and password from the model
+ * to test login
+ * @type {string} userPseudo
+ */
+const userSignIn = {
+    user:{
+        login: userPseudo,
+        password: userPassword,
+    }
+}
+
+/**
+ * @todo Make lot of tests, to test each possible situation.
+ * It will be sufficient for MVP.
+ */
 describe(&apos;User&apos;, () =&gt; {
     let newUser;
     beforeEach(async () =&gt; {
         newUser = await request.post(url + &quot;users&quot;).send(user)
     })
 
+    //region sign up and login user
+    /**
+     * @test {signUp}
+     * Try to insert a new user document in mongoDB with correct user object.
+     */
     it(&apos;should be able to create user&apos;, async () =&gt; {
         const response = newUser;
-        expect(response.status).toBe(200);
+        expectedStatus(response, 201)
         expect(Object.values(response.body).length).toEqual(2)
     });
 
+    /**
+     * @test {signIn}
+     * Try to login a user with correct object {password, pseudo}.
+     */
     it(&apos;should be able to get user&apos;, async () =&gt; {
-        const userName = &quot;userName&quot;
-        const response = await request.get(url + &quot;users?login=&quot; + userName + &quot;&amp;password=123123&quot;)
-        expect(response.status).toBe(200);
-        expect(response.body.success.pseudo).toBe(userName)
+        const response = await request.post(url + &quot;user-signin&quot;).send(userSignIn)
+        expectedStatus(response, 200)
+        expect(getBodyRes(response).pseudo).toBe(userPseudo)
     });
 
+    /**
+     * @test {signIn}
+     * Try to login a user with bad object {password, pseudo}.
+     */
     it(&apos;should not be able to get user&apos;, async () =&gt; {
-        const userName = &quot;userName&quot;
-        const response = await request.get(url + &quot;users?login=&quot; + userName + &quot;&amp;password=hi&quot;)
-        expect(response.status).toBe(404);
+        const response = await request.post(url + &quot;user-signin&quot;).send({
+            user:{
+                login: userPseudo,
+                password: &quot;testpassword&quot;,
+            }
+        })
+        expectedStatus(response, 404)
     });
+    //endregion
 
+
+    //region update user
+    /**
+     * @test {updateUser}
+     * Try to update a user with new pseudo, mail and avatar object
+     * thanks to its id.
+     */
     it(&apos;should be able to update user&apos;, async () =&gt; {
-        const user = await request.get(url + &quot;users?login=userName&amp;password=123123&quot;)
+        const user = await request.post(url + &quot;user-signin&quot;).send(userSignIn)
         const userData = {
             user: {
                 id: user.body.success._id,
@@ -75,15 +134,21 @@ describe(&apos;User&apos;, () =&gt; {
         }
         const response = await prepareReqWithToken(user,url + &quot;update-users&quot; )
             .send(userData);
-        expect(response.status).toBe(200)
-        expect(response.body.success.pseudo).toBe(userData.user.pseudo)
-        expect(response.body.success.mail).toBe(userData.user.mail)
-        expect(response.body.success.avatar).toBe(userData.user.avatar)
+        expectedStatus(response, 201)
+        expect(getBodyRes(response).pseudo).toBe(userData.user.pseudo)
+        expect(getBodyRes(response).mail).toBe(userData.user.mail)
+        expect(getBodyRes(response).avatar).toBe(userData.user.avatar)
+        expectExcept(  Object.keys(getBodyRes(response)), Object.keys(userData.user), [&quot;id&quot;] )
+
     });
 
-
-    it(&apos;should not be able to update user without crash&apos;, async () =&gt; {
-        const user = await request.get(url + &quot;users?login=userName&amp;password=123123&quot;)
+    /**
+     * @test {updateUser}
+     * Try to update a user with new pseudo, mail and avatar object
+     * thanks to a bad user id.
+     */
+    it(&apos;should be able to update user because use id from token&apos;, async () =&gt; {
+        const user = await request.post(url + &quot;user-signin&quot;).send(userSignIn)
         const userData = {
             user: {
                 id: &quot;1&quot;,
@@ -94,8 +159,37 @@ describe(&apos;User&apos;, () =&gt; {
         }
         const response = await prepareReqWithToken(user,url + &quot;update-users&quot; )
             .send(userData);
-        expect(response.status).toBe(404)
+        expectedStatus(response, 201)
+        expect(getBodyRes(response).pseudo).toBe(userData.user.pseudo)
+        expect(getBodyRes(response).mail).toBe(userData.user.mail)
+        expect(getBodyRes(response).avatar).toBe(userData.user.avatar)
+        expectExcept(  Object.keys(getBodyRes(response)), Object.keys(userData.user), [&quot;id&quot;] )
+
     });
+
+
+    /**
+     * @test {updateUser}
+     * Try to update a user with new mail and avatar object
+     */
+    it(&apos;should not be able to update user without crash&apos;, async () =&gt; {
+        const user = await request.post(url + &quot;user-signin&quot;).send(userSignIn)
+        const userData = {
+            user: {
+                mail: &apos;test@test.com&apos;,
+                avatar: &apos;test&apos;
+            }
+        }
+        const response = await prepareReqWithToken(user,url + &quot;update-users&quot; )
+            .send(userData);
+        expectedStatus(response, 201)
+        expect(getBodyRes(response).pseudo).toBe(userPseudo)
+        expect(getBodyRes(response).mail).toBe(userData.user.mail)
+        expect(getBodyRes(response).avatar).toBe(userData.user.avatar)
+        expectExcept(  Object.keys(getBodyRes(response)), Object.keys(userData.user), [&quot;id&quot;] )
+
+    });
+    //endregion
 
 });
 </code></pre>

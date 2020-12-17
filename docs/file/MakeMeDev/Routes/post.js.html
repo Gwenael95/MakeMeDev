@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,12 +34,19 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Routes/post.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const {sendPost, getPost, sendVote, addResponse, addCommentary, updateFunction} = require(&quot;../Controllers/postController&quot;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This file requires {@link module:../Controllers/postController}, {@link module:../Middlewares/middleware }  and
+ * {@link module:./const}.
+ * @requires module:../Controllers/postController
+ * @requires module:../Middlewares/middleware
+ * @requires module:./const
+ */
+const {sendPost, getPost, sendVote, addResponse, addCommentary, updateFunction} = require(&quot;../Controllers/postController&quot;);
+const {authenticateToken, handleGetPost} = require(&quot;../Middlewares/middleware&quot;)
 const {url} = require(&quot;./const&quot;);
-const {authenticateToken} = require(&quot;../Middlewares/middleware&quot;)
 
 module.exports = (app) =&gt; {
-    app.get(url + &quot;post&quot;,  getPost);
+    app.get(url + &quot;post&quot;, handleGetPost,  getPost);
     app.post(url + &quot;post&quot;, authenticateToken,  sendPost);
     app.post(url + &quot;post-update&quot;, authenticateToken, updateFunction);
     app.post(url + &quot;post-add-response&quot;, authenticateToken, addResponse);

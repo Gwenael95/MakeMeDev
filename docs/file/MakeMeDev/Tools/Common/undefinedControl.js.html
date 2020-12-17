@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,10 +34,22 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Tools/Common/undefinedControl.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">function isDefinedAndNotNull(value){
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/** @function
+ * @name isDefinedAndNotNull
+ * Check if our value data is defined and not null
+ * @param {*} value - a value to check
+ * @returns {boolean}
+ */
+function isDefinedAndNotNull(value){
     return value !==null &amp;&amp; value !==undefined
 }
 
+/** @function
+ * @name isUndefinedOrNull
+ * Check if a value is undefined or null
+ * @param {*} value - a value to check
+ * @returns {boolean}
+ */
 function isUndefinedOrNull(value){
     return value ===null || value ===undefined
 }

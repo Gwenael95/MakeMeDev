@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,13 +34,45 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/DB/userRepository.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const uniqueValidator = require(&apos;mongoose-unique-validator&apos;)
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This file requires {@link module:../Models/userModel}, {@link module:../Tools/DB/userHelper}.
+ * @requires module:../Models/userModel
+ * @requires module:../Tools/DB/userHelper
+ */
 const {userSchema} = require(&quot;../Models/userModel&quot;);
+const {filterPassword} = require(&quot;../Tools/DB/userHelper&quot;);
+const uniqueValidator = require(&apos;mongoose-unique-validator&apos;)
 const mongoose = require(&apos;mongoose&apos;);
 const ObjectId = mongoose.Types.ObjectId;
 const {generate, verify} = require(&quot;password-hash&quot;);
 const UserModel = mongoose.model(&apos;users&apos;, userSchema)
 
+
+//region get
+/** @function
+ * @name signIn
+ * Check if user&apos;s data are in database and check if password is correct,
+ * depending on login value, and return the result of this try.
+ * Login could be mail or pseudo.
+ * @param {object} userData - data to search in database
+ * @returns {Promise&lt;{success: *}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}&gt;}
+ */
+async function signIn(userData) {
+    return await UserModel.findOne({  $or: [
+            { pseudo: userData.login  },
+            { mail: userData.login },
+        ]}, { &quot;__v&quot;: 0} ).lean()
+        .exec()
+        .then(result =&gt; {
+            return result===null ? {error: &quot;login incorrect&quot;}
+                : verify(userData.password, result.password) ? {success: filterPassword(result)}
+                    : {error: &quot;mot de passe incorrect&quot;}
+        })
+        .catch(err =&gt; {return {error: err.errors}});
+}
+//endregion
+
+//region post
 /** @function
  * @name signUp
  * Add a new user in database, and return the result of this try
@@ -55,28 +87,16 @@ async function signUp(userData) {
         .then(result =&gt; {return {success: filterPassword(result)}})
         .catch(err =&gt; {return {error: err.errors}})
 }
+//endregion
 
+//region patch
 /** @function
- * @name signIn
- * Check if user&apos;s data are in database and right, depending on a many fields, and return the result of this try
- * @param {object} userData - data to search in database
- * @returns {Promise&lt;{success: *}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}&gt;}
+ * @name updateUser
+ * A generic function used to update a user.
+ * @param {object} filter - object used by mongoDB to select corresponding documents in DB.
+ * @param {object} update - object containing fields to set (ex: $set, or $push).
+ * @returns {Promise&lt;{success: Object}|{error}&gt;}
  */
-async function signIn(userData) {
-    return await UserModel.findOne({  $or: [
-            { pseudo: userData.login  },
-            { mail: userData.login },
-        ]}, { &quot;__v&quot;: 0} ).lean()
-        .exec()
-        .then(result =&gt; {
-            return result===null ? {error: &quot;login incorrect&quot;}
-            : verify(userData.password, result.password) ? {success: filterPassword(result)}
-            : {error: &quot;mot de passe incorrect&quot;}
-        })
-        .catch(err =&gt; {return {error: err.errors}});
-}
-
-
 async function updateUser(filter, update) {
     return await UserModel
         .findOneAndUpdate(
@@ -97,7 +117,7 @@ async function updateUser(filter, update) {
  * @name updateUserById
  * Update user&apos;s data depending on his ID and wanted fields to set
  * @param {object} data - user&apos;s data
- * @param update
+ * @param {object} update - object containing fields to set (ex: $set, or $push).
  * @returns {Promise&lt;{success: Object}|{error}&gt;}
  */
 async function updateUserById(data, update) {
@@ -109,23 +129,8 @@ async function updateUserById(data, update) {
         return {error : &quot;erreur lors de la mise &#xE0; jour de l&apos;utilisateur&quot;}
     }
 }
-
-
-//region helpers
-/** @function
- * @name filterPassword
- * Delete user password, to avoid security issues.
- * if we forgot to add lean to delete password, we ensure to return a useless string
- * @param {object} data - an object from where to delete one field : password
- * @returns {object}
- */
-function filterPassword(data) {
-    data[&quot;password&quot;] = &quot;:)&quot;
-    delete data.password
-    return data
-}
-
 //endregion
+
 
 module.exports = {signUp, signIn, updateUserById};
 </code></pre>

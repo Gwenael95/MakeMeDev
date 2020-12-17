@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -36,6 +36,9 @@
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Test/config/MemoryDataBaseServer.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const { MongoMemoryServer } = require(&apos;mongodb-memory-server&apos;);
 
+/**
+ * @class MemoryDatabaseServer
+ */
 class MemoryDatabaseServer {
   constructor() {
     this.mongod = new MongoMemoryServer({
@@ -46,14 +49,29 @@ class MemoryDatabaseServer {
     });
   }
 
+  /**
+   * @method start
+   * Start mongodb
+   * @returns {Promise&lt;boolean&gt;}
+   */
   start() {
     return this.mongod.start();
   }
 
+  /**
+   * @method stop
+   * Stop mongodb
+   * @returns {Promise&lt;boolean&gt;}
+   */
   stop() {
     return this.mongod.stop();
   }
 
+  /**
+   * @method getConnectionString
+   * Get mongodb URI
+   * @returns {Promise&lt;string&gt;}
+   */
   getConnectionString() {
     return this.mongod.getUri();
   }

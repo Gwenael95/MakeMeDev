@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,12 +34,19 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Routes/user.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const {signIn, signUp, updateUser} = require(&quot;../Controllers/usersController&quot;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This file requires {@link module:../Controllers/usersController}, {@link module:../Middlewares/middleware }  and
+ * {@link module:./const}.
+ * @requires module:../Controllers/usersController
+ * @requires module:../Middlewares/middleware
+ * @requires module:./const
+ */
+const {signIn, signUp, updateUser} = require(&quot;../Controllers/usersController&quot;);
 const {authenticateToken} = require(&quot;../Middlewares/middleware&quot;)
 const {url} = require(&quot;./const&quot;);
 
 module.exports = (app) =&gt; {
-    app.get(url + &quot;users&quot;, signIn);
+    app.post(url + &quot;user-signin&quot;, signIn);
     app.post(url + &quot;users&quot;, signUp);
     app.post(url + &quot;update-users&quot;, authenticateToken, updateUser);
 };
