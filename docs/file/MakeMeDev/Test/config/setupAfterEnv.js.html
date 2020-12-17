@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,9 +34,13 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Test/config/setupAfterEnv.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">require(&apos;dotenv&apos;).config();
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This module requires {@link module:../../Tools/DB/database}.
+ * @requires module:../../Tools/DB/database
+ */
+const databaseHelper = require(&apos;../../Src/Tools/DB/database&apos;);
+require(&apos;dotenv&apos;).config();
 
-const databaseHelper = require(&apos;../../Tools/DB/database&apos;);
 
 beforeAll(() =&gt; {
     return databaseHelper.connect();

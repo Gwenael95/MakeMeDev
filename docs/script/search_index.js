@@ -282,75 +282,171 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "makemedev/controllers/postcontroller.js",
-    "file/MakeMeDev/Controllers/postController.js.html",
-    "MakeMeDev/Controllers/postController.js",
+    "makemedev/src/controllers/postcontroller.js",
+    "file/MakeMeDev/Src/Controllers/postController.js.html",
+    "MakeMeDev/Src/Controllers/postController.js",
     "file"
   ],
   [
-    "makemedev/controllers/userscontroller.js",
-    "file/MakeMeDev/Controllers/usersController.js.html",
-    "MakeMeDev/Controllers/usersController.js",
+    "makemedev/src/controllers/userscontroller.js",
+    "file/MakeMeDev/Src/Controllers/usersController.js.html",
+    "MakeMeDev/Src/Controllers/usersController.js",
     "file"
   ],
   [
-    "makemedev/db/postrepository.js",
-    "file/MakeMeDev/DB/postRepository.js.html",
-    "MakeMeDev/DB/postRepository.js",
+    "makemedev/src/db/postrepository.js",
+    "file/MakeMeDev/Src/DB/postRepository.js.html",
+    "MakeMeDev/Src/DB/postRepository.js",
     "file"
   ],
   [
-    "makemedev/db/userrepository.js",
-    "file/MakeMeDev/DB/userRepository.js.html",
-    "MakeMeDev/DB/userRepository.js",
+    "makemedev/src/db/userrepository.js",
+    "file/MakeMeDev/Src/DB/userRepository.js.html",
+    "MakeMeDev/Src/DB/userRepository.js",
     "file"
   ],
   [
-    "makemedev/middlewares/middleware.js",
-    "file/MakeMeDev/Middlewares/middleware.js.html",
-    "MakeMeDev/Middlewares/middleware.js",
+    "makemedev/src/middlewares/middleware.js",
+    "file/MakeMeDev/Src/Middlewares/middleware.js.html",
+    "MakeMeDev/Src/Middlewares/middleware.js",
     "file"
   ],
   [
-    "makemedev/models/postmodel.js",
-    "file/MakeMeDev/Models/postModel.js.html",
-    "MakeMeDev/Models/postModel.js",
+    "makemedev/src/models/postmodel.js",
+    "file/MakeMeDev/Src/Models/postModel.js.html",
+    "MakeMeDev/Src/Models/postModel.js",
     "file"
   ],
   [
-    "makemedev/models/usermodel.js",
-    "file/MakeMeDev/Models/userModel.js.html",
-    "MakeMeDev/Models/userModel.js",
+    "makemedev/src/models/usermodel.js",
+    "file/MakeMeDev/Src/Models/userModel.js.html",
+    "MakeMeDev/Src/Models/userModel.js",
     "file"
   ],
   [
-    "makemedev/routes/const.js",
-    "file/MakeMeDev/Routes/const.js.html",
-    "MakeMeDev/Routes/const.js",
+    "makemedev/src/routes/const.js",
+    "file/MakeMeDev/Src/Routes/const.js.html",
+    "MakeMeDev/Src/Routes/const.js",
     "file"
   ],
   [
-    "makemedev/routes/post.js",
-    "file/MakeMeDev/Routes/post.js.html",
-    "MakeMeDev/Routes/post.js",
+    "makemedev/src/routes/post.js",
+    "file/MakeMeDev/Src/Routes/post.js.html",
+    "MakeMeDev/Src/Routes/post.js",
     "file"
   ],
   [
-    "makemedev/routes/user.js",
-    "file/MakeMeDev/Routes/user.js.html",
-    "MakeMeDev/Routes/user.js",
+    "makemedev/src/routes/user.js",
+    "file/MakeMeDev/Src/Routes/user.js.html",
+    "MakeMeDev/Src/Routes/user.js",
     "file"
   ],
   [
-    "makemedev/services/postservice.js",
-    "file/MakeMeDev/Services/postService.js.html",
-    "MakeMeDev/Services/postService.js",
+    "makemedev/src/services/postservice.js",
+    "file/MakeMeDev/Src/Services/postService.js.html",
+    "MakeMeDev/Src/Services/postService.js",
     "file"
   ],
   [
-    "makemedev/services/usersservice.js",
-    "file/MakeMeDev/Services/usersService.js.html",
-    "MakeMeDev/Services/usersService.js",
+    "makemedev/src/services/usersservice.js",
+    "file/MakeMeDev/Src/Services/usersService.js.html",
+    "MakeMeDev/Src/Services/usersService.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/common/countoccurrence.js",
+    "file/MakeMeDev/Src/Tools/Common/countOccurrence.js.html",
+    "MakeMeDev/Src/Tools/Common/countOccurrence.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/common/regex.js",
+    "file/MakeMeDev/Src/Tools/Common/regex.js.html",
+    "MakeMeDev/Src/Tools/Common/regex.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/common/stringoperation.js",
+    "file/MakeMeDev/Src/Tools/Common/stringOperation.js.html",
+    "MakeMeDev/Src/Tools/Common/stringOperation.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/common/undefinedcontrol.js",
+    "file/MakeMeDev/Src/Tools/Common/undefinedControl.js.html",
+    "MakeMeDev/Src/Tools/Common/undefinedControl.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/controller/controllerhelper.js",
+    "file/MakeMeDev/Src/Tools/Controller/controllerHelper.js.html",
+    "MakeMeDev/Src/Tools/Controller/controllerHelper.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/db/database.js",
+    "file/MakeMeDev/Src/Tools/DB/database.js.html",
+    "MakeMeDev/Src/Tools/DB/database.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/db/posthelper.js",
+    "file/MakeMeDev/Src/Tools/DB/postHelper.js.html",
+    "MakeMeDev/Src/Tools/DB/postHelper.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/db/postpipeline.js",
+    "file/MakeMeDev/Src/Tools/DB/postPipeline.js.html",
+    "MakeMeDev/Src/Tools/DB/postPipeline.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/db/userhelper.js",
+    "file/MakeMeDev/Src/Tools/DB/userHelper.js.html",
+    "MakeMeDev/Src/Tools/DB/userHelper.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/services/addfield.js",
+    "file/MakeMeDev/Src/Tools/Services/addField.js.html",
+    "MakeMeDev/Src/Tools/Services/addField.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/services/requestoperator.js",
+    "file/MakeMeDev/Src/Tools/Services/requestOperator.js.html",
+    "MakeMeDev/Src/Tools/Services/requestOperator.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/services/responsehandler.js",
+    "file/MakeMeDev/Src/Tools/Services/responseHandler.js.html",
+    "MakeMeDev/Src/Tools/Services/responseHandler.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/services/searchpost.js",
+    "file/MakeMeDev/Src/Tools/Services/searchPost.js.html",
+    "MakeMeDev/Src/Tools/Services/searchPost.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/services/sortpost.js",
+    "file/MakeMeDev/Src/Tools/Services/sortPost.js.html",
+    "MakeMeDev/Src/Tools/Services/sortPost.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/ratelimiter.js",
+    "file/MakeMeDev/Src/Tools/rateLimiter.js.html",
+    "MakeMeDev/Src/Tools/rateLimiter.js",
+    "file"
+  ],
+  [
+    "makemedev/src/tools/token.js",
+    "file/MakeMeDev/Src/Tools/token.js.html",
+    "MakeMeDev/Src/Tools/token.js",
     "file"
   ],
   [
@@ -408,57 +504,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "makemedev/test/serveur.test.js",
+    "file/MakeMeDev/Test/serveur.test.js.html",
+    "MakeMeDev/Test/serveur.test.js",
+    "file"
+  ],
+  [
     "makemedev/test/user.test.js",
     "file/MakeMeDev/Test/user.test.js.html",
     "MakeMeDev/Test/user.test.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/common/countoccurence.js",
-    "file/MakeMeDev/Tools/Common/countOccurrence.js.html",
-    "MakeMeDev/Tools/Common/countOccurrence.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/common/stringoperation.js",
-    "file/MakeMeDev/Tools/Common/stringOperation.js.html",
-    "MakeMeDev/Tools/Common/stringOperation.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/common/undefinedcontrol.js",
-    "file/MakeMeDev/Tools/Common/undefinedControl.js.html",
-    "MakeMeDev/Tools/Common/undefinedControl.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/controller/controllerhelper.js",
-    "file/MakeMeDev/Tools/Controller/controllerHelper.js.html",
-    "MakeMeDev/Tools/Controller/controllerHelper.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/db/database.js",
-    "file/MakeMeDev/Tools/DB/database.js.html",
-    "MakeMeDev/Tools/DB/database.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/db/requestoperator.js",
-    "file/MakeMeDev/Tools/DB/requestOperator.js.html",
-    "MakeMeDev/Tools/DB/requestOperator.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/services/responsehandler.js",
-    "file/MakeMeDev/Tools/Services/responseHandler.js.html",
-    "MakeMeDev/Tools/Services/responseHandler.js",
-    "file"
-  ],
-  [
-    "makemedev/tools/token.js",
-    "file/MakeMeDev/Tools/token.js.html",
-    "MakeMeDev/Tools/token.js",
     "file"
   ],
   [
@@ -478,5 +532,149 @@ window.esdocSearchIndex = [
     "file/MakeMeDev/router.js.html",
     "MakeMeDev/router.js",
     "file"
+  ],
+  [
+    "",
+    "test-file/Test/post.test.js.html#lineNumber24",
+    "Post",
+    "test"
+  ],
+  [
+    "sendpost sendpost,sendpost",
+    "test-file/Test/post.test.js.html#lineNumber38",
+    "Post should be able to create a post",
+    "test"
+  ],
+  [
+    "sendvote sendvote,sendvote",
+    "test-file/Test/post.test.js.html#lineNumber130",
+    "Post should be able to dislike a post",
+    "test"
+  ],
+  [
+    "sendvote sendvote,sendvote",
+    "test-file/Test/post.test.js.html#lineNumber98",
+    "Post should be able to dislike a post if NEVER vote",
+    "test"
+  ],
+  [
+    "sendvote sendvote,sendvote",
+    "test-file/Test/post.test.js.html#lineNumber84",
+    "Post should be able to like a post if NEVER vote",
+    "test"
+  ],
+  [
+    "getpost getpost,getpost",
+    "test-file/Test/post.test.js.html#lineNumber59",
+    "Post should be able to search a post",
+    "test"
+  ],
+  [
+    "getpost getpost,getpost",
+    "test-file/Test/post.test.js.html#lineNumber70",
+    "Post should be able to search a post by id",
+    "test"
+  ],
+  [
+    "addcommentary addcommentary,addcommentary",
+    "test-file/Test/post.test.js.html#lineNumber184",
+    "Post should be able to send 2 commentary with 2 different timestamp",
+    "test"
+  ],
+  [
+    "addcommentary addcommentary,addcommentary",
+    "test-file/Test/post.test.js.html#lineNumber170",
+    "Post should be able to send a commentary to a post",
+    "test"
+  ],
+  [
+    "addresponse addresponse,addresponse",
+    "test-file/Test/post.test.js.html#lineNumber155",
+    "Post should be able to send response to a post",
+    "test"
+  ],
+  [
+    "sendvote sendvote,sendvote",
+    "test-file/Test/post.test.js.html#lineNumber111",
+    "Post should be able to update a vote into post if ALREADY vote same vote",
+    "test"
+  ],
+  [
+    "sendpost sendpost,sendpost",
+    "test-file/Test/post.test.js.html#lineNumber50",
+    "Post should not be able to create a post because bad post",
+    "test"
+  ],
+  [
+    "",
+    "test-file/Test/serveur.test.js.html#lineNumber13",
+    "Server",
+    "test"
+  ],
+  [
+    "getpost getpost,getpost",
+    "test-file/Test/serveur.test.js.html#lineNumber22",
+    "Server should return that user launch to many request",
+    "test"
+  ],
+  [
+    "test/post.test.js",
+    "test-file/Test/post.test.js.html",
+    "Test/post.test.js",
+    "testFile"
+  ],
+  [
+    "test/serveur.test.js",
+    "test-file/Test/serveur.test.js.html",
+    "Test/serveur.test.js",
+    "testFile"
+  ],
+  [
+    "test/user.test.js",
+    "test-file/Test/user.test.js.html",
+    "Test/user.test.js",
+    "testFile"
+  ],
+  [
+    "",
+    "test-file/Test/user.test.js.html#lineNumber40",
+    "User",
+    "test"
+  ],
+  [
+    "signup signup,signup",
+    "test-file/Test/user.test.js.html#lineNumber51",
+    "User should be able to create user",
+    "test"
+  ],
+  [
+    "signin signin,signin",
+    "test-file/Test/user.test.js.html#lineNumber61",
+    "User should be able to get user",
+    "test"
+  ],
+  [
+    "updateuser updateuser,updateuser",
+    "test-file/Test/user.test.js.html#lineNumber89",
+    "User should be able to update user",
+    "test"
+  ],
+  [
+    "updateuser updateuser,updateuser",
+    "test-file/Test/user.test.js.html#lineNumber114",
+    "User should be able to update user because use id from token",
+    "test"
+  ],
+  [
+    "signin signin,signin",
+    "test-file/Test/user.test.js.html#lineNumber71",
+    "User should not be able to get user",
+    "test"
+  ],
+  [
+    "updateuser updateuser,updateuser",
+    "test-file/Test/user.test.js.html#lineNumber139",
+    "User should not be able to update user without crash",
+    "test"
   ]
 ]

@@ -1,4 +1,4 @@
 module.exports = (app) => {
-  require("./Routes/user")(app);
-  require("./Routes/post")(app);
+  require("./Src/Routes/user")(app);
+  require("./Src/Routes/post")(app);
 };

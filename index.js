@@ -5,7 +5,7 @@
  * @requires module:./Tools/DB/database
  * @requires module:./app
  */
-const database = require("./Tools/DB/database")
+const database = require("./Src/Tools/DB/database")
 database.connect()
 //endregion
 

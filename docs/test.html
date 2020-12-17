@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href>
+  <title data-ice="title">Test | makemedev</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="projet web 2020"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="makemedev"><meta property="twitter:description" content="projet web 2020"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Gwenael95/MakeMeDev"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  </ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1>Test</h1>
+<table class="test-summary">
+  <thead>
+    <tr>
+      <td class="test-description">Description</td>
+      <td class="test-target">Identifier</td>
+    </tr>
+  </thead>
+
+  <tbody data-ice="tests"><tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span data-ice="testInterfaceToggle" class="toggle closed"></span><span><a href="test-file/Test/post.test.js.html#lineNumber24"><p>Post</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber38"><p>should be able to create a post</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>sendPost</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber50"><p>should not be able to create a post because bad post</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>sendPost</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber59"><p>should be able to search a post</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>getPost</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber70"><p>should be able to search a post by id</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>getPost</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber84"><p>should be able to like a post if NEVER vote</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>sendVote</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber98"><p>should be able to dislike a post if NEVER vote</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>sendVote</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber111"><p>should be able to update a vote into post if ALREADY vote same vote</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>sendVote</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber130"><p>should be able to dislike a post</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>sendVote</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber155"><p>should be able to send response to a post</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>addResponse</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber170"><p>should be able to send a commentary to a post</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>addCommentary</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/post.test.js.html#lineNumber184"><p>should be able to send 2 commentary with 2 different timestamp</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>addCommentary</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span data-ice="testInterfaceToggle" class="toggle closed"></span><span><a href="test-file/Test/serveur.test.js.html#lineNumber13"><p>Server</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/serveur.test.js.html#lineNumber22"><p>should return that user launch to many request</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>getPost</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span data-ice="testInterfaceToggle" class="toggle closed"></span><span><a href="test-file/Test/user.test.js.html#lineNumber40"><p>User</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/user.test.js.html#lineNumber51"><p>should be able to create user</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>signUp</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/user.test.js.html#lineNumber61"><p>should be able to get user</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>signIn</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/user.test.js.html#lineNumber71"><p>should not be able to get user</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>signIn</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/user.test.js.html#lineNumber89"><p>should be able to update user</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>updateUser</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/user.test.js.html#lineNumber114"><p>should be able to update user because use id from token</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>updateUser</span></td>
+</tr>
+
+<tr class="test-interface" data-ice="testInterface" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="test-file/Test/user.test.js.html#lineNumber139"><p>should not be able to update user without crash</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>updateUser</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

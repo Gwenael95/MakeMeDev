@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,14 +34,29 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Test/post.test.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const { request, url} = require(&quot;./config/launcher&quot;)
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This test file requires {@link module:./config/launcher}, {@link module:./config/testHelper }  and
+ * {@link module:./models}.
+ * @requires module:./config/launcher
+ * @requires module:./config/testHelper
+ * @requires module:./models
+ */
+const { request, url} = require(&quot;./config/launcher&quot;)
 const { post, responsePost, commentaryPost, user} = require(&quot;./models&quot;);
 const { expectedResponseOnUserUpsert, expectExcept, getBodyRes, expectedStatus,
         getPostAt, getUserActivities, getAllPostReq, requestPostVote,
         prepareReqWithToken} = require(&quot;./config/testHelper&quot;)
+
+/**
+ * post object at position 0 from post model
+ * @type {object} post0
+ */
 const post0 = post.post.post[0]
 
-
+/**
+ * @todo Make lot of tests, to test each possible situation.
+ * It will be sufficient for MVP.
+ */
 describe(&apos;Post&apos;, () =&gt; {
     let newUser;
     let newPost;
@@ -52,6 +67,10 @@ describe(&apos;Post&apos;, () =&gt; {
     })
 
     //region create post and search posts
+    /**
+     * @test {sendPost}
+     * Try to insert a new post document in mongoDB with good post object
+     */
     it(&apos;should be able to create a post&apos;, async () =&gt; {
         const response = newPost;
         expect(Object.values(response.body).length).toEqual(2) //token &amp; success
@@ -60,56 +79,99 @@ describe(&apos;Post&apos;, () =&gt; {
         expectExcept(Object.keys(getBodyRes(response).post), Object.keys(post.post))
     });
 
+    /**
+     * @test {sendPost}
+     * Try to insert a new post document in mongoDB with incomplete post object
+     */
+    it(&apos;should not be able to create a post because bad post&apos;, async () =&gt; {
+        const response = await prepareReqWithToken(newUser, url + &quot;post&quot;).send({post:{name:&quot;testBadPost&quot;}});
+        expectedStatus(response, 400)
+    });
+
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with search param
+     */
     it(&apos;should be able to search a post&apos;, async () =&gt; {
-        const response = await request.get(url + &apos;post?search=[test](int){int, ?} &quot;function to multiply&quot; #test#&apos;)
+        const response = await request.get(url + &apos;post?search=test(int){int, ?} &quot;function to multiply&quot; [test]&apos;)
         expect(typeof getBodyRes(response)).toBe(&quot;object&quot;)
         expect(getBodyRes(response)[0].name).toBe(&quot;test&quot;)
+        expectedStatus(response)
+    });
+
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with postId param
+     */
+    it(&apos;should be able to search a post by id&apos;, async () =&gt; {
+        const response = await request.get(url + &apos;post?postId=&apos; + getBodyRes(newPost).post._id)
+        expect(typeof getBodyRes(response)).toBe(&quot;object&quot;)
+        expect(getBodyRes(response).name).toBe(&quot;test&quot;)
         expectedStatus(response)
     });
     //endregion
 
     //region vote (like or dislike)
+    /**
+     * @test {sendVote}
+     * Try to like a post in mongoDB with a correct request if the user
+     * never have vote for the post
+     */
     it(&apos;should be able to like a post if NEVER vote&apos;, async () =&gt; {
         const response = await requestPostVote( newUser, newPost, 1)
         const postCheck = await getAllPostReq()
-        expectedStatus(response)
+        expectedStatus(response, 201)
 
         expect(getPostAt(postCheck).like).toBe(post0.like+1)
         expect(getUserActivities(response).like).toContain(getBodyRes(newPost).post.post[0]._id)
     });
 
+    /**
+     * @test {sendVote}
+     * Try to dislike a post in mongoDB with a correct request if the user
+     * never have vote for the post
+     */
     it(&apos;should be able to dislike a post if NEVER vote&apos;, async () =&gt; {
         const response = await requestPostVote( newUser, newPost, -1)
         const postCheck = await getAllPostReq()
-        expectedStatus(response)
+        expectedStatus(response, 201)
         expect(getPostAt(postCheck).dislike).toBe(post0.dislike+1)
         expect(getUserActivities(response).dislike).toContain(getBodyRes(newPost).post.post[0]._id)
     });
 
-
+    /**
+     * @test {sendVote}
+     * Try to like a post in mongoDB with corrects requests if the user
+     * already add a like for the post
+     */
     it(&apos;should be able to update a vote into post if ALREADY vote same vote&apos;, async () =&gt; {
         const response1 = await requestPostVote( newUser, newPost, 1)
         const postCheck1 = await getAllPostReq()
         const response2 = await requestPostVote( response1, newPost, 1)
         const postCheck2 = await getAllPostReq()
 
-        expect(response1.status).toBe(200);
-        expect(response2.status).toBe(404);
+        expectedStatus(response1, 201)
+        expectedStatus(response2, 500)
         expect(getPostAt(postCheck1).like).toBe(post0.like+1)
         expect(getPostAt(postCheck2).like).toBe(post0.like+1)
         expect(getUserActivities(response1).like).toContain(getBodyRes(newPost).post.post[0]._id)
-        expect(response2.body.error).toBe(&quot;update vote failed&quot;)
+        expect(response2.body.error).toBe(&quot;Update vote failed&quot;)
     });
 
+    /**
+     * @test {sendVote}
+     * Try to dislike a post in mongoDB with corrects requests if the user
+     * already add a like for the post
+     */
     it(&apos;should be able to dislike a post&apos;, async () =&gt; {
         const response1 = await requestPostVote( newUser, newPost, 1)
         const postCheck1 = await getAllPostReq()
         const response2 = await requestPostVote( response1, newPost, -1)
         const postCheck2 = await getAllPostReq()
 
+        expectedStatus(response1, 201)
+        expectedStatus(response2, 201)
 
-        expect(response1.status).toBe(200);
-        expect(response2.status).toBe(200);
         expect(getPostAt(postCheck1).like).toBe(post0.like+1)
         expect(getPostAt(postCheck1).dislike).toBe(post0.dislike)
         expect(getPostAt(postCheck2).like).toBe(post0.like)
@@ -122,26 +184,39 @@ describe(&apos;Post&apos;, () =&gt; {
     //endregion
 
     //region add a post (answer) in a created post
+    /**
+     * @test {addResponse}
+     * Try to send a response to a post in mongoDB with corrects requests
+     */
     it(&apos;should be able to send response to a post&apos;, async () =&gt; {
         const response = await prepareReqWithToken(newUser, url + &quot;post-add-response&quot;)
             .send({responsePost: responsePost, idPost:getBodyRes(newPost).post._id })
         const postCheck = await getAllPostReq()
+        expectedStatus(response, 201)
         expect(getPostAt(postCheck, 3).description).toBe(&quot;better solution&quot;);
-        expect(response.status).toBe(200);
         expect(getUserActivities(response).response).toContain(getPostAt(postCheck, 3)._id)
     });
     //endregion
 
     //region add commentary to a post
+    /**
+     * @test {addCommentary}
+     * Try to send a commentary to a post in mongoDB with corrects requests
+     */
     it(&apos;should be able to send a commentary to a post&apos;, async () =&gt; {
         const response = await prepareReqWithToken(newUser, url + &quot;post-add-commentary&quot;)
             .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
         const postCheck = await getAllPostReq()
-        expect(response.status).toBe(200);
+        expectedStatus(response, 201)
         expect(getPostAt(postCheck).commentary[1].commentary).toBe(&quot;first&quot;);
         expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
     });
 
+    /**
+     * @test {addCommentary}
+     * Try to send commentaries to a post in mongoDB with corrects requests,
+     * each commentary date should be different.
+     */
     it(&apos;should be able to send 2 commentary with 2 different timestamp&apos;, async () =&gt; {
         const response1 = await prepareReqWithToken(newUser, url + &quot;post-add-commentary&quot;)
             .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
@@ -152,7 +227,7 @@ describe(&apos;Post&apos;, () =&gt; {
         let comment = getPostAt(postCheck).commentary
         let comment2 = getPostAt(postCheck2).commentary
 
-        expect(response1.status).toBe(200);
+        expectedStatus(response1, 201)
         expect(getPostAt(postCheck).commentary[1].commentary).toBe(&quot;first&quot;);
         expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
         expect(comment[comment.length-1].date&lt; comment2[comment2.length-1].date).toBe(true)

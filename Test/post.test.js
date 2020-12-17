@@ -73,6 +73,20 @@ describe('Post', () => {
         expect(getBodyRes(response).name).toBe("test")
         expectedStatus(response)
     });
+
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with postId from post array
+     */
+    it('should be able to search a post by id', async () => {
+        const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post.post[0]._id)
+
+        console.log(getBodyRes(response))
+        expect(typeof getBodyRes(response)).toBe("object")
+        expect(getBodyRes(response).name).toBe("test")
+        expect(getBodyRes(response).post[2]._id).toBe(getBodyRes(newPost).post.post[0]._id)
+        expectedStatus(response)
+    });
     //endregion
 
     //region vote (like or dislike)

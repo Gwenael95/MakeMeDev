@@ -1,287 +1,282 @@
 {
-  "coverage": "26.89%",
-  "expectCount": 145,
-  "actualCount": 39,
+  "coverage": "64.81%",
+  "expectCount": 162,
+  "actualCount": 105,
   "files": {
-    "MakeMeDev/Controllers/postController.js": {
-      "expectCount": 2,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        2
-      ]
-    },
-    "MakeMeDev/Controllers/usersController.js": {
-      "expectCount": 2,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        2
-      ]
-    },
-    "MakeMeDev/DB/postRepository.js": {
-      "expectCount": 24,
-      "actualCount": 10,
-      "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        42,
-        57,
-        61,
-        79,
-        83,
-        87,
-        91,
-        158
-      ]
-    },
-    "MakeMeDev/DB/userRepository.js": {
-      "expectCount": 11,
-      "actualCount": 4,
-      "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        44
-      ]
-    },
-    "MakeMeDev/Middlewares/middleware.js": {
+    "MakeMeDev/Src/Controllers/postController.js": {
       "expectCount": 2,
       "actualCount": 1,
       "undocumentLines": [
-        1
+        8
       ]
     },
-    "MakeMeDev/Models/postModel.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "MakeMeDev/Models/userModel.js": {
+    "MakeMeDev/Src/Controllers/usersController.js": {
       "expectCount": 2,
-      "actualCount": 0,
+      "actualCount": 1,
       "undocumentLines": [
-        1,
-        2
+        8
       ]
     },
-    "MakeMeDev/Routes/post.js": {
-      "expectCount": 3,
-      "actualCount": 0,
+    "MakeMeDev/Src/DB/postRepository.js": {
+      "expectCount": 14,
+      "actualCount": 10,
       "undocumentLines": [
-        1,
-        2,
-        3
+        9,
+        10,
+        11,
+        18
       ]
     },
-    "MakeMeDev/Routes/user.js": {
-      "expectCount": 3,
-      "actualCount": 0,
+    "MakeMeDev/Src/DB/userRepository.js": {
+      "expectCount": 11,
+      "actualCount": 5,
       "undocumentLines": [
-        1,
-        2,
-        3
-      ]
-    },
-    "MakeMeDev/Services/postService.js": {
-      "expectCount": 22,
-      "actualCount": 4,
-      "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
+        7,
         8,
-        25,
-        66,
-        81,
-        94,
-        111,
-        117,
-        125,
-        130,
-        141,
-        198,
-        207
+        9,
+        10,
+        11,
+        12
       ]
     },
-    "MakeMeDev/Services/usersService.js": {
-      "expectCount": 8,
+    "MakeMeDev/Src/Middlewares/middleware.js": {
+      "expectCount": 3,
       "actualCount": 2,
       "undocumentLines": [
-        1,
-        2,
-        3,
-        4,
-        29,
-        36
+        1
       ]
     },
-    "MakeMeDev/Test/config/MemoryDataBaseServer.js": {
-      "expectCount": 7,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        3,
-        4,
-        5,
-        13,
-        17,
-        21
-      ]
-    },
-    "MakeMeDev/Test/config/environment.js": {
-      "expectCount": 6,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        3,
-        5,
-        6,
-        12,
-        16
-      ]
-    },
-    "MakeMeDev/Test/config/launcher.js": {
-      "expectCount": 4,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        2,
-        4,
-        5
-      ]
-    },
-    "MakeMeDev/Test/config/setup.js": {
+    "MakeMeDev/Src/Models/postModel.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
         1
       ]
     },
-    "MakeMeDev/Test/config/setupAfterEnv.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        3
-      ]
-    },
-    "MakeMeDev/Test/config/teardown.js": {
+    "MakeMeDev/Src/Models/userModel.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
         1
       ]
     },
-    "MakeMeDev/Test/config/testHelper.js": {
-      "expectCount": 10,
-      "actualCount": 9,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "MakeMeDev/Test/post.test.js": {
-      "expectCount": 4,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        2,
-        3,
-        6
-      ]
-    },
-    "MakeMeDev/Test/user.test.js": {
+    "MakeMeDev/Src/Routes/post.js": {
       "expectCount": 3,
-      "actualCount": 0,
+      "actualCount": 1,
       "undocumentLines": [
-        1,
-        2,
-        3
+        9,
+        10
       ]
     },
-    "MakeMeDev/Tools/Common/countOccurence.js": {
+    "MakeMeDev/Src/Routes/user.js": {
+      "expectCount": 3,
+      "actualCount": 1,
+      "undocumentLines": [
+        9,
+        10
+      ]
+    },
+    "MakeMeDev/Src/Services/postService.js": {
+      "expectCount": 15,
+      "actualCount": 8,
+      "undocumentLines": [
+        18,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ]
+    },
+    "MakeMeDev/Src/Services/usersService.js": {
+      "expectCount": 8,
+      "actualCount": 3,
+      "undocumentLines": [
+        10,
+        11,
+        12,
+        43,
+        52
+      ]
+    },
+    "MakeMeDev/Src/Tools/Common/countOccurrence.js": {
       "expectCount": 1,
       "actualCount": 1,
       "undocumentLines": []
     },
-    "MakeMeDev/Tools/Common/stringOperation.js": {
+    "MakeMeDev/Src/Tools/Common/regex.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/Common/stringOperation.js": {
       "expectCount": 3,
       "actualCount": 3,
       "undocumentLines": []
     },
-    "MakeMeDev/Tools/Common/undefinedControl.js": {
-      "expectCount": 2,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        5
-      ]
-    },
-    "MakeMeDev/Tools/Controller/controllerHelper.js": {
-      "expectCount": 1,
-      "actualCount": 1,
-      "undocumentLines": []
-    },
-    "MakeMeDev/Tools/DB/database.js": {
-      "expectCount": 6,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        5,
-        16,
-        26,
-        35,
-        47
-      ]
-    },
-    "MakeMeDev/Tools/DB/requestOperator.js": {
-      "expectCount": 1,
-      "actualCount": 1,
-      "undocumentLines": []
-    },
-    "MakeMeDev/Tools/Services/responseHandler.js": {
+    "MakeMeDev/Src/Tools/Common/undefinedControl.js": {
       "expectCount": 2,
       "actualCount": 2,
       "undocumentLines": []
     },
-    "MakeMeDev/Tools/token.js": {
+    "MakeMeDev/Src/Tools/Controller/controllerHelper.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/DB/database.js": {
+      "expectCount": 4,
+      "actualCount": 3,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "MakeMeDev/Src/Tools/DB/postHelper.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/DB/postPipeline.js": {
+      "expectCount": 11,
+      "actualCount": 10,
+      "undocumentLines": [
+        7
+      ]
+    },
+    "MakeMeDev/Src/Tools/DB/userHelper.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/Services/addField.js": {
+      "expectCount": 5,
+      "actualCount": 4,
+      "undocumentLines": [
+        7
+      ]
+    },
+    "MakeMeDev/Src/Tools/Services/requestOperator.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/Services/responseHandler.js": {
+      "expectCount": 3,
+      "actualCount": 3,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/Services/searchPost.js": {
+      "expectCount": 3,
+      "actualCount": 3,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/Services/sortPost.js": {
+      "expectCount": 3,
+      "actualCount": 3,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Src/Tools/rateLimiter.js": {
+      "expectCount": 3,
+      "actualCount": 1,
+      "undocumentLines": [
+        1,
+        12
+      ]
+    },
+    "MakeMeDev/Src/Tools/token.js": {
       "expectCount": 2,
       "actualCount": 1,
       "undocumentLines": [
         1
       ]
     },
-    "MakeMeDev/app.js": {
-      "expectCount": 5,
-      "actualCount": 0,
+    "MakeMeDev/Test/config/MemoryDataBaseServer.js": {
+      "expectCount": 7,
+      "actualCount": 4,
       "undocumentLines": [
         1,
-        2,
-        3,
-        4,
+        7,
+        8
+      ]
+    },
+    "MakeMeDev/Test/config/environment.js": {
+      "expectCount": 6,
+      "actualCount": 5,
+      "undocumentLines": [
+        6
+      ]
+    },
+    "MakeMeDev/Test/config/launcher.js": {
+      "expectCount": 4,
+      "actualCount": 1,
+      "undocumentLines": [
+        7,
+        8,
+        9
+      ]
+    },
+    "MakeMeDev/Test/config/setup.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Test/config/setupAfterEnv.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Test/config/teardown.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Test/config/testHelper.js": {
+      "expectCount": 10,
+      "actualCount": 10,
+      "undocumentLines": []
+    },
+    "MakeMeDev/Test/post.test.js": {
+      "expectCount": 4,
+      "actualCount": 2,
+      "undocumentLines": [
+        9,
         10
+      ]
+    },
+    "MakeMeDev/Test/serveur.test.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        8
+      ]
+    },
+    "MakeMeDev/Test/user.test.js": {
+      "expectCount": 6,
+      "actualCount": 4,
+      "undocumentLines": [
+        9,
+        10
+      ]
+    },
+    "MakeMeDev/app.js": {
+      "expectCount": 6,
+      "actualCount": 1,
+      "undocumentLines": [
+        7,
+        8,
+        9,
+        10,
+        11
       ]
     },
     "MakeMeDev/index.js": {
       "expectCount": 5,
-      "actualCount": 0,
+      "actualCount": 2,
       "undocumentLines": [
-        3,
-        7,
-        8,
-        10,
-        16
+        12,
+        13,
+        15
       ]
     }
   }

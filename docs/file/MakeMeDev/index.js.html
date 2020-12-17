@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -36,7 +36,12 @@
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/index.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// region Prepare to include the server code into our web_server
 //region MongoDB connection
-const database = require(&quot;./Tools/DB/database&quot;)
+/**
+ * This file requires {@link module:./Tools/DB/database},  {@link module:./app}.
+ * @requires module:./Tools/DB/database
+ * @requires module:./app
+ */
+const database = require(&quot;./Src/Tools/DB/database&quot;)
 database.connect()
 //endregion
 
@@ -48,7 +53,10 @@ require(&apos;dotenv&apos;).config();
 
 // endregion
 
-
+/**
+ * Our app listen port
+ * @type {number}
+ */
 const PORT = process.env.PORT || 4021;
 server.listen(PORT, () =&gt; {
     console.log(&quot;started &quot; + PORT);

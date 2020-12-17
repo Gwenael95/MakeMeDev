@@ -5,12 +5,12 @@
  * @requires module:./models
  */
 const { request, url} = require("./config/launcher")
-const { rateLimiterConfig } = require('../Tools/rateLimiter');
+const { rateLimiterConfig } = require('../Src/Tools/rateLimiter');
 
 /**
  * @todo Make lot of tests, to test each possible situation
  */
-describe('Post', () => {
+describe('Server', () => {
 
     /**
      * @test {getPost}

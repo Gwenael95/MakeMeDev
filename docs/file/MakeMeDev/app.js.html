@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,16 +34,24 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/app.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const express = require(&apos;express&apos;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This file requires {@link module:./Tools/rateLimiter} and {@link module:./router}.
+ * @requires module:./Tools/rateLimiter
+ * @requires module:./router
+ */
+const { rateLimiterUsingThirdParty } = require(&apos;./Src/Tools/rateLimiter&apos;);
+const router = require(&quot;./router&quot;);
+const express = require(&apos;express&apos;);
 const bodyParser = require(&quot;body-parser&quot;);
 const cors = require(&quot;cors&quot;);
 const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(rateLimiterUsingThirdParty);
 //Cors
 app.use(cors({ origin: true, credentials: true }));
-const router = require(&quot;./router&quot;);
 router(app);
 
 module.exports = {app}

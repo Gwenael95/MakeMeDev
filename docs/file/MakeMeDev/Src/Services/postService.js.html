@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">MakeMeDev/Src/Services/postService.js | makemedev</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="projet web 2020"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="makemedev"><meta property="twitter:description" content="projet web 2020"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/Gwenael95/MakeMeDev"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  </ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Src/Services/postService.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This Service file requires {@link module:../DB/postRepository }, {@link module:../DB/userRepository},
+ * {@link module:../Tools/token}, {@link module:../Tools/Services/searchPost },
+ * {@link module:../Tools/Common/undefinedControl }, {@link module:../Tools/Services/addField}
+ * {@link module:../Tools/Services/sortPost} and {@link module:../Tools/Services/responseHandler}
+
+ * @requires module:../DB/postRepository
+ * @requires module:../DB/userRepository
+ * @requires module:../Tools/token
+ * @requires module:../Tools/Services/searchPost
+ * @requires module:../Tools/Common/undefinedControl
+ * @requires module:../Tools/Services/addField
+ * @requires module:../Tools/Services/sortPost
+ * @requires module:../Tools/Services/responseHandler
+ */
+const { addPost, getPostByFunction, getPostById, updateLikeOrDislike, pushPostResponse,
+        pushPostResponseCommentary, updatePostFunction} = require(&quot;../DB/postRepository&quot;);
+const { updateUserById} = require(&quot;../DB/userRepository&quot;);
+
+//region Tools
+const { generateAccessToken} = require(&quot;../Tools/token&quot;);
+const { getSearchPost} = require(&quot;../Tools/Services/searchPost&quot;);
+const { isDefinedAndNotNull} = require(&quot;../Tools/Common/undefinedControl&quot;);
+const { addDate, addAuthor, setTypes} = require(&quot;../Tools/Services/addField&quot;);
+const { sortPostByLikes, sortAllPostByLike} = require(&quot;../Tools/Services/sortPost&quot;);
+const { getHandler, getHandlerForUserPost, updateDbHandler} = require(&quot;../Tools/Services/responseHandler&quot;);
+//endregion
+
+//region exported methods
+//region get
+/** @function
+ * @name get
+ * Get posts depending on a request get thanks to a string with strict typography to demarcate
+ * each field, and if not exist it will not be a criteria to search at all.
+ * Structure : functionName(param1, param2, ?){returned1, returned2}&quot;functionDescription&quot;[tag1, tag2, tag3]
+ * OR use a post id to get the corresponding post.
+ * @param {object} search - search field to find in database
+ * @returns {Promise&lt;{code: number, body: {error: *}}|{code: number, body: *}|{code: number, body: *}|{code: number, body: {error: string}}&gt;}
+ */
+async function get(search) {
+    if (isDefinedAndNotNull(search.search)) {
+        const objectSearchPost = getSearchPost(search.search)
+        let queryRes = await getPostByFunction(objectSearchPost);
+        return getHandler(sortAllPostByLike(queryRes), &quot;No post exists with these details&quot;);
+    }
+    else {
+        let queryRes = await getPostById(search.postId);
+        queryRes.success = sortPostByLikes(queryRes.success)
+        return getHandler(queryRes, &quot;No post exists with this id&quot;);
+    }
+}
+//endregion
+
+//region post
+/** @function
+ * @name create
+ * Create a new post, that will be add in database.
+ * We add some field : paramsTypes and returnsTypes to have an object with a number of occurrence of each params.
+ * Also creation date for post
+ * It will make it simpler to search post depending on the amount of params or returns with getPost function.
+ * @param {object} post - post to add, should be really similar to postModels {@link &apos;../Models/postModels&apos;}.
+ * @param {object} user - user to update, should be really similar to userModels {@link &apos;../Models/userModels&apos;}.
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
+async function create(post, user) {
+    try {
+        setTypes(post, &quot;params&quot;);
+        setTypes(post, &quot;returns&quot;);
+        addAuthor(user ,post)
+        addAuthor(user ,post.post[0])
+        addDate(post.post[0])
+        addDate(post)
+
+        const result = await addPost(post, user);
+        if (result.success) {
+            const userRes = await updateUserById({id: user._id}, {$push: {post: result.success._id}});
+            return closeUserUpdateAction(userRes, result, &quot;Post created, but can&apos;t update user&apos;s data&quot;)
+        }
+        return updateDbHandler(result, &quot;Error when creating post&quot;, 500);
+    }
+    catch (e) {
+        return updateDbHandler({error: &quot;Can&apos;t create this post: bad request&quot;})
+    }
+}
+//endregion
+
+//region patch
+/** @function
+ * @name updateFunction
+ * Update a function from a post or post response thanks to its id.
+ * @param {string} functionPost - the complete function, real code that could be run.
+ * @param {string} idPost - post&apos;s or response post&apos;s id to update
+ * @param {object} user - current user&apos;s data
+ * @todo Check if current user if post or post response author
+ * @returns {Promise&lt;{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
+async function updateFunction(functionPost, idPost, user) {
+    if (functionPost) {
+        return updateDbHandler(await updatePostFunction(functionPost, idPost), &quot;Error when updating post function&quot;, 500)
+    }
+    return updateDbHandler({error: &quot;Update function failed&quot;}, &quot;can&apos;t update post function: no functionPost found&quot;);
+}
+
+/** @function
+ * @name updateVote
+ * Used to add or update a vote in DB for a post. Then we update user to know if it already have
+ * like or dislike a function.
+ * @param {int|string} vote - vote value. If it&apos;s an int, 1=&quot;like&quot; &amp; -1=&quot;dislike&quot;
+ * @param {string} idPost - post&apos;s id
+ * @param {object} user - user&apos;s data
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
+async function updateVote(vote, idPost, user) {
+    const likeOrDislike = vote === 1 || vote === &quot;like&quot; ? &quot;like&quot; : &quot;dislike&quot;
+    const opposite = vote === 1 || vote === &quot;like&quot; ? &quot;dislike&quot; : &quot;like&quot;
+    let result = await updateLikeOrDislike(likeOrDislike, idPost, user)
+
+    //check if updated , then update user
+    if (isDefinedAndNotNull(result.success)) {
+        const userRes = await updateUserById({id: user._id}, {
+            $push: {[&quot;activities.&quot; + likeOrDislike]: result.postId},
+            $pull: {[&quot;activities.&quot; + opposite]: result.postId}
+        })
+        result.success = sortPostByLikes(result.success)
+        return closeUserUpdateAction(userRes, result, &quot;Adding &quot; + likeOrDislike + &quot; on post with id= &quot; + idPost + &quot; is impossible&quot;)
+    }
+    return updateDbHandler({error: &quot;Update vote failed&quot;}, &quot;Can&apos;t update vote post&quot;, 500);
+}
+
+/** @function
+ * @name addPostResponse
+ * Add a response to a post (with a new function proposal) after adding author and date.
+ * Then we update user to save in his activities he post a response.
+ * @param {object} responsePost - a response to a post
+ * @param {string} idPost - post&apos;s id
+ * @param {object} user - user&apos;s data
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
+async function addPostResponse(responsePost, idPost, user) {
+    addAuthor(user, responsePost)
+    addDate(responsePost)
+    if (responsePost[&apos;function&apos;] &amp;&amp; responsePost[&apos;description&apos;]) {
+        const result = await pushPostResponse(responsePost, idPost, user)
+        if (result.success !== null &amp;&amp; result.success !== undefined) {
+            const userRes = await updateUserById({id: user._id}, {$push: {[&quot;activities.response&quot;]: result.responseId}})
+            result.success = sortPostByLikes(result.success)
+            return closeUserUpdateAction(userRes, result, &quot;Add a new response,but can&apos;t update user&apos;s data&quot;)
+        }
+    }
+    return updateDbHandler({error: &quot;Adding response failed&quot;}, &quot;Can&apos;t add response to post&quot;);
+}
+
+/** @function
+ * @name addCommentary
+ * Add a commentary to a post after adding author and date. Then we update user to save in his
+ * activities he add a commentary to a post.
+ * @param {object} commentaryPost - a commentary post
+ * @param {string} idPost - post&apos;s id
+ * @param {object} user - user&apos;s data
+ * @returns {Promise&lt;{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}&gt;}
+ */
+async function addCommentary(commentaryPost, idPost, user) {
+    addAuthor(user, commentaryPost)
+    addDate(commentaryPost, &quot;date&quot;)
+    if (commentaryPost[&apos;commentary&apos;]) {
+        const result = await pushPostResponseCommentary(commentaryPost, idPost, user)
+        if (result.success !== null &amp;&amp; result.success !== undefined) {
+            const userRes = await updateUserById({id: user._id}, {$push: {[&quot;activities.commentary&quot;]: result.commentaryId}})
+            result.success = sortPostByLikes(result.success)
+            return closeUserUpdateAction(userRes, result, &quot;Add a new commentary, but can&apos;t update user&apos;s data&quot;)
+        }
+    }
+    return updateDbHandler({error: &quot;Adding commentary failed&quot;}, &quot;Can&apos;t add a commentary&quot;);
+}
+//endregion
+//endregion
+
+
+//region not exported functions
+/** @function
+ * @name closeUserUpdateAction
+ * This function is used to close action. We generate a new token
+ * and return a http code status and body
+ * @param {object} userData - user&apos;s data from a response
+ * @param {object} postData - post&apos;s data from a response
+ * @param {string } [msg= &quot;erreur en base de donn&#xE9;es&quot;] - message to send in body if there is an issue
+ * @returns {{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}}
+ */
+function closeUserUpdateAction(userData, postData, msg=&quot;DB error&quot;){
+    generateAccessToken(userData)
+    return getHandlerForUserPost(userData, postData, msg);
+}
+
+//endregion
+
+module.exports = {create, get, updateVote, addPostResponse, addCommentary, updateFunction};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

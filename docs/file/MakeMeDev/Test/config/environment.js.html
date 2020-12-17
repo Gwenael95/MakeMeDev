@@ -16,7 +16,7 @@
   
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+  <a href="test.html" data-ice="testLink">Test</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -34,21 +34,42 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">MakeMeDev/Test/config/environment.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const NodeEnvironment = require(&apos;jest-environment-node&apos;);
-
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This module requires {@link module:../config/MemoryDataBaseServer}.
+ * @requires module:../config/MemoryDataBaseServer
+ */
 const MemoryDatabaseServer = require(&apos;../config/MemoryDataBaseServer&apos;);
+const NodeEnvironment = require(&apos;jest-environment-node&apos;);
 
+/**
+ * @class CustomEnvironment
+ * @extends {NodeEnvironment}
+ */
 class CustomEnvironment extends NodeEnvironment {
+
+    /**
+     * @method setup
+     * @returns {Promise&lt;void&gt;}
+     */
     async setup() {
         await super.setup();
 
         this.global.__DB_URL__ = await MemoryDatabaseServer.getConnectionString();
     }
 
+     /**
+     * @method teardown
+     * @returns {Promise&lt;void&gt;}
+     */
     async teardown() {
         await super.teardown();
     }
 
+    /**
+     * @method start
+     * @param script
+     * @returns {unknown}
+     */
     runScript(script) {
         return super.runScript(script);
     }
