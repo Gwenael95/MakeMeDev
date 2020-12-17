@@ -77,7 +77,7 @@ function getTabParamOrReturn(data, dbFieldNameCount, paramsOrResults) {
                 if (result === "?") {
                     return {
                         $match: {
-                            [paramsOrResults]: {$elemMatch: {type: {$regex: ""}}, $size: dataSearch.length}
+                            [paramsOrResults]: {$elemMatch: {type: {$regex: "", $options: 'i'}}, $size: dataSearch.length}
                         }
                     }
                 } else if (dataSearch.length === 1 && result === "") {
@@ -96,7 +96,7 @@ function getTabParamOrReturn(data, dbFieldNameCount, paramsOrResults) {
                 }
                 // else, there isn't any params in request, we search by other criteria
                 else {
-                    return {$match: {[paramsOrResults]: {$elemMatch: {type: {$regex: ""}}}}}
+                    return {$match: {[paramsOrResults]: {$elemMatch: {type: {$regex: "", $options: 'i'}}}}}
                 }
             })
         } else if (dataSearch.length === 0) {
