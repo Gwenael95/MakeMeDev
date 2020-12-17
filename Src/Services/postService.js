@@ -38,6 +38,7 @@ const { getHandler, getHandlerForUserPost, updateDbHandler} = require("../Tools/
  * @returns {Promise<{code: number, body: {error: *}}|{code: number, body: *}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
 async function get(search) {
+    console.log(search)
     if (isDefinedAndNotNull(search.search)) {
         const objectSearchPost = getSearchPost(search.search)
         let queryRes = await getPostByFunction(objectSearchPost);

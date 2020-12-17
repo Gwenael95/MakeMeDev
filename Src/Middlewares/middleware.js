@@ -1,3 +1,8 @@
+/**
+ * This Service file requires {@link module:../Tools/Common/stringOperation }.
+ * @requires module:../Tools/Common/stringOperation
+ */
+const {replaceAllChar} = require("../Tools/Common/stringOperation")
 const jwt = require("jsonwebtoken");
 
 /** @function
@@ -28,7 +33,7 @@ function authenticateToken(req, res, next) {
  */
 function handleGetPost(req, res, next) {
     const {search, postId} =  req.query
-    req.search = {search:search, postId:postId}
+    req.search = { postId:postId, search:replaceAllChar(search, "3F", "?")}
     next()
 }
 

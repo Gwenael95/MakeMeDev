@@ -42,4 +42,21 @@ function filterDelSpaces(string){
     return string.replace(/\s/g, '')
 }
 
-module.exports = {getStringDelimitedArea, getSearchValue, filterDelSpaces}
+/** @function
+ * @name replaceAllChar
+ * Replace all character from a string by another one
+ * @param {string} stringToUpdate - the string that will change
+ * @param {string} elementToReplace - a char or string that will be replaced into the main string
+ * @param {string} replaceString - char or string that will replace old char
+ * @returns {null|*|void|string}
+ */
+function replaceAllChar(stringToUpdate, elementToReplace, replaceString){
+    try {
+        return stringToUpdate.replace(new RegExp(elementToReplace,"g"), replaceString)
+    }
+    catch (e) {
+        return null
+    }
+}
+
+module.exports = {getStringDelimitedArea, getSearchValue, filterDelSpaces, replaceAllChar}
