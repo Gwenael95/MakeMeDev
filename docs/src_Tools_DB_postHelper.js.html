@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: src/Tools/DB/postHelper.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,149 +17,51 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: src/Tools/DB/postHelper.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>MakeMeDev</h1>
-<p>2020 Web project at Coding factory, MakeMeDev aim to allow users
-to post and search functions from other developers.</p>
-<ul>
-<li><a href="#Initialisation">Initialisation</a></li>
-<li><a href="#User">User</a></li>
-<li><a href="#Search">Search</a></li>
-</ul>
-<h2>Initialisation</h2>
-<p>To run this server:</p>
-<pre><code>node index.js
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @function
+ * @name getLastCommentaryId
+ * Get last commentary id for a post matching with id in params
+ * @param {object} result - a result from DB
+ * @param {string} postId - post'id
+ * @returns {null|*}
+ */
+function getLastCommentaryId(result, postId) {
+    try {
+        let commentaryId;
+        for (let el of result.post) {
+            if (JSON.stringify(el._id) === JSON.stringify(postId)) {
+                commentaryId = el.commentary[el.commentary.length - 1]._id
+                break
+            }
+        }
+        return commentaryId;
+    }catch (e) {
+        return null
+    }
+}
+
+/** @function
+ * @name getLastResponseId
+ * get last response id from a result post object
+ * @param {object} result - a result from DB
+ * @returns {*}
+ */
+function getLastResponseId(result) {
+    return result.post[result.post.length - 1]._id;
+}
+
+module.exports = {getLastCommentaryId, getLastResponseId}
 </code></pre>
-<h2>User</h2>
-<h3>Signed in user</h3>
-<p>Signed in user will create an account with mail, pseudo, password.
-It will allow to post new functions to solve a problematic.</p>
-<p>This user will have to :</p>
-<ul>
-<li>give a name to his function</li>
-<li>describe the function, how it works, which problem it solve ...</li>
-<li>define all arguments and returns values :
-<ul>
-<li>type</li>
-<li>name</li>
-<li>description</li>
-<li>default value (<code>for arguments, not required</code>)</li>
-</ul>
-</li>
-<li>add tags</li>
-</ul>
-<p>Other signed in users may propose to enhance this function,
-they just have to add a post on the function they want.
-The rest of the community will elect the optimal solution by voting
-thanks to like and dislike.</p>
-<p>This will allow every user, even if not registered, to find solution to
-their issues thanks to the dev community.</p>
-<h3>Utilisateur non connecté (visiteur)</h3>
-<p>Unregistered user may only explore all functions, but won't
-participate to develop the MakeMeDev community.</p>
-<h2>Search</h2>
-<h3>Which are criteria to search function</h3>
-<p>You can search function by:</p>
-<ul>
-<li>name</li>
-<li>params type</li>
-<li>returns type</li>
-<li>description</li>
-<li>tags</li>
-</ul>
-<h3>How to write it</h3>
-<h4>Function name</h4>
-<p>If you want to search by function name,
-first step is to write it.
-Function name is <code>always</code> at the beginning of a request.</p>
-<blockquote>
-<p>This name could be uncompleted, we search function with a name
-containing your searched name.</p>
-</blockquote>
-<p>Example:</p>
-<pre class="prettyprint source"><code>accurate name       => sortMyArray
-less precise name   => sortMy      
-</code></pre>
-<h4>Params</h4>
-<p>If you want to search by params,
-first step is to write brackets <code>()</code>.
-Into those brackets, write the type of params to search.</p>
-<blockquote>
-<p>The number of params is important, you can search function without params
-with single brackets.</p>
-<p>Moreover, if you want to search function without knowing all params type, replace
-the unknown ones by ?</p>
-</blockquote>
-<p>Examples:</p>
-<pre class="prettyprint source"><code>no params           => ()
-one int             => (int)
-2 int, 1 array      => (int, int, array)
-1 int, 2 unknowns   => (int, ?, ?)
-</code></pre>
-<h4>Returns</h4>
-<p>If you want to search by returns,
-first step is to write braces <code>{}</code>.
-Into those braces, write the type of returns to search.</p>
-<blockquote>
-<p>Refer to <a href="#Params">Params</a> for details explanations on types.</p>
-</blockquote>
-<p>Examples:</p>
-<pre class="prettyprint source"><code>no returns      => {}
-unknown         => {?}
-one int or null => {int, null}
-</code></pre>
-<h4>Description</h4>
-<p>If you want to search by description,
-first step is to write double quote <code>&quot;&quot;</code>.
-Then, write a complete or a part of the description.</p>
-<p>Example:</p>
-<pre class="prettyprint source"><code>accurate description       => &quot;a function to sort array returning the new array or null if isn't of type array&quot;
-less precise description   => &quot;function to sort&quot;      
-</code></pre>
-<h4>Tags</h4>
-<p>If you want to search by tags, first step is to write square brackets <code>[]</code>.
-Into those square brackets, write all tags you want to search.</p>
-<blockquote>
-<p>We search all function with all your tags or more.
-Empty brackets mean you want a function without any tag</p>
-</blockquote>
-<p>Example:</p>
-<pre class="prettyprint source"><code>1 tags => [sort]
-2 tags => [sort, easy]    
-</code></pre>
-<h3>Combination</h3>
-<p>Each of those could be used to search function or not.
-You can use a combination of these to accurate your search.</p>
-<p>Find below an example of search request:</p>
-<p><code>functionName(int, int){int, ?} &quot;function to multiply&quot; [tag, tag]</code></p></article>
+        </article>
     </section>
-
-
 
 
 

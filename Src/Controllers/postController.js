@@ -1,4 +1,5 @@
 /**
+ * @namespace Controller
  * This Controller file requires {@link module:../Services/postService }  and
  * {@link module:../Tools/Controller/controllerHelper}.
  * @requires module:../Services/postService

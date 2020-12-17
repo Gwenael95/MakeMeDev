@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: src/DB/postRepository.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,149 +17,188 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: src/DB/postRepository.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>MakeMeDev</h1>
-<p>2020 Web project at Coding factory, MakeMeDev aim to allow users
-to post and search functions from other developers.</p>
-<ul>
-<li><a href="#Initialisation">Initialisation</a></li>
-<li><a href="#User">User</a></li>
-<li><a href="#Search">Search</a></li>
-</ul>
-<h2>Initialisation</h2>
-<p>To run this server:</p>
-<pre><code>node index.js
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * This file requires {@link module:../Models/postModel}, {@link module:../Tools/DB/postPipeline},
+ * {@link module:../Tools/DB/postHelper}.
+ * @requires module:../Models/postModel"
+ * @requires module:../Tools/DB/postPipeline
+ * @requires module:../Tools/DB/postHelper
+ */
+const mongoose = require('mongoose');
+const {postSchema} = require("../Models/postModel");
+const {getPipeline} = require("../Tools/DB/postPipeline")
+const {getLastResponseId, getLastCommentaryId} = require("../Tools/DB/postHelper")
+
+/**
+ * A mongoose post model
+ * @type {Model&lt;Document>}
+ */
+const PostModel = mongoose.model('posts', postSchema)
+const ObjectId = mongoose.Types.ObjectId;
+
+
+//region get
+/** @function
+ * @name getPostByFunction
+ * Get post in database depending on many criteria, and return the result of this try
+ * @param {object} searchedData - data to search in database
+ * @returns {Promise&lt;{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ */
+async function getPostByFunction(searchedData) {
+    return await PostModel
+        .aggregate(getPipeline(searchedData))//.sort({"post.totalLike":1})
+        .exec()
+        .then(result => {return {success: result}})
+        .catch(err => {
+            return {error: err.errors}
+        });
+}
+
+/** @function
+ * @name getPostById
+ * Get post in database depending on post's Id, and return the result of this try
+ * @param {object} postId - post's Id to search in database
+ * @returns {Promise&lt;{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ */
+async function getPostById(postId) {
+    return await PostModel
+        .findOne({$or : [ {_id: ObjectId(postId)}, {"post._id":ObjectId(postId)}]})
+        .exec()
+        .then(result => {return {success: result}})
+        .catch(err => {
+            return {error: err.errors}
+        });
+}
+//endregion
+
+//region post
+/** @function
+ * @name addPost
+ * Insert a new post in database, and return the result of this try
+ * @param {object} postData - post to add, should correspond to postModels {@link '../Models/postModels'}.
+ * @returns {Promise&lt;{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
+ */
+async function addPost(postData) {
+    const doc = new PostModel(postData);
+    return await doc.save().then(result => {
+        return {success: result}
+    }).catch(err => {
+        return {error: err.errors}
+    })
+}
+//endregion
+
+//region patch
+
+/** @function
+ * @name updatePost
+ * A generic function used to update a post.
+ * @param {object} filter - object used by mongoDB to select corresponding documents in DB.
+ * @param {object} update - object containing fields to set (ex: $set, or $push).
+ * @param {string} id - a post's id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}>}
+ */
+async function updatePost(filter, update, id) {
+    return await PostModel
+        .findOneAndUpdate(
+            filter,
+            update,
+            {new: true, context: "query"})
+        .lean()
+        .exec()
+        .then((result ) => {
+            return {success: result, postId: id , responseId: getLastResponseId(result), commentaryId: getLastCommentaryId(result, id)}
+        })
+        .catch(err => {
+            return {error: err.errors}
+        });
+}
+
+/** @function
+ * @name updatePostFunction
+ * Update a post function.
+ * @param {string} functionPost - the new function
+ * @param {string} idPost - a post's id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}>}
+ */
+async function updatePostFunction(functionPost, idPost) {
+    return await updatePost({"post._id": ObjectId(idPost)}, {$set : {"post.$.function": functionPost}}, idPost)
+}
+
+/** @function
+ * @name pushPostResponse
+ * Add a post response.
+ * @param {object} responsePost - a new response post to add in an array in DB
+ * @param idPost - a post's id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}>}
+ */
+async function pushPostResponse(responsePost, idPost) {
+    return await updatePost({"_id": ObjectId(idPost)}, {$push : {post: responsePost}}, idPost)
+}
+
+/** @function
+ * @name pushPostResponseCommentary
+ * Add a post commentary.
+ * @param {object} commentaryResponse -  a new commentary to add in an array in DB
+ * @param idPost - a post's id
+ * @returns {Promise&lt;{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}>}
+ */
+async function pushPostResponseCommentary(commentaryResponse, idPost) {
+    return await updatePost({"post._id": ObjectId(idPost)}, {$push : {"post.$.commentary": commentaryResponse}}, idPost)
+}
+
+/** @function
+ * @name updateLikeOrDislike
+ * Add or update like/dislike for a post.
+ * start by checking if user already vote for this post.
+ * if not we increment the like/dislike counter.
+ * else, if it changes is mind (want to change a like by a dislike), we decrement
+ * the old vote and increase the new one.
+ * @param {string} likeOrDislike - a string equals to 'like' or 'dislike'
+ * @param {string} idPost - post's id
+ * @param {object} user - user's data (needed to know his activities)
+ * @returns {Promise&lt;{error: string}|*>}
+ */
+async function updateLikeOrDislike(likeOrDislike, idPost, user) {
+    /**
+     * A string, opposite to the current vote
+     * @type {string}
+     */
+    let opposite = {like:"dislike", dislike:"like"}[likeOrDislike]
+    /**
+     * An object containing fields to set in DB
+     * @type {object}
+     */
+    let setPost
+
+    if (!(user.activities[likeOrDislike].includes(idPost) || user.activities[opposite].includes( idPost))) {
+        setPost = {$inc: {["post.$." + likeOrDislike]:1}}
+    }
+    else if(user.activities[opposite].includes( idPost)) {
+        setPost = {$inc: {["post.$." + likeOrDislike]:1, ["post.$." + opposite]:-1}}
+    }
+    else{
+        return {error:"cet utilisateur à déjà mis un " + likeOrDislike}
+    }
+    return await updatePost({"post._id": ObjectId(idPost)}, setPost, idPost)
+}
+//endregion
+
+
+module.exports = {addPost, getPostByFunction, getPostById, updateLikeOrDislike,
+    pushPostResponse, pushPostResponseCommentary, updatePostFunction};
 </code></pre>
-<h2>User</h2>
-<h3>Signed in user</h3>
-<p>Signed in user will create an account with mail, pseudo, password.
-It will allow to post new functions to solve a problematic.</p>
-<p>This user will have to :</p>
-<ul>
-<li>give a name to his function</li>
-<li>describe the function, how it works, which problem it solve ...</li>
-<li>define all arguments and returns values :
-<ul>
-<li>type</li>
-<li>name</li>
-<li>description</li>
-<li>default value (<code>for arguments, not required</code>)</li>
-</ul>
-</li>
-<li>add tags</li>
-</ul>
-<p>Other signed in users may propose to enhance this function,
-they just have to add a post on the function they want.
-The rest of the community will elect the optimal solution by voting
-thanks to like and dislike.</p>
-<p>This will allow every user, even if not registered, to find solution to
-their issues thanks to the dev community.</p>
-<h3>Utilisateur non connecté (visiteur)</h3>
-<p>Unregistered user may only explore all functions, but won't
-participate to develop the MakeMeDev community.</p>
-<h2>Search</h2>
-<h3>Which are criteria to search function</h3>
-<p>You can search function by:</p>
-<ul>
-<li>name</li>
-<li>params type</li>
-<li>returns type</li>
-<li>description</li>
-<li>tags</li>
-</ul>
-<h3>How to write it</h3>
-<h4>Function name</h4>
-<p>If you want to search by function name,
-first step is to write it.
-Function name is <code>always</code> at the beginning of a request.</p>
-<blockquote>
-<p>This name could be uncompleted, we search function with a name
-containing your searched name.</p>
-</blockquote>
-<p>Example:</p>
-<pre class="prettyprint source"><code>accurate name       => sortMyArray
-less precise name   => sortMy      
-</code></pre>
-<h4>Params</h4>
-<p>If you want to search by params,
-first step is to write brackets <code>()</code>.
-Into those brackets, write the type of params to search.</p>
-<blockquote>
-<p>The number of params is important, you can search function without params
-with single brackets.</p>
-<p>Moreover, if you want to search function without knowing all params type, replace
-the unknown ones by ?</p>
-</blockquote>
-<p>Examples:</p>
-<pre class="prettyprint source"><code>no params           => ()
-one int             => (int)
-2 int, 1 array      => (int, int, array)
-1 int, 2 unknowns   => (int, ?, ?)
-</code></pre>
-<h4>Returns</h4>
-<p>If you want to search by returns,
-first step is to write braces <code>{}</code>.
-Into those braces, write the type of returns to search.</p>
-<blockquote>
-<p>Refer to <a href="#Params">Params</a> for details explanations on types.</p>
-</blockquote>
-<p>Examples:</p>
-<pre class="prettyprint source"><code>no returns      => {}
-unknown         => {?}
-one int or null => {int, null}
-</code></pre>
-<h4>Description</h4>
-<p>If you want to search by description,
-first step is to write double quote <code>&quot;&quot;</code>.
-Then, write a complete or a part of the description.</p>
-<p>Example:</p>
-<pre class="prettyprint source"><code>accurate description       => &quot;a function to sort array returning the new array or null if isn't of type array&quot;
-less precise description   => &quot;function to sort&quot;      
-</code></pre>
-<h4>Tags</h4>
-<p>If you want to search by tags, first step is to write square brackets <code>[]</code>.
-Into those square brackets, write all tags you want to search.</p>
-<blockquote>
-<p>We search all function with all your tags or more.
-Empty brackets mean you want a function without any tag</p>
-</blockquote>
-<p>Example:</p>
-<pre class="prettyprint source"><code>1 tags => [sort]
-2 tags => [sort, easy]    
-</code></pre>
-<h3>Combination</h3>
-<p>Each of those could be used to search function or not.
-You can use a combination of these to accurate your search.</p>
-<p>Find below an example of search request:</p>
-<p><code>functionName(int, int){int, ?} &quot;function to multiply&quot; [tag, tag]</code></p></article>
+        </article>
     </section>
-
-
 
 
 

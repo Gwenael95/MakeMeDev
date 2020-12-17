@@ -1,4 +1,5 @@
 /**
+ * @namespace Controller User
  * This Controller file requires {@link module:../Services/usersService }  and
  * {@link module:../Tools/Controller/controllerHelper}.
  * @requires module:../Services/usersService
