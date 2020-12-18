@@ -45,11 +45,10 @@ function getMatchFromStringArray(data, dbField) {
 
     if (data !== null) {
         let array = (filterDelSpaces(data).split(","))
-        var regex = [];
-        for (var i = 0; i < array.length; i++) {
-            regex[i] = new RegExp(regex[i]);
+        let regex = [];
+        for (let i = 0; i < array.length; i++) {
+            regex[i] = new RegExp(array[i], "i");
         }
-        console.log(regex)
         if (array.length > 0 && data!=="") {
             return [{$match: {[dbField]: {$all: regex}}}]
         }
