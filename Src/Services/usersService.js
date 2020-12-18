@@ -18,11 +18,10 @@ const {signUp, signIn, updateUserById} = require("../DB/userRepository");
 //region exported functions
 //region get
 /**
- * getUser
+ * Get user's data if a user with corresponding pseudo/mail and password exist.
  * @function
  * @memberOf Services
- * @name getUser -
- * Get user's data if a user with corresponding pseudo/mail and password exist.
+ * @name getUser
  * @param {object} user - user's data needed to signIn
  * @returns {Promise<{code: number, body: {error: string}}|{code: number, body: {error: *}}|{code: number, body: *}>}
  */
@@ -34,11 +33,10 @@ async function getUser(user) {
 
 //region post
 /**
- * addUser
+ * Create a new user, that will be add in database.
  * @function
  * @memberOf Services
- * @name addUser -
- * Create a new user, that will be add in database
+ * @name addUser
  * @param {object} user - user to add, should be really similar to UserModel {@link '../Models/userModel'}.
  * @returns {Promise<{code: number, body: {error: string}}|{code: number, body: {error: *}}|{code: number, body: *}>}
  */
@@ -50,11 +48,10 @@ async function addUser(user) {
 
 //region patch
 /**
- * updateUser
+ * Update current user, thanks to given data. Only authorize to set Pseudo, mail and avatar.
  * @function
  * @memberOf Services
- * @name updateUser -
- * Update current user, thanks to given data. Only authorize to set Pseudo, mail and avatar
+ * @name updateUser
  * @param {object} user - user's data
  * @returns {Promise<{code: number, body: {error: string}}|{code: number, body: *}>}
  */
@@ -69,12 +66,11 @@ async function updateUser(user) {
 
 //region not exported function
 /**
- * closeUserAction
- * @function
- * @memberOf Services
- * @name closeUserAction -
  * This function is used to close action. We generate a new token
  * and return a http code status and body.
+ * @function
+ * @memberOf Services
+ * @name closeUserAction
  * @param {object} userData - user's data from a response
  * @param {string } [msg= "DB error"] - message to send in body if there is an issue
  * @param {boolean} isSetDb - true if the action should have set DB

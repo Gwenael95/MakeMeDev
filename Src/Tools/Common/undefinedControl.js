@@ -2,11 +2,10 @@
  * @namespace Tools
  */
 /**
- * isDefinedAndNotNull
+ * Check if our value data is defined and not null
  * @function
  * @memberOf Tools
- * @name isDefinedAndNotNull -
- * Check if our value data is defined and not null
+ * @name isDefinedAndNotNull
  * @param {*} value - a value to check
  * @returns {boolean}
  */
@@ -15,11 +14,10 @@ function isDefinedAndNotNull(value){
 }
 
 /**
- * isUndefinedOrNull
+ * Check if a value is undefined or null.
  * @function
  * @memberOf Tools
- * @name isUndefinedOrNull -
- * Check if a value is undefined or null
+ * @name isUndefinedOrNull
  * @param {*} value - a value to check
  * @returns {boolean}
  */

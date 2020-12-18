@@ -4,10 +4,10 @@
 const jwt = require("jsonwebtoken");
 
 /**
- * generateAccessToken
+ * Generate an access token with user's data.
  * @function
  * @memberOf Tools
- * @name generateAccessToken -
+ * @name generateAccessToken
  * @param {object} userData - user's data
  * @returns {undefined|*}
  */

@@ -66,6 +66,29 @@ describe('Post', () => {
 
     /**
      * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with search int as param
+     */
+    it('should be able to search a post with int as param', async () => {
+        const response = await request.get(url + 'post?search=(Int)')
+        expect(typeof getBodyRes(response)).toBe("object")
+        expect(getBodyRes(response)[0].name).toBe(post.post.name)
+        expectedStatus(response)
+    });
+
+
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with search tag
+     */
+    it('should be able to search a post with tags as param, testing insensitive case', async () => {
+        const response = await request.get(url + 'post?search=[easy, TesT]')
+        expect(typeof getBodyRes(response)).toBe("object")
+        expect(getBodyRes(response)[0].name).toBe(post.post.name)
+        expectedStatus(response)
+    });
+
+    /**
+     * @test {getPost}
      * Try to search a post document in mongoDB with a correct request with function name in param
      */
     it('should not be able to search a post because no function name with j', async () => {

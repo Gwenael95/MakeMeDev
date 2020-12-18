@@ -9,11 +9,10 @@ const {replaceAllChar} = require("../Tools/Common/stringOperation")
 const jwt = require("jsonwebtoken");
 
 /**
- * authenticateToken
+ * Check User's token before authorized some community features, add user field in req.
  * @function
  * @memberOf Middleware
- * @name authenticateToken -
- * Check User's token before authorized some community features, add user field in req.
+ * @name authenticateToken
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -31,11 +30,10 @@ function authenticateToken(req, res, next) {
 }
 
 /**
- * handleGetPost
+ * Allow to search post by id or with several criteria extracted from a string.
  * @function
  * @memberOf Middleware
- * @name handleGetPost -
- * Allow to search post by id or with several criteria extracted from a string.
+ * @name handleGetPost
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function

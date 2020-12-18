@@ -12,11 +12,10 @@ const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 //region post
 /**
- * signUp
+ * Create a new account on our app, saved in mongoDb
  * @function
  * @memberOf Controllers
- * @name signUp -
- * Create a new account on our app, saved in mongoDb
+ * @name signUp
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -29,11 +28,10 @@ exports.signUp = async (req, res, next) => {
 };
 
 /**
- * signIn
+ * Try to login a user if the mail/pseudo and password match in DB.
  * @function
  * @memberOf Controllers
- * @name signIn -
- * Try to login a user if the mail/pseudo and password match in DB.
+ * @name signIn
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -49,11 +47,10 @@ exports.signIn = async (req, res, next)  => {
 
 //region patch
 /**
- * updateUser
+ * Update a user depending on request data.
  * @function
  * @memberOf Controllers
- * @name updateUser -
- * Update a user depending on request data.
+ * @name updateUser
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function

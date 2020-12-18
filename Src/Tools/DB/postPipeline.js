@@ -13,11 +13,10 @@ const {filterDelSpaces} = require("../Common/stringOperation");
 //region exported
 
 /**
- * getPipeline
+ * Get a complex Pipeline to search all function depending on data search criteria.
  * @function
  * @memberOf Tools
- * @name getPipeline -
- * Get a complex Pipeline to search all function depending on data search criteria
+ * @name getPipeline
  * @param {object} data - post's data
  * @returns {[]}
  */
@@ -32,21 +31,27 @@ function getPipeline(data) {
 //region query for string's array
 
 /**
- * getMatchFromStringArray
+
+ * Create a $match for a defined field from database containing an array.
+ * Check if another array contains some or all elements of this DB field.
  * @function
  * @memberOf Tools
- * @name getMatchFromStringArray -
- * Create a $match for a defined field from database containing an array
- * Check if another array contains some or all elements of this DB field
+ * @name getMatchFromStringArray
  * @param {string|null} data - an array containing strings, or null (then return empty array)
  * @param {string} dbField - field name from DB
  * @returns {[]|[{$match: {field:{$all:data}}}]}
  */
 function getMatchFromStringArray(data, dbField) {
+
     if (data !== null) {
         let array = (filterDelSpaces(data).split(","))
+        var regex = [];
+        for (var i = 0; i < array.length; i++) {
+            regex[i] = new RegExp(regex[i]);
+        }
+        console.log(regex)
         if (array.length > 0 && data!=="") {
-            return [{$match: {[dbField]: {$all: array}}}]
+            return [{$match: {[dbField]: {$all: regex}}}]
         }
         else if (data==="") {
             return [{$match: {[dbField]:{$size: 0}}}]
@@ -56,11 +61,10 @@ function getMatchFromStringArray(data, dbField) {
 }
 
 /**
- * getTagQuery
+ * Get a query to search all post's tags in DB.
  * @function
  * @memberOf Tools
- * @name getTagQuery -
- * Get a query to search all post's tags in DB
+ * @name getTagQuery
  * @param {object} data - post's data
  * @returns {*[]|{$match: {field: {$all: data}}}[]}
  */
@@ -72,11 +76,10 @@ function getTagQuery(data) {
 
 //region query for returns/params array
 /**
- * getTabParamOrReturn
+ * A complex function, used to prepare a mongo filter for returns or params types.
  * @function
  * @memberOf Tools
- * @name getTabParamOrReturn -
- * A complex function, used to prepare a mongo filter for returns or params types.
+ * @name getTabParamOrReturn
  * @param {object} data - post's data
  * @param {string} dbFieldNameCount - field name that contain the count of each types
  * @param {string} paramsOrResults - array field name from DB that contains type (returns or params)
@@ -102,8 +105,8 @@ function getTabParamOrReturn(data, dbFieldNameCount, paramsOrResults) {
                 else if (dataSearch.length >= 1) {
                     return {
                         $match: {
-                            [paramsOrResults]: {$elemMatch: {type: result}, $size: dataSearch.length},
-                            [dbFieldNameCount + "." + result]: {
+                            [paramsOrResults]: {$elemMatch: {type: {$regex: result , $options: 'i'}}, $size: dataSearch.length},
+                            [dbFieldNameCount + "." + result.toLowerCase()]: {
                                 $lte: (occurrences["?"] ? occurrences["?"] : 0) + occurrences[result],
                                 $gte: occurrences[result]
                             }
@@ -123,11 +126,10 @@ function getTabParamOrReturn(data, dbFieldNameCount, paramsOrResults) {
 }
 
 /**
- * getParamTypeQuery
+ * Get a query to search function param's types in DB.
  * @function
  * @memberOf Tools
- * @name getParamTypeQuery -
- * Get a query to search function param's types in DB
+ * @name getParamTypeQuery
  * @param {object} data - post's data
  * @returns {{$match: {params: {$size: number}}}[]|unknown[]|[]}
  */
@@ -136,11 +138,10 @@ function getParamTypeQuery(data) {
 }
 
 /**
- * getReturnTypeQuery
+ * Get a query to search function return's types in DB.
  * @function
  * @memberOf Tools
- * @name getReturnTypeQuery -
- * Get a query to search function return's types in DB
+ * @name getReturnTypeQuery
  * @param {object} data - post's data
  * @returns {*[]|{$match: {field: {$regex: data}}}[]}
  */
@@ -151,11 +152,10 @@ function getReturnTypeQuery(data) {
 
 //region query for string
 /**
- * getDescriptionQuery
+ * Get a query to search function's description in DB.
  * @function
  * @memberOf Tools
- * @name getDescriptionQuery -
- * Get a query to search function's description in DB
+ * @name getDescriptionQuery
  * @param {object} data - post's data
  * @returns {*[]|{$match: {field: {$regex: data}}}[]}
  */
@@ -164,11 +164,10 @@ function getDescriptionQuery(data) {
 }
 
 /**
- * getNameQuery
+ * Get a query to search function's name in DB.
  * @function
  * @memberOf Tools
- * @name getNameQuery -
- * Get a query to search function's name in DB
+ * @name getNameQuery
  * @param {object} data - post's data
  * @returns {*[]|{$match: {field: {$regex: data}}}[]}
  */
@@ -177,11 +176,10 @@ function getNameQuery(data) {
 }
 
 /**
- * getMatchStringRegex
+ * Return a $match filter for a defined DB field.
  * @function
  * @memberOf Tools
- * @name getMatchStringRegex -
- * Return a $match filter for a defined DB field
+ * @name getMatchStringRegex
  * @param {string|null} data - a string that will be used in regex, if null return an empty array
  * @param {string} dbField - DB field from where to match a value
  * @returns {*[]|{$match: {field: {$regex:data}}}[]}

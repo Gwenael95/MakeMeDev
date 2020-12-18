@@ -1,4 +1,5 @@
 const rateLimit = require('express-rate-limit');
+
 /**
  * Config of our request limit, with 100 request per minute
  * @type {{headers: boolean, windowMs: number, max: number, message: string}}
