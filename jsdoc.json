@@ -1,10 +1,19 @@
 {
-  "opts": {
-    "template": "node_modules/docdash"
-  },
   "plugins": [
     "plugins/markdown"
   ],
+  "source": {
+    "include": "./",
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(node_modules/|docs)"
+  },
+  "opts": {
+    "template": "node_modules/docdash",
+    "encoding": "utf8",
+    "destination": "docs/",
+    "recurse": true,
+    "verbose": true
+  },
   "docdash": {
     "static": true,
     "sort": true,
@@ -15,7 +24,7 @@
     "scripts": [],
     "menu":{
       "Github repo": {
-        "href":"https://github.com/your-github-username/pet-adoption-center-sdk",
+        "href":"https://github.com/Gwenael95/MakeMeDev",
         "target":"_blank",
         "class":"menu-item",
         "id":"repository"

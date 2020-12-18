@@ -1,12 +1,18 @@
 /**
+ * @namespace Middleware
+ */
+/**
  * This Service file requires {@link module:../Tools/Common/stringOperation }.
  * @requires module:../Tools/Common/stringOperation
  */
 const {replaceAllChar} = require("../Tools/Common/stringOperation")
 const jwt = require("jsonwebtoken");
 
-/** @function
- * @name authenticateToken
+/**
+ * authenticateToken
+ * @function
+ * @memberOf Middleware
+ * @name authenticateToken -
  * Check User's token before authorized some community features, add user field in req.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
@@ -24,8 +30,11 @@ function authenticateToken(req, res, next) {
     })
 }
 
-/** @function
- * @name handleGetPost
+/**
+ * handleGetPost
+ * @function
+ * @memberOf Middleware
+ * @name handleGetPost -
  * Allow to search post by id or with several criteria extracted from a string.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched

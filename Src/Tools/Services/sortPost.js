@@ -1,11 +1,17 @@
 /**
+ * @namespace Tools
+ */
+/**
  * This file requires {@link module:../Common/undefinedControl}.
  * @requires module:../Common/undefinedControl
  */
 const {isDefinedAndNotNull} = require("../Common/undefinedControl")
 
-/** @function
- * @name sortAllPostByLike
+/**
+ * sortAllPostByLike
+ * @function
+ * @memberOf Tools
+ * @name sortAllPostByLike -
  * Sort post array by like - dislike in descending order for all post from a response.
  * @param {object} data - typically a response with success field containing an array of posts
  * @returns {*}
@@ -19,8 +25,11 @@ function sortAllPostByLike(data) {
     return data
 }
 
-/** @function
- * @name sortPostByLikes
+/**
+ * sortPostByLikes
+ * @function
+ * @memberOf Tools
+ * @name sortPostByLikes -
  * Sort post array of an object by like - dislike in descending order.
  * @param {object} data - typically a post object from a response
  * @returns {*}

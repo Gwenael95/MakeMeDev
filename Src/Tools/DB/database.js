@@ -1,9 +1,15 @@
+/**
+ * @namespace Tools
+ */
 const mongoose = require('mongoose');
 require('dotenv').config();
 
 
-/** @function
- * @name connect
+/**
+ * connect
+ * @function
+ * @memberOf Tools
+ * @name connect -
  * Connect to DB for test or production
  */
 function connect() {
@@ -23,8 +29,11 @@ function connect() {
     }
 }
 
-/** @function
- * @name truncate
+/**
+ * truncate
+ * @function
+ * @memberOf Tools
+ * @name truncate -
  */
 function truncate()  {
     if (mongoose.connection.readyState !== 0) {
@@ -38,8 +47,11 @@ function truncate()  {
     }
 }
 
-/** @function
- * @name disconnect
+/**
+ * disconnect
+ * @function
+ * @memberOf Tools
+ * @name disconnect -
  */
 function disconnect() {
     if (mongoose.connection.readyState !== 0) {

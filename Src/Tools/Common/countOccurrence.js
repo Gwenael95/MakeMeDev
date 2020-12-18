@@ -1,5 +1,11 @@
-/** @function
- * @name countOccurrencesFromArray
+/**
+ * @namespace Tools
+ */
+/**
+ * countOccurrencesFromArray
+ * @function
+ * @memberOf Tools
+ * @name countOccurrencesFromArray -
  * Count occurrence of string in an array and return an object
  * with each string as key and occurrence as value
  * @param {array} arr - The array to analyse

@@ -1,4 +1,7 @@
 /**
+ * @namespace Services
+ */
+/**
  * This Service file requires {@link module:../DB/postRepository }, {@link module:../DB/userRepository},
  * {@link module:../Tools/token}, {@link module:../Tools/Services/searchPost },
  * {@link module:../Tools/Common/undefinedControl }, {@link module:../Tools/Services/addField}
@@ -28,8 +31,11 @@ const { getHandler, getHandlerForUserPost, updateDbHandler} = require("../Tools/
 
 //region exported methods
 //region get
-/** @function
- * @name get
+/**
+ * get
+ * @function
+ * @memberOf Services
+ * @name get -
  * Get posts depending on a request get thanks to a string with strict typography to demarcate
  * each field, and if not exist it will not be a criteria to search at all.
  * Structure : functionName(param1, param2, ?){returned1, returned2}"functionDescription"[tag1, tag2, tag3]
@@ -52,8 +58,11 @@ async function get(search) {
 //endregion
 
 //region post
-/** @function
- * @name create
+/**
+ * create
+ * @function
+ * @memberOf Services
+ * @name create -
  * Create a new post, that will be add in database.
  * We add some field : paramsTypes and returnsTypes to have an object with a number of occurrence of each params.
  * Also creation date for post
@@ -85,8 +94,11 @@ async function create(post, user) {
 //endregion
 
 //region patch
-/** @function
- * @name updateFunction
+/**
+ * updateFunction
+ * @function
+ * @memberOf Services
+ * @name updateFunction -
  * Update a function from a post or post response thanks to its id.
  * @param {string} functionPost - the complete function, real code that could be run.
  * @param {string} idPost - post's or response post's id to update
@@ -101,8 +113,11 @@ async function updateFunction(functionPost, idPost, user) {
     return updateDbHandler({error: "Update function failed"}, "can't update post function: no functionPost found");
 }
 
-/** @function
- * @name updateVote
+/**
+ * updateVote
+ * @function
+ * @memberOf Services
+ * @name updateVote -
  * Used to add or update a vote in DB for a post. Then we update user to know if it already have
  * like or dislike a function.
  * @param {int|string} vote - vote value. If it's an int, 1="like" & -1="dislike"
@@ -127,8 +142,11 @@ async function updateVote(vote, idPost, user) {
     return updateDbHandler({error: "Update vote failed"}, "Can't update vote post", 500);
 }
 
-/** @function
- * @name addPostResponse
+/**
+ * addPostResponse
+ * @function
+ * @memberOf Services
+ * @name addPostResponse -
  * Add a response to a post (with a new function proposal) after adding author and date.
  * Then we update user to save in his activities he post a response.
  * @param {object} responsePost - a response to a post
@@ -150,8 +168,11 @@ async function addPostResponse(responsePost, idPost, user) {
     return updateDbHandler({error: "Adding response failed"}, "Can't add response to post");
 }
 
-/** @function
- * @name addCommentary
+/**
+ * addCommentary
+ * @function
+ * @memberOf Services
+ * @name addCommentary -
  * Add a commentary to a post after adding author and date. Then we update user to save in his
  * activities he add a commentary to a post.
  * @param {object} commentaryPost - a commentary post
@@ -177,13 +198,16 @@ async function addCommentary(commentaryPost, idPost, user) {
 
 
 //region not exported functions
-/** @function
- * @name closeUserUpdateAction
+/**
+ * closeUserUpdateAction
+ * @function
+ * @memberOf Services
+ * @name closeUserUpdateAction -
  * This function is used to close action. We generate a new token
  * and return a http code status and body
  * @param {object} userData - user's data from a response
  * @param {object} postData - post's data from a response
- * @param {string } [msg= "erreur en base de données"] - message to send in body if there is an issue
+ * @param {string } [msg= "DB error"] - message to send in body if there is an issue
  * @returns {{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}}
  */
 function closeUserUpdateAction(userData, postData, msg="DB error"){

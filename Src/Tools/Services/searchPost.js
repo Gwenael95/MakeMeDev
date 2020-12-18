@@ -1,11 +1,17 @@
 /**
+ * @namespace Tools
+ */
+/**
  * This file requires {@link module:../Common/regex}.
  * @requires module:../Common/regex
  */
 const {searchRegex} = require("../Common/regex")
 
-/** @function
- * @name getSearchPost
+/**
+ * getSearchPost
+ * @function
+ * @memberOf Tools
+ * @name getSearchPost -
  * Used to return an object with function name, params and returns types, description and tag extracted
  * from a string thanks to regex.
  * @param {string} search - string containing criteria we want to search in DB, delimited by characters like () or []
@@ -21,8 +27,11 @@ function getSearchPost(search) {
     };
 }
 
-/** @function
- * @name getSearchPost
+/**
+ * returnFieldByRegex
+ * @function
+ * @memberOf Tools
+ * @name returnFieldByRegex -
  * Return the first occurrence matching with regex in a string or null if any found
  * @param {string} text - string to slice with regex
  * @param {RegExp} regex - regex we used to extract a part of a string

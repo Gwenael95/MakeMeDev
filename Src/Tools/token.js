@@ -1,7 +1,13 @@
+/**
+ * @namespace Tools
+ */
 const jwt = require("jsonwebtoken");
 
-/** @function
- * @name generateAccessToken
+/**
+ * generateAccessToken
+ * @function
+ * @memberOf Tools
+ * @name generateAccessToken -
  * @param {object} userData - user's data
  * @returns {undefined|*}
  */
