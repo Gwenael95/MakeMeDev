@@ -113,7 +113,7 @@ describe('Post', () => {
      * @test {getPost}
      * Try to search a post document in mongoDB with a correct request with postId from post array
      */
-    it('should be able to search a post by id', async () => {
+    it('should be able to search a post by id in post array', async () => {
         const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post.post[0]._id)
         expect(typeof getBodyRes(response)).toBe("object")
         expect(getBodyRes(response).name).toBe(post.post.name)
