@@ -1,4 +1,7 @@
 /**
+ * @namespace Controllers
+ */
+/**
  * This Controller file requires {@link module:../Services/postService }  and
  * {@link module:../Tools/Controller/controllerHelper}.
  * @requires module:../Services/postService
@@ -8,8 +11,11 @@ const { create, get, updateVote, addPostResponse, addCommentary, updateFunction 
 const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 //region get
-/** @function
- * @name getPost
+/**
+ * getPost
+ * @function
+ * @memberOf Controllers
+ * @name getPost -
  * @async
  * Get a post from database if our query isn't empty.
  * @param {Object.<Request>} req - request received
@@ -24,8 +30,11 @@ exports.getPost = async (req, res, next)  => {
 //endregion
 
 //region post
-/** @function
- * @name sendPost
+/**
+ * sendPost
+ * @function
+ * @memberOf Controllers
+ * @name sendPost -
  * Send a post to add in database if our post data isn't empty.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
@@ -40,8 +49,11 @@ exports.sendPost = async (req, res, next) => {
 //endregion
 
 //region patch
-/** @function
- * @name sendVote
+/**
+ * sendVote
+ * @function
+ * @memberOf Controllers
+ * @name sendVote -
  * Send a vote to like or dislike a post in DB.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
@@ -54,8 +66,11 @@ exports.sendVote = async (req, res, next)  => {
     return res.status(response.code).send(response.body)
 };
 
-/** @function
- * @name addResponse
+/**
+ * addResponse
+ * @function
+ * @memberOf Controllers
+ * @name addResponse -
  * Send a response to add to a post in DB.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
@@ -68,8 +83,11 @@ exports.addResponse = async (req, res, next)  => {
     return res.status(response.code).send(response.body)
 };
 
-/** @function
- * @name addCommentary
+/**
+ * addCommentary
+ * @function
+ * @memberOf Controllers
+ * @name addCommentary -
  * Send a comment to add to a post in DB.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
@@ -82,8 +100,11 @@ exports.addCommentary = async (req, res, next)  => {
     return res.status(response.code).send(response.body)
 };
 
-/** @function
- * @name updateFunction
+/**
+ * updateFunction
+ * @function
+ * @memberOf Controllers
+ * @name updateFunction -
  * Send a function to update it in a post in DB.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched

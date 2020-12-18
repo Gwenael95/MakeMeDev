@@ -1,4 +1,7 @@
 /**
+ * @namespace DB
+ */
+/**
  * This file requires {@link module:../Models/postModel}, {@link module:../Tools/DB/postPipeline},
  * {@link module:../Tools/DB/postHelper}.
  * @requires module:../Models/postModel"
@@ -19,8 +22,11 @@ const ObjectId = mongoose.Types.ObjectId;
 
 
 //region get
-/** @function
- * @name getPostByFunction
+/**
+ * getPostByFunction
+ * @function
+ * @memberOf DB
+ * @name getPostByFunction -
  * Get post in database depending on many criteria, and return the result of this try
  * @param {object} searchedData - data to search in database
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
@@ -35,8 +41,11 @@ async function getPostByFunction(searchedData) {
         });
 }
 
-/** @function
- * @name getPostById
+/**
+ * getPostById
+ * @function
+ * @memberOf DB
+ * @name getPostById -
  * Get post in database depending on post's Id, and return the result of this try
  * @param {object} postId - post's Id to search in database
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
@@ -53,8 +62,11 @@ async function getPostById(postId) {
 //endregion
 
 //region post
-/** @function
- * @name addPost
+/**
+ * addPost
+ * @function
+ * @memberOf DB
+ * @name addPost -
  * Insert a new post in database, and return the result of this try
  * @param {object} postData - post to add, should correspond to postModels {@link '../Models/postModels'}.
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
@@ -71,8 +83,11 @@ async function addPost(postData) {
 
 //region patch
 
-/** @function
- * @name updatePost
+/**
+ * updatePost
+ * @function
+ * @memberOf DB
+ * @name updatePost -
  * A generic function used to update a post.
  * @param {object} filter - object used by mongoDB to select corresponding documents in DB.
  * @param {object} update - object containing fields to set (ex: $set, or $push).
@@ -95,8 +110,11 @@ async function updatePost(filter, update, id) {
         });
 }
 
-/** @function
- * @name updatePostFunction
+/**
+ * updatePostFunction
+ * @function
+ * @memberOf DB
+ * @name updatePostFunction -
  * Update a post function.
  * @param {string} functionPost - the new function
  * @param {string} idPost - a post's id
@@ -106,8 +124,11 @@ async function updatePostFunction(functionPost, idPost) {
     return await updatePost({"post._id": ObjectId(idPost)}, {$set : {"post.$.function": functionPost}}, idPost)
 }
 
-/** @function
- * @name pushPostResponse
+/**
+ * pushPostResponse
+ * @function
+ * @memberOf DB
+ * @name pushPostResponse -
  * Add a post response.
  * @param {object} responsePost - a new response post to add in an array in DB
  * @param idPost - a post's id
@@ -117,8 +138,11 @@ async function pushPostResponse(responsePost, idPost) {
     return await updatePost({"_id": ObjectId(idPost)}, {$push : {post: responsePost}}, idPost)
 }
 
-/** @function
- * @name pushPostResponseCommentary
+/**
+ * pushPostResponseCommentary
+ * @function
+ * @memberOf DB
+ * @name pushPostResponseCommentary -
  * Add a post commentary.
  * @param {object} commentaryResponse -  a new commentary to add in an array in DB
  * @param idPost - a post's id
@@ -128,8 +152,11 @@ async function pushPostResponseCommentary(commentaryResponse, idPost) {
     return await updatePost({"post._id": ObjectId(idPost)}, {$push : {"post.$.commentary": commentaryResponse}}, idPost)
 }
 
-/** @function
- * @name updateLikeOrDislike
+/**
+ * updateLikeOrDislike
+ * @function
+ * @memberOf DB
+ * @name updateLikeOrDislike -
  * Add or update like/dislike for a post.
  * start by checking if user already vote for this post.
  * if not we increment the like/dislike counter.

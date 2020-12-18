@@ -1,5 +1,11 @@
-/** @function
- * @name filterPassword
+/**
+ * @namespace Tools
+ */
+/**
+ * filterPassword
+ * @function
+ * @memberOf Tools
+ * @name filterPassword -
  * Delete user password, to avoid security issues.
  * if we forgot to add lean to delete password, we ensure to return a useless string
  * @param {object} data - an object from where to delete one field : password

@@ -1,4 +1,7 @@
 /**
+ * @namespace DB
+ */
+/**
  * This file requires {@link module:../Models/userModel}, {@link module:../Tools/DB/userHelper}.
  * @requires module:../Models/userModel
  * @requires module:../Tools/DB/userHelper
@@ -13,8 +16,11 @@ const UserModel = mongoose.model('users', userSchema)
 
 
 //region get
-/** @function
- * @name signIn
+/**
+ * signIn
+ * @function
+ * @memberOf DB
+ * @name signIn -
  * Check if user's data are in database and check if password is correct,
  * depending on login value, and return the result of this try.
  * Login could be mail or pseudo.
@@ -37,8 +43,11 @@ async function signIn(userData) {
 //endregion
 
 //region post
-/** @function
- * @name signUp
+/**
+ * signUp
+ * @function
+ * @memberOf DB
+ * @name signUp -
  * Add a new user in database, and return the result of this try
  * @param {object} userData - user to add, should correspond to userModel {@link '../Models/userModels'}.
  * @returns {Promise<{success: *}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
@@ -54,8 +63,11 @@ async function signUp(userData) {
 //endregion
 
 //region patch
-/** @function
- * @name updateUser
+/**
+ * updateUser
+ * @function
+ * @memberOf DB
+ * @name updateUser -
  * A generic function used to update a user.
  * @param {object} filter - object used by mongoDB to select corresponding documents in DB.
  * @param {object} update - object containing fields to set (ex: $set, or $push).
@@ -77,8 +89,11 @@ async function updateUser(filter, update) {
         });
 }
 
-/** @function
- * @name updateUserById
+/**
+ * updateUserById
+ * @function
+ * @memberOf DB
+ * @name updateUserById -
  * Update user's data depending on his ID and wanted fields to set
  * @param {object} data - user's data
  * @param {object} update - object containing fields to set (ex: $set, or $push).

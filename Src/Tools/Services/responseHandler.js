@@ -1,6 +1,11 @@
-
-/** @function
- * @name getHandler
+/**
+ * @namespace Tools
+ */
+/**
+ * getHandler
+ * @function
+ * @memberOf Tools
+ * @name getHandler -
  * Handle HTTP status code and body content to return in a response to Front team
  * For GET request.
  * @param {{success: object}|{error: string}} data - object with success or error data
@@ -20,8 +25,11 @@ function getHandler(data, notFoundMsg="error, can't find this in database", code
     }
 }
 
-/** @function
- * @name updateDbHandler
+/**
+ * updateDbHandler
+ * @function
+ * @memberOf Tools
+ * @name updateDbHandler -
  * Handle HTTP status code and body content to return in a response to Front team
  * For POST request (when adding a document).
  * @param {{success: object}|{error: string}} data - object with success or error data
@@ -42,8 +50,11 @@ function updateDbHandler(data, notFoundMsg="error, can't add this in database", 
 }
 
 
-/** @function
- * @name getHandlerForUserPost
+/**
+ * getHandlerForUserPost
+ * @function
+ * @memberOf Tools
+ * @name getHandlerForUserPost -
  * Handle HTTP status code and body content to return in a response to Front team
  * For GET request
  * @param {{success: object}|{error: string}} user - user's data
