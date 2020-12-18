@@ -2,11 +2,10 @@
  * @namespace Tools
  */
 /**
- * setUpdateValue
+ * Define all keys to set
  * @function
  * @memberOf Tools
- * @name setUpdateValue -
- * Define all keys to set
+ * @name setUpdateValue
  * @param {object} data - data that will be set
  * @param {array} keysArray - all keys to update
  * @returns {{$set: {}}}

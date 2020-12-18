@@ -2,12 +2,11 @@
  * @namespace Tools
  */
 /**
- * getStringDelimitedArea
+ * Get a string in a delimited area defined by first and last delimiter.
+ * If the second delimiter isn't found in string, return a string from first delimiter to end.
  * @function
  * @memberOf Tools
- * @name getStringDelimitedArea -
- * Get a string in a delimited area defined by first and last delimiter
- * If the second delimiter isn't found in string, return a string from first delimiter to end
+ * @name getStringDelimitedArea
  * @param {string} str - string to analyse
  * @param {string} firstDelimiter - first delimiter used  to get the result
  * @param {string} lastDelimiter - last delimiter used to get the result
@@ -19,12 +18,11 @@ function getStringDelimitedArea(str, firstDelimiter, lastDelimiter) {
 }
 
 /**
- * getSearchValue
+ * Get a string in a delimited area defined by a delimiter.
+ * If there is only one delimiter, return null.
  * @function
  * @memberOf Tools
- * @name getSearchValue -
- * Get a string in a delimited area defined by a delimiter
- * If there is only one delimiter, return null
+ * @name getSearchValue
  * @param {string} str - string to analyse
  * @param {string} delimiter - delimiter used to get the result
  * @returns {string|null}
@@ -42,11 +40,10 @@ function getSearchValue(str, delimiter){
 }
 
 /**
- * filterDelSpaces
+ * Delete all spaces in a string.
  * @function
  * @memberOf Tools
- * @name filterDelSpaces -
- * delete all spaces in a string
+ * @name filterDelSpaces
  * @param {string} string - string that won't have spaces anymore
  * @returns {*|void}
  */
@@ -55,11 +52,10 @@ function filterDelSpaces(string){
 }
 
 /**
- * replaceAllChar
+ * Replace all character from a string by another one.
  * @function
  * @memberOf Tools
- * @name replaceAllChar -
- * Replace all character from a string by another one
+ * @name replaceAllChar
  * @param {string} stringToUpdate - the string that will change
  * @param {string} elementToReplace - a char or string that will be replaced into the main string
  * @param {string} replaceString - char or string that will replace old char
