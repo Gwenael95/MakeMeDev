@@ -52,7 +52,7 @@ function setTypes(post, fieldName) {
     }
     else {
         for (let element of post[fieldName]) {
-            arr.push(element.type)
+            arr.push(element.type.toLowerCase())
         }
     }
     post[fieldName.toLowerCase() + "Types"] = countOccurrencesFromArray(arr)
