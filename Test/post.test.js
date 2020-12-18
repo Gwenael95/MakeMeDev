@@ -1,12 +1,25 @@
+/**
+ * This test file requires {@link module:./config/launcher}, {@link module:./config/testHelper }  and
+ * {@link module:./models}.
+ * @requires module:./config/launcher
+ * @requires module:./config/testHelper
+ * @requires module:./models
+ */
 const { request, url} = require("./config/launcher")
 const { post, responsePost, commentaryPost, user} = require("./models");
 const { expectedResponseOnUserUpsert, expectExcept, getBodyRes, expectedStatus,
         getPostAt, getUserActivities, getAllPostReq, requestPostVote,
         prepareReqWithToken} = require("./config/testHelper")
+
+/**
+ * post object at position 0 from post model
+ * @type {object} post0
+ */
 const post0 = post.post.post[0]
 
 /**
- * @todo Make lot of tests, to test each possible situation
+ * @todo Make lot of tests, to test each possible situation.
+ * It will be sufficient for MVP.
  */
 describe('Post', () => {
     let newUser;
@@ -18,6 +31,10 @@ describe('Post', () => {
     })
 
     //region create post and search posts
+    /**
+     * @test {sendPost}
+     * Try to insert a new post document in mongoDB with good post object
+     */
     it('should be able to create a post', async () => {
         const response = newPost;
         expect(Object.values(response.body).length).toEqual(2) //token & success
@@ -26,28 +43,69 @@ describe('Post', () => {
         expectExcept(Object.keys(getBodyRes(response).post), Object.keys(post.post))
     });
 
+    /**
+     * @test {sendPost}
+     * Try to insert a new post document in mongoDB with incomplete post object
+     */
     it('should not be able to create a post because bad post', async () => {
         const response = await prepareReqWithToken(newUser, url + "post").send({post:{name:"testBadPost"}});
-        //expect(response.status).toBe(404)
         expectedStatus(response, 400)
     });
 
+    //region search request
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with search several params
+     */
     it('should be able to search a post', async () => {
         const response = await request.get(url + 'post?search=test(int){int, ?} "function to multiply" [test]')
         expect(typeof getBodyRes(response)).toBe("object")
-        expect(getBodyRes(response)[0].name).toBe("test")
+        expect(getBodyRes(response)[0].name).toBe(post.post.name)
         expectedStatus(response)
     });
 
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with function name in param
+     */
+    it('should not be able to search a post because no function name with j', async () => {
+        const response = await request.get(url + 'post?search=j')
+        expect(typeof getBodyRes(response)).toBe("object")
+        expect(getBodyRes(response)[0]).toBe(undefined)
+        expectedStatus(response, 200)
+    });
+
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with postId param
+     */
     it('should be able to search a post by id', async () => {
         const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post._id)
         expect(typeof getBodyRes(response)).toBe("object")
-        expect(getBodyRes(response).name).toBe("test")
+        expect(getBodyRes(response).name).toBe(post.post.name)
+        expectedStatus(response)
+    });
+
+    /**
+     * @test {getPost}
+     * Try to search a post document in mongoDB with a correct request with postId from post array
+     */
+    it('should be able to search a post by id', async () => {
+        const response = await request.get(url + 'post?postId=' + getBodyRes(newPost).post.post[0]._id)
+        expect(typeof getBodyRes(response)).toBe("object")
+        expect(getBodyRes(response).name).toBe(post.post.name)
+        expect(getBodyRes(response).post[2]._id).toBe(getBodyRes(newPost).post.post[0]._id)
         expectedStatus(response)
     });
     //endregion
+    //endregion
 
     //region vote (like or dislike)
+    /**
+     * @test {sendVote}
+     * Try to like a post in mongoDB with a correct request if the user
+     * never have vote for the post
+     */
     it('should be able to like a post if NEVER vote', async () => {
         const response = await requestPostVote( newUser, newPost, 1)
         const postCheck = await getAllPostReq()
@@ -57,6 +115,11 @@ describe('Post', () => {
         expect(getUserActivities(response).like).toContain(getBodyRes(newPost).post.post[0]._id)
     });
 
+    /**
+     * @test {sendVote}
+     * Try to dislike a post in mongoDB with a correct request if the user
+     * never have vote for the post
+     */
     it('should be able to dislike a post if NEVER vote', async () => {
         const response = await requestPostVote( newUser, newPost, -1)
         const postCheck = await getAllPostReq()
@@ -65,7 +128,11 @@ describe('Post', () => {
         expect(getUserActivities(response).dislike).toContain(getBodyRes(newPost).post.post[0]._id)
     });
 
-
+    /**
+     * @test {sendVote}
+     * Try to like a post in mongoDB with corrects requests if the user
+     * already add a like for the post
+     */
     it('should be able to update a vote into post if ALREADY vote same vote', async () => {
         const response1 = await requestPostVote( newUser, newPost, 1)
         const postCheck1 = await getAllPostReq()
@@ -77,9 +144,14 @@ describe('Post', () => {
         expect(getPostAt(postCheck1).like).toBe(post0.like+1)
         expect(getPostAt(postCheck2).like).toBe(post0.like+1)
         expect(getUserActivities(response1).like).toContain(getBodyRes(newPost).post.post[0]._id)
-        expect(response2.body.error).toBe("update vote failed")
+        expect(response2.body.error).toBe("Update vote failed")
     });
 
+    /**
+     * @test {sendVote}
+     * Try to dislike a post in mongoDB with corrects requests if the user
+     * already add a like for the post
+     */
     it('should be able to dislike a post', async () => {
         const response1 = await requestPostVote( newUser, newPost, 1)
         const postCheck1 = await getAllPostReq()
@@ -101,6 +173,10 @@ describe('Post', () => {
     //endregion
 
     //region add a post (answer) in a created post
+    /**
+     * @test {addResponse}
+     * Try to send a response to a post in mongoDB with corrects requests
+     */
     it('should be able to send response to a post', async () => {
         const response = await prepareReqWithToken(newUser, url + "post-add-response")
             .send({responsePost: responsePost, idPost:getBodyRes(newPost).post._id })
@@ -112,15 +188,25 @@ describe('Post', () => {
     //endregion
 
     //region add commentary to a post
+    /**
+     * @test {addCommentary}
+     * Try to send a commentary to a post in mongoDB with corrects requests
+     */
     it('should be able to send a commentary to a post', async () => {
         const response = await prepareReqWithToken(newUser, url + "post-add-commentary")
             .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
         const postCheck = await getAllPostReq()
         expectedStatus(response, 201)
-        expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
-        expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
+
+        expect(getPostAt(postCheck).commentary[1].commentary).toBe(commentaryPost.commentary);
+        expect(getUserActivities(response).commentary).toContain(getPostAt(postCheck)._id)
     });
 
+    /**
+     * @test {addCommentary}
+     * Try to send commentaries to a post in mongoDB with corrects requests,
+     * each commentary date should be different.
+     */
     it('should be able to send 2 commentary with 2 different timestamp', async () => {
         const response1 = await prepareReqWithToken(newUser, url + "post-add-commentary")
             .send({commentaryPost: commentaryPost, idPost:getBodyRes(newPost).post.post[0]._id })
@@ -132,8 +218,8 @@ describe('Post', () => {
         let comment2 = getPostAt(postCheck2).commentary
 
         expectedStatus(response1, 201)
-        expect(getPostAt(postCheck).commentary[1].commentary).toBe("first");
-        expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck).commentary[1]._id)
+        expect(getPostAt(postCheck).commentary[1].commentary).toBe(commentaryPost.commentary);
+        expect(getUserActivities(response1).commentary).toContain(getPostAt(postCheck)._id)
         expect(comment[comment.length-1].date< comment2[comment2.length-1].date).toBe(true)
     });
     //endregion
