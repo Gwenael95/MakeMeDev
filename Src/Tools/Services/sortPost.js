@@ -8,11 +8,10 @@
 const {isDefinedAndNotNull} = require("../Common/undefinedControl")
 
 /**
- * sortAllPostByLike
+ * Sort post array by like - dislike in descending order for all post from a response.
  * @function
  * @memberOf Tools
- * @name sortAllPostByLike -
- * Sort post array by like - dislike in descending order for all post from a response.
+ * @name sortAllPostByLike
  * @param {object} data - typically a response with success field containing an array of posts
  * @returns {*}
  */
@@ -26,11 +25,10 @@ function sortAllPostByLike(data) {
 }
 
 /**
- * sortPostByLikes
+ * Sort post array of an object by like - dislike in descending order.
  * @function
  * @memberOf Tools
- * @name sortPostByLikes -
- * Sort post array of an object by like - dislike in descending order.
+ * @name sortPostByLikes
  * @param {object} data - typically a post object from a response
  * @returns {*}
  */

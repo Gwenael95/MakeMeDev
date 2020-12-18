@@ -32,14 +32,13 @@ const { getHandler, getHandlerForUserPost, updateDbHandler} = require("../Tools/
 //region exported methods
 //region get
 /**
- * get
- * @function
- * @memberOf Services
- * @name get -
  * Get posts depending on a request get thanks to a string with strict typography to demarcate
  * each field, and if not exist it will not be a criteria to search at all.
  * Structure : functionName(param1, param2, ?){returned1, returned2}"functionDescription"[tag1, tag2, tag3]
  * OR use a post id to get the corresponding post.
+ * @function
+ * @memberOf Services
+ * @name get
  * @param {object} search - search field to find in database
  * @returns {Promise<{code: number, body: {error: *}}|{code: number, body: *}|{code: number, body: *}|{code: number, body: {error: string}}>}
  */
@@ -59,14 +58,13 @@ async function get(search) {
 
 //region post
 /**
- * create
- * @function
- * @memberOf Services
- * @name create -
  * Create a new post, that will be add in database.
  * We add some field : paramsTypes and returnsTypes to have an object with a number of occurrence of each params.
  * Also creation date for post
  * It will make it simpler to search post depending on the amount of params or returns with getPost function.
+ * @function
+ * @memberOf Services
+ * @name create
  * @param {object} post - post to add, should be really similar to postModels {@link '../Models/postModels'}.
  * @param {object} user - user to update, should be really similar to userModels {@link '../Models/userModels'}.
  * @returns {Promise<{code: number, body: {success: {post: (string|boolean|SrvPoller.success|Event), user: (string|boolean|SrvPoller.success|Event)}, token: *}}|{code: number, body: {error: string}}|{code: number, body: *}>}
@@ -95,11 +93,10 @@ async function create(post, user) {
 
 //region patch
 /**
- * updateFunction
+ * Update a function from a post or post response thanks to its id.
  * @function
  * @memberOf Services
- * @name updateFunction -
- * Update a function from a post or post response thanks to its id.
+ * @name updateFunction
  * @param {string} functionPost - the complete function, real code that could be run.
  * @param {string} idPost - post's or response post's id to update
  * @param {object} user - current user's data
@@ -114,12 +111,11 @@ async function updateFunction(functionPost, idPost, user) {
 }
 
 /**
- * updateVote
- * @function
- * @memberOf Services
- * @name updateVote -
  * Used to add or update a vote in DB for a post. Then we update user to know if it already have
  * like or dislike a function.
+ * @function
+ * @memberOf Services
+ * @name updateVote
  * @param {int|string} vote - vote value. If it's an int, 1="like" & -1="dislike"
  * @param {string} idPost - post's id
  * @param {object} user - user's data
@@ -143,12 +139,11 @@ async function updateVote(vote, idPost, user) {
 }
 
 /**
- * addPostResponse
- * @function
- * @memberOf Services
- * @name addPostResponse -
  * Add a response to a post (with a new function proposal) after adding author and date.
  * Then we update user to save in his activities he post a response.
+ * @function
+ * @memberOf Services
+ * @name addPostResponse
  * @param {object} responsePost - a response to a post
  * @param {string} idPost - post's id
  * @param {object} user - user's data
@@ -169,12 +164,11 @@ async function addPostResponse(responsePost, idPost, user) {
 }
 
 /**
- * addCommentary
- * @function
- * @memberOf Services
- * @name addCommentary -
  * Add a commentary to a post after adding author and date. Then we update user to save in his
  * activities he add a commentary to a post.
+ * @function
+ * @memberOf Services
+ * @name addCommentary
  * @param {object} commentaryPost - a commentary post
  * @param {string} idPost - post's id
  * @param {object} user - user's data
@@ -199,12 +193,12 @@ async function addCommentary(commentaryPost, idPost, user) {
 
 //region not exported functions
 /**
- * closeUserUpdateAction
+
+ * This function is used to close action. We generate a new token
+ * and return a http code status and body.
  * @function
  * @memberOf Services
- * @name closeUserUpdateAction -
- * This function is used to close action. We generate a new token
- * and return a http code status and body
+ * @name closeUserUpdateAction
  * @param {object} userData - user's data from a response
  * @param {object} postData - post's data from a response
  * @param {string } [msg= "DB error"] - message to send in body if there is an issue

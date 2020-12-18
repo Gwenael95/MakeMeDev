@@ -2,11 +2,10 @@
  * @namespace Tools
  */
 /**
- * emptyRequest
+ * Check if our request data isn't empty before continuing other actions.
  * @function
  * @memberOf Tools
- * @name emptyRequest -
- * Check if our request data isn't empty before continuing other actions
+ * @name emptyRequest
  * @param {object} reqData - data from our request to check
  * @returns {{code: number, body: {error: string}}}
  */

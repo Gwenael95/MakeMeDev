@@ -2,11 +2,10 @@
  * @namespace Tools
  */
 /**
- * getLastCommentaryId
+ * Get last commentary id for a post matching with id in params.
  * @function
  * @memberOf Tools
- * @name getLastCommentaryId -
- * Get last commentary id for a post matching with id in params
+ * @name getLastCommentaryId
  * @param {object} result - a result from DB
  * @param {string} postId - post'id
  * @returns {null|*}
@@ -27,11 +26,10 @@ function getLastCommentaryId(result, postId) {
 }
 
 /**
- * getLastResponseId
+ * get last response id from a result post object.
  * @function
  * @memberOf Tools
- * @name getLastResponseId -
- * get last response id from a result post object
+ * @name getLastResponseId
  * @param {object} result - a result from DB
  * @returns {*}
  */

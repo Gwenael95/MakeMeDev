@@ -12,12 +12,11 @@ const {emptyRequest} = require("../Tools/Controller/controllerHelper");
 
 //region get
 /**
- * getPost
+ * Get a post from database if our query isn't empty.
  * @function
  * @memberOf Controllers
- * @name getPost -
+ * @name getPost
  * @async
- * Get a post from database if our query isn't empty.
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -31,11 +30,9 @@ exports.getPost = async (req, res, next)  => {
 
 //region post
 /**
- * sendPost
- * @function
+ * Send a post to add in database if our post data isn't empty. * @function
  * @memberOf Controllers
- * @name sendPost -
- * Send a post to add in database if our post data isn't empty.
+ * @name sendPost
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -50,11 +47,10 @@ exports.sendPost = async (req, res, next) => {
 
 //region patch
 /**
- * sendVote
+ * Send a vote to like or dislike a post in DB.
  * @function
  * @memberOf Controllers
- * @name sendVote -
- * Send a vote to like or dislike a post in DB.
+ * @name sendVote
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -67,11 +63,10 @@ exports.sendVote = async (req, res, next)  => {
 };
 
 /**
- * addResponse
+ * Send a response to add to a post in DB.
  * @function
  * @memberOf Controllers
- * @name addResponse -
- * Send a response to add to a post in DB.
+ * @name addResponse
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -84,11 +79,10 @@ exports.addResponse = async (req, res, next)  => {
 };
 
 /**
- * addCommentary
+ * Send a comment to add to a post in DB.
  * @function
  * @memberOf Controllers
- * @name addCommentary -
- * Send a comment to add to a post in DB.
+ * @name addCommentary
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function
@@ -101,11 +95,10 @@ exports.addCommentary = async (req, res, next)  => {
 };
 
 /**
- * updateFunction
+ * Send a function to update it in a post in DB.
  * @function
  * @memberOf Controllers
- * @name updateFunction -
- * Send a function to update it in a post in DB.
+ * @name updateFunction
  * @param {Object.<Request>} req - request received
  * @param {Object.<Response>} res - response to dispatched
  * @param {Function} next - get control to the next middleware function

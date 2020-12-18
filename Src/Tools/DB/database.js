@@ -6,11 +6,10 @@ require('dotenv').config();
 
 
 /**
- * connect
+ * Connect to DB for test or production.
  * @function
  * @memberOf Tools
- * @name connect -
- * Connect to DB for test or production
+ * @name connect
  */
 function connect() {
     if (mongoose.connection.readyState === 0) {
@@ -33,7 +32,7 @@ function connect() {
  * truncate
  * @function
  * @memberOf Tools
- * @name truncate -
+ * @name truncate
  */
 function truncate()  {
     if (mongoose.connection.readyState !== 0) {
@@ -51,7 +50,7 @@ function truncate()  {
  * disconnect
  * @function
  * @memberOf Tools
- * @name disconnect -
+ * @name disconnect
  */
 function disconnect() {
     if (mongoose.connection.readyState !== 0) {

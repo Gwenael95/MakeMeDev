@@ -23,11 +23,10 @@ const ObjectId = mongoose.Types.ObjectId;
 
 //region get
 /**
- * getPostByFunction
+ * Get post in database depending on many criteria, and return the result of this try
  * @function
  * @memberOf DB
- * @name getPostByFunction -
- * Get post in database depending on many criteria, and return the result of this try
+ * @name getPostByFunction
  * @param {object} searchedData - data to search in database
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
  */
@@ -42,11 +41,10 @@ async function getPostByFunction(searchedData) {
 }
 
 /**
- * getPostById
+ * Get post in database depending on post's Id, and return the result of this try
  * @function
  * @memberOf DB
- * @name getPostById -
- * Get post in database depending on post's Id, and return the result of this try
+ * @name getPostById
  * @param {object} postId - post's Id to search in database
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
  */
@@ -63,11 +61,10 @@ async function getPostById(postId) {
 
 //region post
 /**
- * addPost
+ * Insert a new post in database, and return the result of this try
  * @function
  * @memberOf DB
- * @name addPost -
- * Insert a new post in database, and return the result of this try
+ * @name addPost
  * @param {object} postData - post to add, should correspond to postModels {@link '../Models/postModels'}.
  * @returns {Promise<{success: {success: T}}|{error: Error.ValidationError | {[p: string]: ValidatorError | CastError} | number}>}
  */
@@ -84,11 +81,10 @@ async function addPost(postData) {
 //region patch
 
 /**
- * updatePost
+ * A generic function used to update a post.
  * @function
  * @memberOf DB
- * @name updatePost -
- * A generic function used to update a post.
+ * @name updatePost
  * @param {object} filter - object used by mongoDB to select corresponding documents in DB.
  * @param {object} update - object containing fields to set (ex: $set, or $push).
  * @param {string} id - a post's id
@@ -111,11 +107,10 @@ async function updatePost(filter, update, id) {
 }
 
 /**
- * updatePostFunction
+ * Update a post function.
  * @function
  * @memberOf DB
- * @name updatePostFunction -
- * Update a post function.
+ * @name updatePostFunction
  * @param {string} functionPost - the new function
  * @param {string} idPost - a post's id
  * @returns {Promise<{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}>}
@@ -125,11 +120,10 @@ async function updatePostFunction(functionPost, idPost) {
 }
 
 /**
- * pushPostResponse
+ * Add a post response.
  * @function
  * @memberOf DB
- * @name pushPostResponse -
- * Add a post response.
+ * @name pushPostResponse
  * @param {object} responsePost - a new response post to add in an array in DB
  * @param idPost - a post's id
  * @returns {Promise<{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}>}
@@ -139,11 +133,10 @@ async function pushPostResponse(responsePost, idPost) {
 }
 
 /**
- * pushPostResponseCommentary
+ * Add a post commentary.
  * @function
  * @memberOf DB
- * @name pushPostResponseCommentary -
- * Add a post commentary.
+ * @name pushPostResponseCommentary
  * @param {object} commentaryResponse -  a new commentary to add in an array in DB
  * @param idPost - a post's id
  * @returns {Promise<{commentaryId: (null|undefined), success: {commentaryId: (null|undefined), success: T, postId: *, responseId: *}, postId: *, responseId: *}|{error}>}
@@ -153,15 +146,14 @@ async function pushPostResponseCommentary(commentaryResponse, idPost) {
 }
 
 /**
- * updateLikeOrDislike
- * @function
- * @memberOf DB
- * @name updateLikeOrDislike -
  * Add or update like/dislike for a post.
  * start by checking if user already vote for this post.
  * if not we increment the like/dislike counter.
  * else, if it changes is mind (want to change a like by a dislike), we decrement
  * the old vote and increase the new one.
+ * @function
+ * @memberOf DB
+ * @name updateLikeOrDislike
  * @param {string} likeOrDislike - a string equals to 'like' or 'dislike'
  * @param {string} idPost - post's id
  * @param {object} user - user's data (needed to know his activities)
