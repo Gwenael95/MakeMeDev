@@ -43,10 +43,16 @@ function getPipeline(data) {
  * @returns {[]|[{$match: {field:{$all:data}}}]}
  */
 function getMatchFromStringArray(data, dbField) {
+
     if (data !== null) {
         let array = (filterDelSpaces(data).split(","))
+        var regex = [];
+        for (var i = 0; i < array.length; i++) {
+            regex[i] = new RegExp(regex[i]);
+        }
+        console.log(regex)
         if (array.length > 0 && data!=="") {
-            return [{$match: {[dbField]: {$all: array}}}]
+            return [{$match: {[dbField]: {$all: regex}}}]
         }
         else if (data==="") {
             return [{$match: {[dbField]:{$size: 0}}}]
@@ -102,8 +108,8 @@ function getTabParamOrReturn(data, dbFieldNameCount, paramsOrResults) {
                 else if (dataSearch.length >= 1) {
                     return {
                         $match: {
-                            [paramsOrResults]: {$elemMatch: {type: result}, $size: dataSearch.length},
-                            [dbFieldNameCount + "." + result]: {
+                            [paramsOrResults]: {$elemMatch: {type: {$regex: result , $options: 'i'}}, $size: dataSearch.length},
+                            [dbFieldNameCount + "." + result.toLowerCase()]: {
                                 $lte: (occurrences["?"] ? occurrences["?"] : 0) + occurrences[result],
                                 $gte: occurrences[result]
                             }
